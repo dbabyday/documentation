@@ -1,0 +1,50 @@
+
+
+
+
+
+
+Submit ticket for SSL Certificate
+Submit ticket to create managed service accounts
+Submit ticket for CNAME(s)
+
+Check drives and directories
+IFI --> 
+Configure Local DTC Security
+Provision SSL Cert
+
+Command line install
+Command line service pack install
+
+SQL Server Network Configuration
+Force Encryped Connections
+Change Service Accounts to MSAs
+
+Alter sa: change name, set password (store in cyberark), disable
+Default Backup Directory
+Configuration Scripts
+TempDB Size
+
+
+Backups
+Registered Servers
+Applicaiton service account & permissions
+Other accounts?
+
+
+
+
+
+
+sa: change name, set password (store in cyberark), disable
+
+USE master;
+
+ALTER LOGIN sa WITH NAME             = AaronRodgers, 
+                    CHECK_EXPIRATION = OFF, 
+                    CHECK_POLICY     = OFF,
+                    PASSWORD         = N'<Password,NVARCHAR,>';
+
+ALTER LOGIN AaronRodgers DISABLE;
+
+

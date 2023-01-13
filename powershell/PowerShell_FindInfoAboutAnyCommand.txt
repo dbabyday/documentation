@@ -1,0 +1,6 @@
+PowerShell - Find info on any command
+
+get-command
+get-help <command_name>
+<command_name> get-member
+

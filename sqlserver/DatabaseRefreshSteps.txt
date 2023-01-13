@@ -1,0 +1,114 @@
+Before Restore
+    Script DB Permissions
+    Get logical and physical db file names
+    Check file sizes and drive space
+
+Restore
+    Change destination
+    Change database name
+    Change physical file names
+
+After Restore
+    Set recovery model
+    Change database owner
+    Change logical file names
+    Remove DB permissions from previous environment
+    Grant DB permissions for this environment
+
+
+
+
+
+NO_SolderTipTracking
+dcc-sql-dv-012 - neenops-dev-mssql.db.na.plexus.com
+gcc-sql-pd-050 - neenops-prod-mssql.db.na.plexus.com
+
+
+Database    File    physical_name   type_desc   Size_MB Used_MB Free_MB
+NO_SolderTipTracking    NO_SolderTipTracking    F:\Databases\NO_SolderTipTracking.mdf   ROWS    500.0   133.0   367.0
+NO_SolderTipTracking    NO_SolderTipTracking_log    G:\Logs\NO_SolderTipTracking_log.ldf    LOG 128.0   3.6 124.4
+
+NO_SolderTipTracking    NO_SolderTipTracking    F:\Databases\NO_SolderTipTracking.mdf   ROWS    640.0   515.5   124.5
+NO_SolderTipTracking    NO_SolderTipTracking_log    G:\Logs\NO_SolderTipTracking_log.ldf    LOG 405.0   9.5 395.5
+
+
+
+/*
+    Server:       DCC-SQL-DV-012
+    Database:     NO_SolderTipTracking
+    Date:         2022-04-01 10:31:53
+    DB Principal: All
+*/
+
+
+
+-----------------------------------------------
+--// LOGINS                                //--
+-----------------------------------------------
+
+USE master;
+
+-- create windows logins
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\srvcmsqldev.neen') CREATE LOGIN [NA\srvcmsqldev.neen] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Domain Users') CREATE LOGIN [NA\Domain Users] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Neenah-US Solder Tip Tracker') CREATE LOGIN [NA\Neenah-US Solder Tip Tracker] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Neenah-US SQL Test Engineering Services users in Neenah-US') CREATE LOGIN [NA\Neenah-US SQL Test Engineering Services users in Neenah-US] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Neenah-US SQL Test Engineering users in Neenah-US') CREATE LOGIN [NA\Neenah-US SQL Test Engineering users in Neenah-US] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Srvcscomsql.plx') CREATE LOGIN [NA\Srvcscomsql.plx] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NT SERVICE\HealthService') CREATE LOGIN [NT SERVICE\HealthService] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+
+-- create sql logins
+
+-- disable logins
+
+-- no access logins
+
+
+
+-----------------------------------------------
+--// DATABASE USERS AND PERMISSIONS        //--
+-----------------------------------------------
+
+USE [NO_SolderTipTracking];
+
+-- create users
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'Domain Users') CREATE USER [Domain Users] FOR LOGIN [NA\Domain Users];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Neenah-US Solder Tip Tracker') CREATE USER [NA\Neenah-US Solder Tip Tracker] FOR LOGIN [NA\Neenah-US Solder Tip Tracker];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Neenah-US SQL Test Engineering Services users in Neenah-US') CREATE USER [NA\Neenah-US SQL Test Engineering Services users in Neenah-US] FOR LOGIN [NA\Neenah-US SQL Test Engineering Services users in Neenah-US];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Neenah-US SQL Test Engineering users in Neenah-US') CREATE USER [NA\Neenah-US SQL Test Engineering users in Neenah-US] FOR LOGIN [NA\Neenah-US SQL Test Engineering users in Neenah-US];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Srvcscomsql.plx') CREATE USER [NA\Srvcscomsql.plx] FOR LOGIN [NA\Srvcscomsql.plx] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NT SERVICE\HealthService') CREATE USER [NT SERVICE\HealthService] FOR LOGIN [NT SERVICE\HealthService] WITH DEFAULT_SCHEMA = [dbo];
+
+-- create roles
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'db_executor') CREATE ROLE [db_executor];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'SCOM_HealthService') CREATE ROLE [SCOM_HealthService];
+
+-- add role members
+ALTER ROLE [db_datareader] ADD MEMBER [Domain Users];
+ALTER ROLE [db_datareader] ADD MEMBER [NA\Neenah-US Solder Tip Tracker];
+ALTER ROLE [db_datawriter] ADD MEMBER [NA\Neenah-US Solder Tip Tracker];
+ALTER ROLE [db_executor] ADD MEMBER [NA\Neenah-US Solder Tip Tracker];
+ALTER ROLE [db_datareader] ADD MEMBER [NA\Neenah-US SQL Test Engineering Services users in Neenah-US];
+ALTER ROLE [db_datawriter] ADD MEMBER [NA\Neenah-US SQL Test Engineering Services users in Neenah-US];
+ALTER ROLE [db_executor] ADD MEMBER [NA\Neenah-US SQL Test Engineering Services users in Neenah-US];
+ALTER ROLE [db_owner] ADD MEMBER [NA\Neenah-US SQL Test Engineering Services users in Neenah-US];
+ALTER ROLE [db_owner] ADD MEMBER [NA\Neenah-US SQL Test Engineering users in Neenah-US];
+ALTER ROLE [SCOM_HealthService] ADD MEMBER [NT SERVICE\HealthService];
+
+-- apply permissions
+GRANT EXECUTE ON SCHEMA::[dbo] TO [db_executor] AS [dbo];
+GRANT CONNECT ON DATABASE::[NO_SolderTipTracking] TO [Domain Users] AS [dbo];
+GRANT CONNECT ON DATABASE::[NO_SolderTipTracking] TO [NA\Neenah-US Solder Tip Tracker] AS [dbo];
+GRANT EXECUTE ON DATABASE::[NO_SolderTipTracking] TO [NA\Neenah-US Solder Tip Tracker] AS [dbo];
+GRANT CONNECT ON DATABASE::[NO_SolderTipTracking] TO [NA\Neenah-US SQL Test Engineering Services users in Neenah-US] AS [dbo];
+GRANT CONNECT ON DATABASE::[NO_SolderTipTracking] TO [NA\Neenah-US SQL Test Engineering users in Neenah-US] AS [dbo];
+GRANT CONNECT ON DATABASE::[NO_SolderTipTracking] TO [NA\Srvcscomsql.plx] AS [dbo];
+GRANT SELECT ON DATABASE::[NO_SolderTipTracking] TO [NA\Srvcscomsql.plx] AS [dbo];
+GRANT CONNECT ON DATABASE::[NO_SolderTipTracking] TO [NT SERVICE\HealthService] AS [dbo];
+GRANT EXECUTE ON OBJECT::[dbo].[GetUser] TO [public] AS [dbo];
+GRANT EXECUTE ON OBJECT::[dbo].[GetSolderTipDeliquency_v2] TO [public] AS [dbo];
+GRANT EXECUTE ON OBJECT::[dbo].[GetFocusFactory] TO [public] AS [dbo];
+GRANT EXECUTE ON OBJECT::[dbo].[GetRoleForUser] TO [public] AS [dbo];
+GRANT EXECUTE ON OBJECT::[dbo].[GetSite] TO [public] AS [dbo];
+GRANT VIEW ANY COLUMN ENCRYPTION KEY DEFINITION ON DATABASE::[NO_SolderTipTracking] TO [public] AS [dbo];
+GRANT VIEW ANY COLUMN MASTER KEY DEFINITION ON DATABASE::[NO_SolderTipTracking] TO [public] AS [dbo];

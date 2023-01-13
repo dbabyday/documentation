@@ -1,0 +1,11 @@
+vi - use macro to repeat set of commands
+------------------------------------------------------
+https://stackoverflow.com/questions/10413906/how-to-add-a-line-after-every-few-lines-in-vim
+
+
+
+qq     " start recording to register q (you could use any register from a to z)
+o      " insert an empty line below cursor
+<Esc>  " switch to normal mode
+jjj    " move the cursor 3 lines downward
+q      " stop recording

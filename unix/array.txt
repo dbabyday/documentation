@@ -1,0 +1,42 @@
+https://opensource.com/article/18/5/you-dont-know-bash-intro-bash-arrays
+
+Syntax        Result
+------------- -----------------------------
+arr=()        Create an empty array
+arr=(1 2 3)   Initialize array
+${arr[2]}     Retrieve third element
+${arr[@]}     Retrieve all elements
+${!arr[@]}    Retrieve array indices
+${#arr[@]}    Calculate array size
+arr[0]=3      Overwrite 1st element
+arr+=(4)      Append value(s)
+str=$(ls)     Save ls outputRetrieve n elements starting at index s
+
+# Loop through array
+for i in ${!allThreads[@]}; do
+  ./pipeline --threads ${allThreads[$i]}
+done
+
+# list the elements (only works if elements do not have spaces)
+echo ${allThreads[@]} | tr ' ' '\n'
+
+
+# check if array contains value
+if [[ " ${array[@]} " =~ " ${value} " ]]; then
+    # whatever you want to do when arr contains value
+fi
+
+# check if array does not contains value
+if [[ ! " ${array[@]} " =~ " ${value} " ]]; then
+    # whatever you want to do when arr doesn't contain value
+fi
+
+# save sqlplus results to an array
+declare -a my_array=( $(${ORACLE_HOME}/bin/sqlplus -s "${MYUSERNAME}/${MYPASSWORD}@${ORACLE_SID}" <<-!EOSQL
+    set echo off
+    set feedback off
+    set pagesize 0
+    select table_name from dba_tables where owner='CA';
+    exit;
+!EOSQL
+) )

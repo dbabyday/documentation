@@ -1,0 +1,21 @@
+sqlcmd -S gcc-sql-pd-001 -d master -e -I -i test.sql -o test.lst
+
+
+https://docs.microsoft.com/en-us/sql/tools/sqlcmd-utility?view=sql-server-2014
+-e --> Writes input scripts to the standard output device (stdout).
+-I --> Sets the SET QUOTED_IDENTIFIER connection option to ON. By default, it is set to OFF.
+-i --> input_file[,input_file2...]
+-o --> output_file
+
+
+
+$directory="\\neen-dsk-011\it$\database\users\James\JamesDownloads\LOT Database PD\Post"
+$sqlServerName="gcc-sql-pd-025"
+$databaseName="LotVerification_PROD"
+Get-ChildItem -Path $directory | ForEach-Object {
+	$inputFile=$_.FullName
+	$outputFile=$_.DirectoryName + '\' + $_.BaseName + ".out"
+	sqlcmd -S $sqlServerName -d $databaseName -e -I -i $inputFile -o $outputFile
+}
+
+

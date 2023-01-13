@@ -1,0 +1,3 @@
+zip -r archive.zip <filename> [filename]
+
+unzip /path/to/file.zip -d /destination/directory/

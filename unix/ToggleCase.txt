@@ -1,0 +1,6 @@
+~     # Toggle case of the character under the cursor, or all visually-selected characters.
+3~    # Toggle case of the next three characters.
+g~3w  # Toggle case of the next three words.
+g~iw  # Toggle case of the current word (inner word – cursor anywhere in word).
+g~$   # Toggle case of all characters to end of line.
+g~~   # Toggle case of the current line (same as V~).

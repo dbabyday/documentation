@@ -1,0 +1,66 @@
+# tmux send-keys to setup sessions
+
+
+
+#!/bin/sh
+session="test_gg"
+window="py"
+#read -s -p "Password: " _PW
+
+# create the session
+tmux new-session -d -s ${session} -n ${window}
+
+pane="0"
+target="${session}:${window}.${pane}"
+
+tmux split-window -d -t ${target} -v
+tmux split-window -d -t ${target} -h
+pane="2"
+target="${session}:${window}.${pane}"
+tmux split-window -d -t ${target} -h
+
+pane="0"
+target="${session}:${window}.${pane}"
+tmux send-keys -t ${target} "ssh dcc-ora-py-001" Enter
+sleep 5
+tmux send-keys -t ${target} "${_PW}" Enter
+
+
+
+
+read -s -p "Password: " _PW
+session="xyz"
+window="py"
+
+# create the session
+tmux new-session -d -s ${session} -n ${window}
+
+pane="0"
+target="${session}:${window}.${pane}"
+
+tmux split-window -d -t ${target} -v
+tmux split-window -d -t ${target} -h
+pane="2"
+target="${session}:${window}.${pane}"
+tmux split-window -d -t ${target} -h
+
+pane="0"
+target="${session}:${window}.${pane}"
+tmux send-keys -t ${target} "ssh dcc-ora-py-001" Enter
+sleep 5
+tmux send-keys -t ${target} "${_PW}" Enter
+tmux send-keys -t ${target} "sudo su - oracle" Enter
+sleep 5
+tmux send-keys -t ${target} "${_PW}" Enter
+
+
+unset _PW
+unset session
+unset window
+unset pane
+unset target
+
+
+test_gg.sh
+tmux a -t xyz	
+

@@ -1,0 +1,230 @@
+# Brent Ozar - How I Use the First Responder Kit
+
+
+## sp_Blitz
+
+basic health of server/instance
+	backups, corruption, configurations...
+
+sp_Blitz
+	  @CheckUserDatabaseObjects = 0
+	, @CheckServerInfo = 1;
+
+Put results in Excel
+Make notes
+	Markdown editor (Typora)
+		# - heading
+		## - 2nd heading
+		### - 3rd heading
+		* - bullet list
+	sp_Blitz @OutputType = 'MARKDOWN';
+
+### Save results in database
+sp_Blitz 
+	  @OutputDatabaseName = N'DBAtools'
+	, @OutputSchemaName = 'dbo'
+	, @OutputTableName = 'BlitzResults';
+
+
+
+
+## sp_BlitzFirst
+
+snapshot, wait 5 seconds, snapshot, compare
+prioritized reasons why we think your sql server is slow
+right now (not historicaL)
+
+@ExpertMode=1
+	queryies running right now
+	headlines
+	wait stats
+	physical reads/writes (top files read/write)
+	perfmon counter that changed
+
+@Seconds=60
+	get a longer time between snapshots to get a better sample
+
+Top wait types:
+CXPACKET/CXCONSUMER:
+	* Set CTFP & MAXDOP to good defaults: http://BrentOzar.com/go/cxpacket
+	* Look past this wait type for your next wait, tune that
+
+SOS_SCHEDULER_YIELD:
+	* Look for queries using high CPU: sp_BlitzCache @SortOrder = 'cpu'
+
+PAGEIOLATCH%:
+	* Look for queries reading a lot of data: sp_BlitzCache @SortOrder = 'reads'
+	* Look for high-value missing indexes: sp_BlitzIndex @GetAllDatabases = 1
+
+ASYNC_NETWORK_IO: watch Mastering Server Tuning
+
+WRITELOG, HADR_SYNC_COMMIT:
+	* Queries doing lots of writes: sp_BlitzCache @SortOrder = 'writes'
+
+LCK%:
+	* Look for aggressive indexes: sp_BlitzIndex @GetAllDatabases = 1
+
+
+Logging sp_BlitzFirst to Tables
+	run as agent job every 15 minues
+
+	sp_BlitzFirst
+		  @OutputDatabaseName = 'DBAtools'
+		, @OutuptSchemaName = 'dbo'
+		, @OutuptTableName = 'BlitzFirst'
+		, @OutuptTableNameFileStats = 'BlitzFirst_FileStats'
+		, @OutuptTableNamePerfmonStats = 'BlitzFirst_PerfmonStats'
+		, @OutuptTableNameWaitStats = 'BlitzFirst_WaitStats'
+		, @OutuptTableNameBlitzCache = 'BlitzCache'
+		, @OutuptTableNameBlitzWho = 'BlitzWho'
+
+	select top 100 * from DBAtools.dbo.BlitzFirst;
+	creates tables and views
+
+
+sp_BlitzFirst @SinceStartup=1;
+	compares from startup time to now
+	good for top wait types over time
+	if server has been running for months...hard to tell what was a problem versus still a problem
+
+sp_BlitzFirst 
+	  @SinceStartup=1
+	, @OutputType = 'Top10';
+
+	if all waits are 0.0, no need to tune at server level, go look at specific queries that users complain about
+
+
+
+
+## sp_BlitzCache
+
+find top most resource intensive queries
+
+sp_BlitzCache @SortOrder = 'reads';
+sp_BlitzCache @SortOrder = 'cpu';
+
+	check bottom result set for Priority 1 Warnings
+		- fix first before able to use monitoring
+
+sp_BlitzCache @SortOrder = 'avg cpu';
+	sort orders all ave avg option
+
+sp_BlitzCache
+	  @SortOrder = 'avg cpu'
+	, @MinimumExecutionCount = 2  /* only queries that have at least 2 executions */
+	, MinutesBack = 60;           /* only queries that have run in the past 60 minutes */
+
+sp_BlitzCache
+	  @SortOrder = 'avg cup'
+	, @ExportToExcel = 1;       /* only columns that you can easily copy paste into excel to give report to developers... */
+
+
+
+
+
+## sp_BlitzIndex
+
+sp_BlitzIndex
+	  @GetAllDatabases = 1
+	, @Mode = 0;            /* Default, least warnings */
+
+sp_BlitzIndex
+	  @GetAllDatabases = 1
+	, @Mode = 4;            /* Default, ALL warnings */
+
+based on results, picke one table to work on, scroll to right and get the More Info query
+
+EXEC dbo.sp_BlitzIndex
+	  @DatabaseName='GSF2_AMER_PROD'
+	, @SchemaName='Test'
+	, @TableName='Event';
+
+	first result set
+		getting down to as few indexes as possible
+
+	second result set
+		index reccomendations
+
+	third resulst set
+		column data types...use as reference when looking at index reccommendations from second result set
+
+	foreign keys
+	good starting point to index FKs
+
+sp_BlitzIndex
+	  @GetAllDatabases = 1
+	, @Mode = 2             /* All exisiting indexes */
+	, @SortOrder = 'size';  /* lots of sort orders available (size,rows,...) */
+
+sp_BlitzIndex
+	  @GetAllDatabases = 1
+	, @Mode = 3;             /* Missing indexes */
+
+Can email results of mode 2 and mode 3 to consultant...they can review and give reccomendations without access to server
+
+-- save to a table --> ex: run once a week and save for several months to make sure indexes are not used and what reccomendatinos are
+EXEC sp_BlitzIndex 
+	  @GetAllDatabases = 1
+	, @Mode = 2 /* All existing indexes */
+	, @OutputDatabaseName = 'DBAtools'
+	, @OutputSchemaName = 'dbo'
+	, @OutputTableName = 'BlitzIndex';
+
+
+
+## sp_BlitzLock
+
+deadlocks
+
+second result set
+	which table/indexes have most deadlocks
+	what is in common
+
+top result set
+	deadlocks in default extended events health session
+
+
+
+
+
+
+## sp_BlitzWho and sp_WhoIsActive
+
+sp_WhoIsActive /* Fast, but doesn't give as much by default */
+sp_BlitzWho    /* Kinda fast, and returns more by default */
+
+sp_BlitzWho
+	@ExpertMode = 1;
+go
+sp_WhoIsActive
+	  @get_plans = 1
+	, @get_locks = 1;
+go
+
+-- set up a job to save info
+sp_BlitzWho
+	  @OutputDatabaseName = 'DBAtools'
+	, @OutputSchemaName = 'dbo'
+	, @OutputTableName = 'BlitzWho';
+Create the job to run every minute
+Disable it
+Enable it when there is a problem
+
+
+
+
+
+
+
+Querystore
+	- watch Erion Stellato's course on Pluralsight before turning on
+
+
+
+
+
+
+1. Do an overal server health check with sp_Blitz
+2. Do a performance check with sp_BlitzFirst (and set it up to log data to tables every 15 min)
+3. Find queries causing top waits by using sp_BlitzCahce
+4. sp_BlitzIndex

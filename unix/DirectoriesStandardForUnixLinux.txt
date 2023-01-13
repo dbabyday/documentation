@@ -1,0 +1,67 @@
+UNIX/Linux Directories
+------------------------------------------
+
+/bin --> binaries
+	ls
+	cat
+	basic functions
+
+/sbin --> system binaries
+	system adminstrator would use, standard user would not have access to
+
+/boot --> OS boot
+	do not mess around with
+
+/dev --> devices
+	hardware
+	disk (sda)
+
+/etc --> etcetera, edit to configure, ...
+	configurtions (system wide)
+	/etc/apt
+
+/home
+	users has own subdirectories
+
+/lib, /lib32, /lib64 --> libraries
+	apps use to perform functions
+	used by /bin and /sbin files
+
+/mnt, /media
+	other mounted drives
+	floppy, usb stick, network drive, hardware drive, ...
+
+/opt --> optional
+	software from vendor
+
+/proc --> 
+	sudo files contain info about system process and resources
+
+/root --> root user's home folder
+
+/run
+	tempfs file system (runs in ram)
+
+/snap
+	snap packages stored here
+
+/srv --> service
+	service data is stored
+	files accessed by external users
+
+/sys --> system
+	interact with kernel
+
+/tmp --> temp
+	temporary files used in session
+
+/usr --> user application
+	applicaitons used by user
+
+/var --> variable
+	files expected to grow in size
+	crash files
+	log files
+
+
+

@@ -1,0 +1,12 @@
+
+
+# must execute as .admin account (not oracle)
+
+
+# unmount a volume
+sudo /sbin/umount /oradb/jdetr01/data
+
+# mount a volume
+sudo /sbin/mount /oradb/jdetr01/data
+
+

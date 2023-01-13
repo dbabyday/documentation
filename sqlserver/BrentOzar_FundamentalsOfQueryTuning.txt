@@ -1,0 +1,93 @@
+Brent Ozar - Fundamentals of Query Tuning
+
+
+Estimated Query Plan
+Highlight query --> Query menu --> Display Estimated Execution Plan (Crtl+L)
+Right click on SELECT operator --> Properties
+	CompileCPU (milliseconds)
+	CompileTime (milliseconds)
+	Optimization Level
+	Reason For Early Termination Of State
+		Time Out --> SQL Server stops trying to find best plan (no default time...can take many seconds, minutes, or even hours)
+
+Compare plans
+	Right click on actual execution plan --> save as
+	Right click on new plan --> compare showplan --> select the saved plan
+
+
+
+sp_BlitzCache
+	Look for Priority Level 1 in second result set
+		If a Priority 1...then the top result set is not reliable
+		something like DBCC FREEPROCCACHE, or if you are running unparameterized queries (many of the "same" queries with different values have separate plans...not grouped together)
+		any monitoring tools are not reliable then either
+	Look at column for your sort order
+		look at the statements for the values that are significantly higher
+	Warnings
+		just a list of things to look for when checking out the plan
+		not root cause...just helping lead you to finding root cause
+
+
+sp_BlitzFirst @SinceStartup = 1;
+	make sure you have 1 week - 1 month of uptime (hours sample)
+	top result set --> highest wait stats since startup
+		these are the query resource you want to sort sp_BlitzCache for
+
+
+	Decoder ring for the 6 most common wait types:
+
+		CXPACKET/CXCONSUMER: queries going parallel to read a lot of data or do a lot of CPU work.
+		Sort by CPU and by READS.
+
+		LCK%: locking, so look for long-running queries. Sort by DURATION, and look for
+		the warning of "Long Running, Low CPU." That's probably a query being blocked.
+
+		PAGEIOLATCH: reading data pages that aren't cached in RAM. Sort by READS.
+
+		RESOURCE_SEMAPHORE: queries can't get enough workspace memory to start running.
+		Sort by MEMORY GRANT, although that isn't available in older versions of SQL.
+
+		SOS_SCHEDULER_YIELD: CPU pressure, so sort by CPU.
+
+		WRITELOG: writing to the transaction log for delete/update/insert (DUI) work.
+		Sort by WRITES.
+
+
+Reading execution plan
+	Right to left, top to bottom
+	Look for where estimated rows start to differ dramatically from actual rows
+
+Updating statistics does not always clear plan from cache
+	if you update statistics, you may need to clear the plan manually for it to create a new plan with the new stats
+
+	DBCC SHOW_STATISTICS('dbo.Users','Location');
+
+Bad estimates for second part of query
+	separate query into 2 queries --> put first part result into variable, use variable for second part
+		doesn't change anything right away because all plan is determined at same time
+	put second part as dynamic sql
+		plan for dynamic sql query doesn't create until the dynamic sql string executes
+		the plan can stay in cache and be reused if the text is the same
+	or separate stored procedure into 2 procedures
+		pass the value from proc 1 to proc 2
+
+System Funcitons in FROM/WHERE/GROUP BY... part of query
+	messes up estimations
+	LTRIM(RTRIM()) --> hardcoded 10% estimate
+	*other do other things..behavior is different*
+
+Implicit conversions
+	converting data types is like a function
+	it works fine when you pass in a lower-fidelity datatype
+	not so good when you pass in a higher-fidelity datatype
+		Yellow bang on select operator with warning about implicit conversion --> you probably have a problem
+
+When you do math with columns together in WHERE clause
+	WHERE UpVotes + DownVotes > 1000000
+	estimated rows is a hard coded 30%
+
+
+
+
+Paul White Explains Temp Table Caching 3 Ways
+

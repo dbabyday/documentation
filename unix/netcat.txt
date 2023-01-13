@@ -1,0 +1,20 @@
+
+# start listening netcat command at destination directory (note there is a space at the very end of the line)
+netcat -l -p 12345 | gtar -xvf - 
+
+# start gtar/netcat sending session from the source directory
+gtar -cf - *.dbf | netcat gcc-ora-pd-006 12345
+
+# monitor the files sizes at the destination
+while true
+do
+    theTime=$(date +%H:%M:%S)
+    theTotal=$(ls -lh | head -1)
+    echo "${theTime} ${theTotal}"
+    sleep 60
+done
+
+# cancel netcat command at source/sending side
+	<Ctrl-c>
+
+

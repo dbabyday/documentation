@@ -1,0 +1,110 @@
+Brent Ozar - Fundamentals of Index Tuning
+
+
+Index seek operator in execution plan
+	Seek Predicate --> what we used to "dive bomb" into the index
+	Predicate --> need to scan the seek portion of the index for this column(s)
+	Number of Rows Read --> how many does SQL Server need to read to find the rows we want
+	Actual number of rows --> rows that match the query
+		compare rows read and actual rows to see if the seek was any good
+
+Testing index column order
+	Create indexes with each order
+	Write queries with index hints to use each one
+	set statistics io on
+	logical reads tells you best performance (but don't quibble over small differences)
+	look at all queries that use the table
+		some may only filter on not all the columns...keep the index that starts with these
+
+
+	put equality first in an index, followed by inequallity searches
+		fundamental rule, but there are exceptions
+	selectivity
+		write a query for each filter in the WHERE clause and test to see how selective it is
+			select count(*) from dbo.Users where DownVotes = 0;
+			select count(*) from dbo.Users where UpVotes > 100;
+
+	- fields in the WHERE clause usually go first
+	- Selective query filters go first
+		reduce the amount of data you are searching through
+	- commonly filtered-on fields go first
+		maximize the number of queries that use an index
+
+Non sargable
+	sarge - SQL Server can efficiently use an index with your Search ARGumnets
+
+
+SQL Server will choose narrowest copy of the data that will give it the resutls it wants
+	You can foce index hints and compare execution plans and logical reads to see what is better and exlain why an index was chosen
+
+
+ORDER BY
+	add to index after equality columns --> the results are already ordered correctly
+	if inequality search is before order by column, SQL Server will still need to sort the results
+
+	1. Eqality fields
+	2. Sort fields
+	3. Inequality fields
+
+
+Scan not necessarily bad
+	just means you start at one end and stop when you get to the end of the data you want
+
+TOP
+	can make ORDER BY "selective" if the WHERE columns are not very selective
+	if the WHERE columns are highly selective, they are more important than the ORDER BY columns
+
+
+@sp_BiltzIndex @TableName='Users';
+	see the index sizes
+
+
+Key Lookup
+	Execution Plan --> Output List
+		if not many, add to index to eliminate key lookup
+		if a lot it may not be worth adding the DML overhead
+
+
+JOINs
+	join is issentially a where clause --> WHERE column is in a list
+
+
+Selectivity
+	is also about how large the search space is
+	a value may be slightly lower quatntity, but have a much larger group to search in to find them
+
+
+EXISTS
+	WHERE EXISTS  - kind of like a JOIN
+
+
+statisticsioparser.com
+
+Index the table that has the hightest reads --> best chance to save most reads
+	to visiualize it: re-write query as just the portion for that table, remember that join columns are basically where columns
+
+Execution plan Scan count
+	is really Seek count
+	shown as number of executions for the Index seek operator
+
+Missing Index Reccomendation
+	okay, but lots of issues
+	column order is by equality, then column id order
+	only looks at where...not order by or group by
+	*must look at query, not just index reccomendation
+
+
+sp_BlitzIndex @GetAllDatabases = 1;
+	- get a overview of the instnace
+sp_BlitzIndex @SchemaName = '', @TableName = '';
+	use this for most of your tuning time;
+
+
+D.E.A.T.H. Method
+	Dedupe near-identical indexes
+	Eliminate unused indexes
+	Add highly needed missing indexes
+	Tune resource-intensive queries
+	Heaps often need clustered indexes
+
+
