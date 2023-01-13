@@ -1,0 +1,77 @@
+--------------------------------------------------------------
+Create Database - command line
+https://www.thegeekstuff.com/2017/01/create-database-oracle/
+--------------------------------------------------------------
+
+export ORACLE_BASE=/orahome
+export ORACLE_HOME=/orahome/12.2.0.1.201020
+export ORACLE_SID=amts01
+cp /dba/scripts/create_db/init_template.ora $ORACLE_HOME/dbs/initamts01.ora
+vi $ORACLE_HOME/dbs/initamts01.ora
+cp /dba/scripts/create_db/createdb_template1.sql $ORACLE_HOME/dbs/createdb_amts01.sql
+vi $ORACLE_HOME/dbs/createdb_amts01.sql
+
+mkdir /oradb/${ORACLE_SID}/redo/controlfile
+mkdir -p /orahome/admin/${ORACLE_SID}/adump
+
+sqlplus / as sysdba
+create spfile from pfile;
+startup nomount;
+@$ORACLE_HOME/dbs/createdb_amts01.sql
+shutdown immediate;
+startup upgrade;
+@$ORACLE_HOME/rdbms/admin/catalog.sql
+@$ORACLE_HOME/rdbms/admin/catproc.sql
+@$ORACLE_HOME/rdbms/admin/utlrp.sql
+shutdown immediate;
+startup;
+
+
+
+
+
+--------------------------------------------------------------
+Delete Database - command line
+https://orahow.com/steps-to-drop-oracle-database/
+--------------------------------------------------------------
+SQL> shutdown immediate;
+SQL> startup mount exclusive restrict;
+SQL> drop database;
+# After dropping verify the below changes:
+	- Cross verify if all the associated datafiles, comntrolfile and online    redologs are removed
+	- Remove the directories if not required
+	- Remove the entry of the database from /etc/oratab
+	- Remove crontabl entries/scripts if not required.
+
+
+
+
+
+
+
+
+CREATE DATABASE amts01
+USER SYS IDENTIFIED BY "9YAf^4H3uMMhA5k^gom~sNfSZ[hApd"
+USER SYSTEM IDENTIFIED BY "Xw+ip~.1%2gs_hKrB2R[P.POGdbFv6"
+LOGFILE 
+	GROUP 1 ('/oradb/amts01/redo/redo01.rdo') SIZE 1024M,
+	GROUP 2 ('/oradb/amts01/redo/redo02.rdo') SIZE 1024M,
+	GROUP 3 ('/oradb/amts01/redo/redo03.rdo') SIZE 1024M
+MAXLOGFILES 16
+MAXLOGHISTORY 1168
+MAXDATAFILES 100
+CHARACTER SET WE8ISO8859P1
+NATIONAL CHARACTER SET AL16UTF16
+DATAFILE '/oradb/amts01/data/system01.dbf' 
+	SIZE 256M AUTOEXTEND ON NEXT 256M MAXSIZE UNLIMITED
+SYSAUX DATAFILE '/oradb/amts01/data/sysaux01.dbf' 
+	SIZE 256M AUTOEXTEND ON NEXT 256M MAXSIZE UNLIMITED
+DEFAULT TABLESPACE USERS
+	DATAFILE '/oradb/amts01/data/users01.dbf'
+	SIZE 256M AUTOEXTEND ON NEXT 256M MAXSIZE UNLIMITED
+DEFAULT TEMPORARY TABLESPACE TEMP
+	TEMPFILE '/oradb/amts01/data/temp01.dbf'
+	SIZE 1G AUTOEXTEND ON NEXT 256M MAXSIZE UNLIMITED
+UNDO TABLESPACE UNDOTBS1
+	DATAFILE '/oradb/amts01/data/undotbs1.dbf'
+	SIZE 2G AUTOEXTEND ON NEXT 256M MAXSIZE UNLIMITED;

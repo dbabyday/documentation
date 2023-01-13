@@ -1,0 +1,58 @@
+
+
+-- accept the recommended SQL profile
+BEGIN
+	dbms_sqltune.accept_sql_profile(
+		  task_name  => 'JamesTuningTask_grstjr4b6tdsu'
+		, task_owner => 'JLUTSEY'
+		, replace    => TRUE
+	);
+END;
+/
+
+
+-- create a staging table to hold the SQL profiles
+BEGIN
+	DBMS_SQLTUNE.CREATE_STGTAB_SQLPROF ( 
+		  table_name  => 'sql_profile_staging_table'
+		, schema_name => 'ca' 
+	);
+END;
+/
+
+
+
+-- export SQL profiles into the staging table
+BEGIN
+	DBMS_SQLTUNE.PACK_STGTAB_SQLPROF (  
+		  profile_name         => 'SYS_SQLPROF_01821be715410000'
+		, staging_table_name   => 'sql_profile_staging_table'
+		, staging_schema_owner => 'ca' 
+);
+END;
+/ 
+
+
+
+
+-- move the table to destination database
+-- expdp DIRECTORY=EXPORT DUMPFILE=sql_profile_staging_table.dmp LOGFILE=sql_profile_staging_table_exp.log
+-- impdp DIRECTORY=EXPORT DUMPFILE=sql_profile_staging_table.dmp LOGFILE=sql_profile_staging_table_imp.log
+
+
+
+-- unpack SQL profiles from the staging table
+BEGIN
+	DBMS_SQLTUNE.UNPACK_STGTAB_SQLPROF(
+		  replace              => true
+		, staging_table_name   => 'sql_profile_staging_table'
+		, staging_schema_owner => 'ca'
+);
+END;
+/
+
+
+
+
+
+

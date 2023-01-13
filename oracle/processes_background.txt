@@ -1,0 +1,34 @@
+[EXTERNAL] This email was sent from outside of Plexus.  Use caution when opening attachments or links from unknown senders.
+.
+Barry and I resolved an issue with the JDETR01 database this evening where Oracle had exceeded the number of concurrent connections.   I saw about 200-250 idle parallel query sessions that had been spawned by the PSP0 background process (PSP0 is the "Process Spawner Process", which spawns Oracle background processes after initial instance startup).  Once I cleared some of the idle processes, I could log in and check the database. 
+
+Initially I thought there was an issue where Oracle was spawning unnecessary processes that went zombie, but after further review I can see they were all created organically by various internal oracle jobs (nightly stats and nightly maintenance activities like the Sql Tuning Advisor).  
+
+The PROCESSES setting for TR is 700, so the additional 200 PQ background processes pushed us over the limit.
+
+I just changed the PARALLEL_MAX_SERVERS setting to 100 for TR, which seems to provide the throttle necessary to keep the database connections stable.  Incidentally, that's already the setting in the other test databases (DV, PY).
+
+Looking ahead to PD, our PROCESSES setting is very robust at 11000, but we'll need to keep a close eye on this issue to make sure we are not inadvertently creating too many background PQ processes during the maintenance windows.  If needed, we can simply set PARALLEL_MAX_SERVERS dynamically to impose a hard limit, but hopefully we would not need to do that.  In theory, we want to allow the database to take full advantage of the available CPU.
+
+I just checked the 9.2 PD database and we spawned a max of approx. 225 PQ processes to date.  That's fine, but again we need to keep an eye on it.
+
+Let me know if you have any questions.
+
+For the DBAs:
+
+1.  check the number of Oracle background processes spawned by PSP0:
+ps -ef | grep psp0
+
+2.  Taking the PID from step 1, count the number of PQ processes spawned by PSP0:
+ps -ef | grep PID | grep p0 | wc -l
+
+Thanks,
+Roger
+
+
+
+
+Roger Carter
+DBConnect Solutions, Inc.
+rcarter@dbconnect.com
+(574) 527-9286 cell

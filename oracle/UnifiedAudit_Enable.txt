@@ -1,0 +1,24 @@
+Enable Unified Audit
+----------------------------------------
+
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/upgrd/recommended-and-best-practices-complete-upgrading-oracle-database.html#GUID-21FE7F97-DE79-43D4-A8DD-D66035C17608
+1.	Shutdown database and listeners
+2.	cd $ORACLE_HOME/rdbms/lib
+3.	make -f ins_rdbms.mk uniaud_on ioracle ORACLE_HOME=$ORACLE_HOME
+4.	Start database and listeners
+
+SELECT VALUE FROM V$OPTION WHERE PARAMETER = 'Unified Auditing';
+
+
+-- load any old audit records from external files
+execute dbms_audit_mgmt.load_unified_audit_files;
+
+
+-- give unified audit its own dedicated tablespace
+create tablespace unified_audit datafile '/oradb/ggpy01/data/unified_audit01.dbf' size 1g autoextend on next 256m maxsize 32767m;
+execute dbms_audit_mgmt.set_audit_trail_location(audit_trail_type => dbms_audit_mgmt.audit_trail_unified, audit_trail_location_value => 'UNIFIED_AUDIT');
+
+
+
+-- disable unified audit
+make -f ins_rdbms.mk uniaud_off ioracle ORACLE_HOME=$ORACLE_HOME

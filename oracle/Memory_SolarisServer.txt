@@ -1,0 +1,15 @@
+DBA Dudes…
+
+I’ve created a handy script that displays important shared memory info in a given zone:
+
+/ops/bin/shm-mem.sh
+
+Database user:  gloria
+Proj shm-mem:   32768 MB  --> maximum amount of shared mem you can allocate based on the /etc/project file
+Actual shm-mem: 14348 MB  --> what the oracle PIDs are currently consuming for shm-mem
+
+This will give you a gage of free/utilized shared mem before you allocate your SGA and fire-up your databases.
+
+— 
+Regards,
+Doug Poland

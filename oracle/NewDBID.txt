@@ -1,0 +1,7 @@
+SQL> shutdown immediate
+SQL> startup mount
+SQL> exit
+$ nid target=/ 
+$ sqlplus / as sysdba
+SQL> startup mount
+SQL> alter database open resetlogs;

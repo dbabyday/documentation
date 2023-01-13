@@ -1,0 +1,16 @@
+-- disable archivelog mode
+archive log list;
+shutdown immediate
+startup mount
+alter database noarchivelog;
+alter database open;
+
+
+-- enable archivelog mode
+archive log list;
+shutdown immediate
+startup mount
+alter database archivelog;
+alter database open;
+
+

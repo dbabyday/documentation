@@ -1,0 +1,32 @@
+	
+Hello James
+
+Your steps are fine. You could "reuse" Old GoldenGate setup/dir* files into the new install.
+
+-------- here are some very high level steps for upgrading both source and target db/goldengate ---------
+1-Stop the source and target application that connect to the source and target database.
+2-Stop all the extracts process either by using a bounded recovery checkpoint or by specifying the LOGEND option.
+3-Stop the Replicat processes and the manager.
+4-Initiate the source and target database upgrade.
+5-Install the 19c Golden gate binaries in the new directory by deselecting the Start Manager option.
+6-Once the Soucre and target databases are upgraded proceed with the further steps.
+7-Execute the ulg.sql script as sysdba in the source database.
+8-Move the parameter file to the newly installed Golden Gate directory.
+9-Start the manager, extract and replicat processes.
+-------------
+
+check #5 and #8.
+
+The full upgrade guide is available at
+---------
+https://docs.oracle.com/en/middleware/goldengate/core/19.1/upgrading/upgrading-oracle-goldengate.pdf
+
+Part II Upgrading Oracle GoldenGate Classic
+---------
+
+thanks
+Carlos
+
+
+
+runInstaller -silent -nowait -responseFile /installs/goldengate_19.1.0.0/oggcore.rsp

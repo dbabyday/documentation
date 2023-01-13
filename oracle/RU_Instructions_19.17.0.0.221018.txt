@@ -1,0 +1,267 @@
+## ########################################################################################################vv
+## Shutdown databases and services on all nodes
+## Apply DB PSU (or equivalent) but do NOT run DB PSU post install steps
+## Apply OJVM PSU patch [see note-1 below]
+## Run post install steps on all DBs in the patched home: [see note-3 below]
+## For 12.1.0.1 or later run "datapatch" post install steps
+## Re-start any stopped databases / services running from this ORACLE_HOME
+## ########################################################################################################vv
+## 
+## Patch 34419443 - Database Release Update 19.17.0.0.221018
+## Patch 34411846 - Oracle JavaVM Component Release Update 19.17.0.0.221018
+## 
+
+
+
+##
+## Create New ORACLE_HOME
+##
+
+# create the ORACLE_HOME
+	mkdir /orahome/19.17.0.0.221018
+	cd /orahome/19.17.0.0.221018
+	unzip /installs/19c/database/SOLARIS.SPARC64_193000_db_home.zip -d /orahome/19.17.0.0.221018
+	./runInstaller -silent -responseFile /installs/19c/database/install_software_only_19c.rsp
+		INS-13001 Oracle Database is Not Supported on this Operating System (Doc ID 2678497.1)
+			export _JAVA_OPTIONS="-Djava.io.tmpdir=/ops/tmp"
+			export CV_DESTLOC=/ops/tmp
+			export TMP=/ops/tmp
+			# after install
+			unset _JAVA_OPTIONS
+			unset CV_DESTLOC
+			unset TMP
+
+
+
+
+# add temp entry to oratab
+vi /var/opt/oracle/oratab
+	19.17.0.0.221018:/orahome/19.17.0.0.221018:N
+sid --> 19.17.0.0.221018
+
+## UNIFIED AUDITING ##
+	cd $ORACLE_HOME/rdbms/lib
+	make -f ins_rdbms.mk uniaud_on ioracle ORACLE_HOME=$ORACLE_HOME
+
+
+
+# install new version of OPatch
+	cd /orahome/19.17.0.0.221018
+	./OPatch/opatch version
+	mv -i /orahome/19.17.0.0.221018/OPatch /orahome/19.17.0.0.221018/OPatch.12.2.0.1.17
+	unzip /installs/19c/opatch/12.2.0.1.34/p6880880_122010_SOLARIS64.zip -d /orahome/19.17.0.0.221018/
+
+# copy network configuration files
+	OldTnsAdmin=/orahome/19.15.0.0.220419/network/admin
+	NewTnsAdmin=/orahome/19.17.0.0.221018/network/admin
+	cp -ip ${OldTnsAdmin}/listener.ora ${NewTnsAdmin}/listener.ora
+	cp -ip ${OldTnsAdmin}/sqlnet.ora ${NewTnsAdmin}/sqlnet.ora
+	cp -ip ${OldTnsAdmin}/tnsnames.ora ${NewTnsAdmin}/tnsnames.ora
+	cp -ip ${OldTnsAdmin}/listener.ora ${OldTnsAdmin}/listener.ora.new
+	cp -ip ${NewTnsAdmin}/listener.ora ${NewTnsAdmin}/listener.ora.new
+	# comment out the entries until we make the move, then the files will be swtiched
+	vi ${OldTnsAdmin}/listener.ora.new
+	vi ${NewTnsAdmin}/listener.ora
+	# create the shell files to stop and start listeners...this way we won't forget to turn one on
+	ps -ef | grep -v grep | grep lsnr > ${OldTnsAdmin}/stop_listeners.sh
+	vi ${OldTnsAdmin}/stop_listeners.sh
+		lsnrctl stop <listener>
+	chmod 744 ${OldTnsAdmin}/stop_listeners.sh
+	cp ${OldTnsAdmin}/stop_listeners.sh ${NewTnsAdmin}/start_listeners.sh
+	vi ${NewTnsAdmin}/start_listeners.sh
+		:g/stop/s//start/g
+
+
+
+##
+## Patch ORACLE_HOME
+##
+
+# environment checks
+	/installs/ru_env_files.sh
+	--
+		cd /usr/bin/
+		ls -lh make
+		ls -lh ar
+		ls -lh ld
+		ls -lh nm
+	--
+	
+# check for patch conflicts (db ru)
+	sid  -->  19.17.0.0.221018
+	cd /installs/19c/ru/19.17.0.0.221018/34419443
+	opatch prereq CheckConflictAgainstOHWithDetail -ph ./
+
+# patch the home (db ru)
+	opatch apply
+	~30 minutes
+	-- log file can be found in $ORACLE_HOME/cfgtoollogs/opatch
+	
+# check for patch conflicts (javavm)
+	sid  -->  19.17.0.0.221018
+	cd /installs/19c/ru/19.17.0.0.221018/34411846
+	opatch prereq CheckConflictAgainstOHWithDetail -ph ./
+
+# patch the home (javavm)
+	opatch apply
+	~10 minutes
+	opatch lsinventory
+	-- log file can be found in $ORACLE_HOME/cfgtoollogs/opatch
+
+# copy the db and ojvm patches from the last round of patching so they are available for rolling back
+	ls -lh /orahome/19.15.0.0.220419/sqlpatch
+	ls -lh /orahome/19.17.0.0.221018/sqlpatch
+
+	# in 19.15
+	29517242
+	32399816
+	33192694
+	33192793
+	33806152  # 19.15 db
+	33808367  # 19.15 ojvm
+
+	# in 19.17
+	29517242
+	34411846  # 19.17 ojvm
+	34419443  # 19.17 db
+
+	cp -irp /orahome/19.15.0.0.220419/sqlpatch/33806152 /orahome/19.17.0.0.221018/sqlpatch
+	cp -irp /orahome/19.15.0.0.220419/sqlpatch/33808367 /orahome/19.17.0.0.221018/sqlpatch
+
+# Upgrade Oracle Recovery Manager Catalog
+$ rman catalog username/password@alias
+RMAN> UPGRADE CATALOG;
+RMAN> UPGRADE CATALOG;
+RMAN> EXIT;
+
+
+
+
+
+##
+## Datapatch
+##
+
+# variables to make the commands more simple
+	OldOH=/orahome/19.15.0.0.220419
+	NewOH=/orahome/19.17.0.0.221018
+	OldTnsAdmin=${OldOH}/network/admin
+	NewTnsAdmin=${NewOH}/network/admin
+
+# change db to the new oracle home
+	sid --> <db_namesid>
+	${OldTnsAdmin}/stop_listeners.sh
+		lsnrctl stop <listener_name>
+	sqlplus / as sysdba
+	SQL> @cinvalid
+	SQL> @$ORACLE_HOME/rdbms/admin/utlrp.sql
+	SQL> @cinvalid
+	SQL> shutdown immediate
+	SQL> quit
+	mv /var/opt/oracle/oratab.19.17 /var/opt/oracle/oratab
+		vi /var/opt/oracle/oratab --> <db_name>:/orahome/19.17.0.0.221018:N
+	sid --> <db_name>
+
+# move parameter files to new ORACLE_HOME
+	mv -i ${OldOH}/dbs/spfile${ORACLE_SID}.ora ${NewOH}/dbs
+	mv -i ${OldOH}/dbs/init${ORACLE_SID}.ora ${NewOH}/dbs
+	mv -i ${OldOH}/dbs/orapw${ORACLE_SID} ${NewOH}/dbs
+	#
+/orahome/admin/bchpd01/pfile/flexstart.ora
+# apply the datapatch
+	If you set _JAVA_OPTIONS, CV_DESTLOC, TMP for the OH install, and you are still connected with the same session, make sure to unset them
+	$ sqlplus /nolog
+	SQL> Connect / as sysdba
+	SQL> startup upgrade
+	SQL> alter pluggable database all open upgrade;
+	SQL> set lines 300 pages 100
+	SQL> col name for a50
+	SQL> col value for a100
+	SQL> select name, value from v$parameter where value like '/orahome/1%';
+		-- Edit the database parameters such as background_dump_dest, user_dump_dest, control_files, diagnostic_dest (in Oracle 11g) and so on in the pfile/spfile to point to new Oracle Home.
+	-- change directories that contain the ORACLE_HOME
+	set serveroutput on
+	begin
+		for x in (  select 'create or replace directory '||directory_name||' as '''||replace(DIRECTORY_PATH,'/orahome/19.15.0.0.220419','/orahome/19.17.0.0.221018')||'''' stmt
+			    from dba_directories
+			    where directory_path like '/orahome/19.15%'
+			 )
+		loop
+			dbms_output.put_line(x.stmt);
+			execute immediate x.stmt;
+		end loop;
+	end;
+	/
+	col owner for a5
+	col directory_name for a50
+	col directory_path for a100
+	select owner, directory_name, directory_path from dba_directories where directory_path like '/orahome/1%' and not directory_path like '/orahome/19.17%' order by directory_name;
+		-- if the pl/sql above did not work, manually update and directories pointint to the old ORACLE_HOME
+		SQL> select 'create or replace directory '||directory_name||' as '''||replace(DIRECTORY_PATH,'/orahome/19.15.0.0.220419','/orahome/19.17.0.0.221018')||''';' stmt from dba_directories where directory_path like '/orahome/19.13%' order by directory_name;
+		SQL> create or replace directory <DIRECTORY_NAME> as '<PATH_WITH_NEW_ORACLE_HOME>';
+
+
+	SQL> quit
+	$ echo "" > /orahome/19.17.0.0.221018/sqlplus/admin/glogin.sql
+	$ cd $ORACLE_HOME/OPatch
+	$ ./datapatch -verbose     (~10 minutes)
+	$ cp /dba/scripts/glogin.sql $ORACLE_HOME/sqlplus/admin/glogin.sql
+	
+# check for/recompile invalid objects
+	$ sqlplus / as sysdba
+	SQL> @cpatch
+	SQL> @cinvalid
+	SQL> @$ORACLE_HOME/rdbms/admin/utlrp.sql
+	SQL> @cinvalid
+
+# open in reglar mode
+	SQL> shutdown
+	SQL> startup
+	SQL> alter pluggable database all open;
+
+# finish
+# change the listener.ora files
+mv -i ${OldTnsAdmin}/listener.ora ${OldTnsAdmin}/listener.ora.bak
+mv -i ${OldTnsAdmin}/listener.ora.new ${OldTnsAdmin}/listener.ora
+mv -i ${NewTnsAdmin}/listener.ora ${NewTnsAdmin}/listener.ora.bak
+mv -i ${NewTnsAdmin}/listener.ora.new ${NewTnsAdmin}/listener.ora
+${NewTnsAdmin}/start_listeners.sh
+	lsnrctl start <listener_name>
+PS> .\Test-OracleDbConnectionsPatching.ps1
+start application
+
+# privileges
+	SQL> grant select on sys.v_$backup_files to appmgr_ora_env_status /*ctask061557*/;
+	SQL> execute ca.arcprivs.archive
+
+
+
+# update ORACLE_HOME in CommVault
+zone > Oracle > database > Properties
+For rmnpd01, also update /dba/scripts/commvault/rman_schema_export.sh
+
+
+# set permissions on oraclehomeproperties.xml
+# ** this may no longer be necessary
+	ls -l $ORACLE_HOME/inventory/ContentsXML/oraclehomeproperties.xml
+	chmod 660 $ORACLE_HOME/inventory/ContentsXML/oraclehomeproperties.xml
+
+
+
+##
+## Clean up old ORACLE_HOME after all databases have been moved
+##
+
+# deinstall
+vi /var/opt/oracle/oratab
+	add entry for OH you want to deinstall
+sid --> deinstall entry
+vi /var/opt/oracle/oratab
+	remove entry for OH you want to deinstall
+cd $ORACLE_HOME/deinstall
+echo "" > ../network/admin/listener.ora
+./deinstall -tmpdir /ops/tmp
+
+
+
+

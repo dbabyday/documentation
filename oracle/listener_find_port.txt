@@ -1,0 +1,44 @@
+# list the listeners that are running
+
+dcc-ora-dv-006$
+dcc-ora-dv-006$
+dcc-ora-dv-006$
+dcc-ora-dv-006$ ps -ef | grep -v grep | grep tnslsnr
+  oracle  33178   3450   0   Mar 11 ?           5:16 /orahome/19.13.0.0.211019/bin/tnslsnr uc4np01 -inherit
+  oracle  33162   3450   0   Mar 11 ?          13:05 /orahome/19.13.0.0.211019/bin/tnslsnr mwsdv01 -inherit
+  oracle  33166   3450   0   Mar 11 ?          19:39 /orahome/19.13.0.0.211019/bin/tnslsnr olmdv01 -inherit
+  oracle  33174   3450   0   Mar 11 ?           2:59 /orahome/19.13.0.0.211019/bin/tnslsnr plxdv01 -inherit
+  oracle  36567   3450   0   Mar 11 ?           3:01 /orahome/19.11.0.0.210420/bin/tnslsnr jsprpy -inherit
+  oracle  36575   3450   0   Mar 11 ?          39:49 /orahome/19.11.0.0.210420/bin/tnslsnr winqa02 -inherit
+  oracle 604132   3450   0   Apr 18 ?           0:32 /orahome/12.2.0.1.201020/bin/tnslsnr amts01 -inherit
+james.lutsey.admin 206418  3450  0   Apr 05 ?   1:44 /orahome/19.11.0.0.210420/bin/tnslsnr windv02 -inherit
+dcc-ora-dv-006$
+dcc-ora-dv-006$
+dcc-ora-dv-006$
+
+
+
+
+
+# use the PID to look at the port for that process
+
+dcc-ora-dv-006$
+dcc-ora-dv-006$
+dcc-ora-dv-006$
+dcc-ora-dv-006$ netstat -anu | grep 604132
+      *.*                  *.*            oracle   604132 tnslsnr             0      0  400000      0 IDLE
+      *.16101              *.*            oracle   604132 tnslsnr             0      0  400000      0 LISTEN
+      *.16101                           *.*                         oracle   604132 tnslsnr              0      0  400000      0 LISTEN
+::1.34620                               *.*                         oracle   604132 tnslsnr              0      0  400000      0 LISTEN
+stream-ord oracle   604132 tnslsnr        /var/tmp/.oracle/s#604132.1
+dcc-ora-dv-006$
+dcc-ora-dv-006$
+dcc-ora-dv-006$
+
+
+
+0x05000700144C617880D9E82B1102000001000000000000000000000000000000000000000000000000000000
+0x05000700144C617880D9E82B1102000001000000000000000000000000000000000000000000000000000000
+0x05000700144C617880D9E82B1102000001000000000000000000000000000000000000000000000000000000
+0x05000700144C617880D9E82B1102000001000000000000000000000000000000000000000000000000000000
+0x05000700144C617880D9E82B1102000001000000000000000000000000000000000000000000000000000000

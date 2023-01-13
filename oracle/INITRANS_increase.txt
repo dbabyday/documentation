@@ -1,0 +1,66 @@
+Wait Class: Configuration
+Event: enq: TX - allocate ITL entry
+
+Oracle Doc ID 1472175.1
+
+increase INITRANS
+1) Depending on the number of transactions in the table we need to alter the value of INITRANS. here it has been changed to 50:
+
+2) Then re-organize the table using move
+
+3) Then rebuild all the indexes of this table with new initrans value
+
+
+
+-- check the configuration
+select ini_trans from dba_tables where owner='PRODDTA' and table_name='F41021';
+
+-- EXAMPLE
+alter table PRODDTA.F41021 initrans 50;
+alter table PRODDTA.F41021 move;
+alter index PRODDTA.F41021_0 rebuild INITRANS 50;
+alter index PRODDTA.F41021_PLXS_02 rebuild initrans 50;
+
+
+
+-- script the statements
+column stmt format a150
+
+variable table_owner varchar2(128) = 'PRODDTA';
+variable table_name  varchar2(128) = 'F41021';
+
+select 'alter table '||owner||'.'||table_name||' initrans 50;'||chr(10)||
+       'alter table '||owner||'.'||table_name||' move;' stmt
+from   dba_tables
+where  owner=:table_owner
+       and table_name=:table_name
+union all
+select 'alter index '||owner||'.'||index_name||' rebuild initrans 50;' stmt
+from   dba_indexes
+where  table_owner=:table_owner
+       and table_name=:table_name;
+
+
+
+select 'ALTER TABLE '||owner||'.'||table_name||' ADD TARGET_ENTRY_TIME TIMESTAMP (6) DEFAULT SYSTIMESTAMP NOT NULL ENABLE;' stmt
+from   dba_tables
+where  owner='CA' and table_name like 'REPL_CANARY%';
+
+
+
+
+
+
+alter table PRODDTA.F41021 initrans 50;
+alter table PRODDTA.F41021 move;
+alter index PRODDTA.F41021_0 rebuild initrans 50;
+alter index PRODDTA.F41021_PLXS_02 rebuild initrans 50;
+ALTER TABLE CA.REPL_CANARY_C ADD TARGET_ENTRY_TIME TIMESTAMP (6) DEFAULT SYSTIMESTAMP NOT NULL ENABLE;
+
+
+
+
+For GG, there are a couple of new things. 
+1. A handful of tables have a non-default INITRANS values. They were increased because replication ran into delays at one point while waiting on initrans allocation for these tables.
+2. Before starting replication, add TARGET_ENTRY_TIME column with systimestamp default value to the CA.REPL_CANARY_% tables. This change to the canary tables in the target database makes for an easy way to query replication lag...current and historic.
+Notes are updated with the queries to script out the commands for both of these at https://itdocs.plexus.com/x/qoDa

@@ -1,0 +1,143 @@
+
+Relocate/Rename Redo Log Files
+
+https://docs.oracle.com/cd/B28359_01/server.111/b28310/onlineredo004.htm#ADMIN11321
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+--------------------------------------------------
+--// Connect                                  //--
+--------------------------------------------------
+
+sudo su - oracle
+sqlplus / as sysdba
+
+
+
+
+--------------------------------------------------
+--// Verify location(s)                       //--
+--------------------------------------------------
+
+set linesize 300
+set pagesize 50
+column member                format a70
+column is_recovery_dest_file format a21
+select * from v$logfile order by member;
+
+	    GROUP# STATUS  TYPE    MEMBER                                                                 IS_RECOVERY_DEST_FILE
+	---------- ------- ------- ---------------------------------------------------------------------- ---------------------
+	         1         ONLINE  /oradb/uc4np01/redo/tmp/winqa01/redo01a.rdo                            NO
+	         1         ONLINE  /oradb/uc4np01/redo/tmp/winqa01/redo01b.rdo                            NO
+	         2         ONLINE  /oradb/uc4np01/redo/tmp/winqa01/redo02a.rdo                            NO
+	         2         ONLINE  /oradb/uc4np01/redo/tmp/winqa01/redo02b.rdo                            NO
+	         3         ONLINE  /oradb/uc4np01/redo/tmp/winqa01/redo03a.rdo                            NO
+	         3         ONLINE  /oradb/uc4np01/redo/tmp/winqa01/redo03b.rdo                            NO
+
+
+uA7Ruo0lfQ_wDxgwyUxI8Ga00zljHdD-
+
+--------------------------------------------------
+--// Shutdown the Database                    //--
+--------------------------------------------------
+
+shutdown immediate
+
+	Database closed.
+	Database dismounted.
+	ORACLE instance shut down.
+
+
+
+
+--------------------------------------------------
+--// Move the files                           //--
+--------------------------------------------------
+
+host
+mv /oradb/uc4np01/redo/tmp/winqa01/*.rdo /oradb/winqa01/redo/
+exit
+
+
+
+
+--------------------------------------------------
+--// Startup the database, mount, DO NOT OPEN //--
+--------------------------------------------------
+
+startup mount
+
+	ORACLE instance started.
+
+	Total System Global Area 1069252608 bytes
+	Fixed Size                  2188408 bytes
+	Variable Size             343939976 bytes
+	Database Buffers          700448768 bytes
+	Redo Buffers               22675456 bytes
+	Database mounted.
+
+
+
+
+--------------------------------------------------
+--// Rename the Redo Log Members              //--
+--------------------------------------------------
+
+alter database rename file '/oradb/uc4np01/redo/tmp/winqa01/redo01a.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo01b.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo02a.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo02b.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo03a.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo03b.rdo'
+                       to  '/oradb/winqa01/redo/redo01a.rdo'
+                         , '/oradb/winqa01/redo/redo01b.rdo'
+                         , '/oradb/winqa01/redo/redo02a.rdo'
+                         , '/oradb/winqa01/redo/redo02b.rdo'
+                         , '/oradb/winqa01/redo/redo03a.rdo'
+                         , '/oradb/winqa01/redo/redo03b.rdo';
+
+ 	Database altered.
+
+
+
+
+--------------------------------------------------
+--// Verify location(s)                       //--
+--------------------------------------------------
+
+set linesize 300
+set pagesize 50
+column member                format a70
+column is_recovery_dest_file format a21
+select * from v$logfile order by member;
+
+	    GROUP# STATUS  TYPE    MEMBER                                                                 IS_RECOVERY_DEST_FILE
+	---------- ------- ------- ---------------------------------------------------------------------- ---------------------
+	         1         ONLINE  /oradb/winqa01/redo/redo01a.rdo                                        NO
+	         1         ONLINE  /oradb/winqa01/redo/redo01b.rdo                                        NO
+	         2         ONLINE  /oradb/winqa01/redo/redo02a.rdo                                        NO
+	         2         ONLINE  /oradb/winqa01/redo/redo02b.rdo                                        NO
+	         3         ONLINE  /oradb/winqa01/redo/redo03a.rdo                                        NO
+	         3         ONLINE  /oradb/winqa01/redo/redo03b.rdo                                        NO
+
+
+
+
+--------------------------------------------------
+--// Open the database                        //--
+--------------------------------------------------
+
+alter database open;
+
+	Database altered.
+
+
+
+
+
+
+
+
+

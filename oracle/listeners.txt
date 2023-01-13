@@ -1,0 +1,23 @@
+LISTENERS
+--------------------------------------------
+
+# Process needs to run as database user (oracle or gfoster/gloria)
+sudo su - oracle
+
+# Need to have the propper ORACLE_HOME set for the listener you want to start/stop
+# Easiest way is to set the oraenv for the database associated with the listener
+sid
+
+# listeners are configured in this file:
+$TNS_ADMIN/listener.ora
+
+# See listener processes that are running
+ps -ef | grep -v grep | grep lsnr
+
+# stop listener
+lsnrctl stop <LISTENER_NAME>
+
+# start listener
+lsnrctl start <LISTENER_NAME>
+
+

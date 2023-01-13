@@ -1,0 +1,318 @@
+http://www.br8dba.com/upgrade-oracle-database-from-12-2-0-1-to-19c-using-dbua/
+
+$ ##
+$ ## backup parameter files and run the preupgrade checks
+$ ##
+$ mkdir -p /orahome/oracle/preupgrade19c/${ORACLE_SID}
+$ 
+$ cp -ip ${ORACLE_HOME}/dbs/init${ORACLE_SID}.ora ${ORACLE_HOME}/dbs/init${ORACLE_SID}.ora.$(date +"%Y%m%d")
+$ sqlplus / as sysdba
+SQL> create pfile from spfile;
+SQL> exit
+$ 
+$ cp -ip ${ORACLE_HOME}/dbs/spfile${ORACLE_SID}.ora /orahome/oracle/preupgrade19c/${ORACLE_SID}/spfile${ORACLE_SID}.ora.$(date +"%Y%m%d")
+$ cp -ip ${ORACLE_HOME}/dbs/orapw${ORACLE_SID} /orahome/oracle/preupgrade19c/${ORACLE_SID}/orapw${ORACLE_SID}.$(date +"%Y%m%d")
+$ cp -ip ${ORACLE_HOME}/dbs/init${ORACLE_SID}.ora /orahome/oracle/preupgrade19c/${ORACLE_SID}/init${ORACLE_SID}.$(date +"%Y%m%d")
+$ 
+$ sqlplus / as sysdba
+SQL> @$ORACLE_HOME/rdbms/admin/utlrp.sql
+SQL> @cinvalid
+SQL> EXECUTE DBMS_STATS.GATHER_DICTIONARY_STATS;
+SQL> @cts
+SQL> select username from dba_users where password_versions not like '%12C%' and oracle_maintained='N' order by 1;
+	SQLNET.ALLOWED_LOGON_VERSION_SERVER=11
+SQL> purge dba_recyclebin;
+SQL> exit
+$ df -h /oradb/${ORACLE_SID}/arch
+$ 
+$ 
+$ $ORACLE_HOME/jdk/bin/java -jar ${NewOH}/rdbms/admin/preupgrade.jar FILE DIR /orahome/oracle/preupgrade19c/${ORACLE_SID}
+
+
+==================
+PREUPGRADE SUMMARY
+==================
+  /orahome/oracle/preupgrade19c/arcdv99/preupgrade.log
+  /orahome/oracle/preupgrade19c/arcdv99/preupgrade_fixups.sql
+  /orahome/oracle/preupgrade19c/arcdv99/postupgrade_fixups.sql
+
+Execute fixup scripts as indicated below:
+
+Before upgrade:
+
+Log into the database and execute the preupgrade fixups
+@/orahome/oracle/preupgrade19c/arcdv99/preupgrade_fixups.sql
+
+After the upgrade:
+
+Log into the database and execute the postupgrade fixups
+@/orahome/oracle/preupgrade19c/arcdv99/postupgrade_fixups.sql
+
+Preupgrade complete: 2022-08-31T15:01:55
+
+$ORACLE_HOME/rdbms/admin/utldirsymlink.sql
+
+
+
+$ ##
+$ ## take a look at the preupgrade log
+$ ##
+$ 
+$ less /orahome/oracle/preupgrade19c/${ORACLE_SID}/preupgrade.log
+$ 
+
+SQL> --
+SQL> -- run the preupgrade tasks
+SQL> --
+SQL> @/orahome/oracle/preupgrade19c/${ORACLE_SID}/preupgrade_fixups.sql
+
+
+
+
+
+
+Create Flashback Guaranteed Restore Point
+*** NO need to enable Flashback Database from 11.2.0.1 onwards
+*** Database MUST be in Archive Log mode
+*** MUST NOT change the compatible parameter to higher version
+sqlplus / as sysdba
+select flashback_on from v$database;
+select name,open_mode,log_mode from v$database;
+select value from v$parameter where name='compatible';
+col name for a30
+col display_value for a40
+select name, display_value from v$parameter where name like 'db_recovery_file_dest%';
+
+!mkdir -p /oradb/${ORACLE_SID}/data/fast_recovery_area
+alter system set db_recovery_file_dest_size=50G;
+alter system set db_recovery_file_dest='/oradb/jdepd03/data/fast_recovery_area';
+select name, display_value from v$parameter where name like 'db_recovery_file_dest%';
+
+col name for a20
+col GUARANTEE_FLASHBACK_DATABASE for a10
+col TIME for a60
+set lines 190
+select NAME,GUARANTEE_FLASHBACK_DATABASE,TIME from V$restore_point;
+
+
+
+
+------------
+** OUTAGE **
+------------
+
+# variables to make the commands more simple
+	OldOH=/orahome/12.2.0.1.201020
+	NewOH=/orahome/19.15.0.0.220419
+	OldTnsAdmin=${OldOH}/network/admin
+	NewTnsAdmin=${NewOH}/network/admin
+
+
+Stop GG and verify there are no transactions.
+
+
+$ 
+$ ##
+$ ## stop the listners and bounce the database to make sure no one is in there
+$ ##
+$ /orahome/oracle/preupgrade19c/${ORACLE_SID}/lsnrs_stop.sh
+$ sqlplus / as sysdba
+SQL> shutdown immdediate;
+SQL> startup;
+SQL> @cdist  -- @fixdist
+SQL> purge dba_recyclebin;
+
+
+$ $ORACLE_HOME/jdk/bin/java -jar ${NewOH}/rdbms/admin/preupgrade.jar FILE DIR /orahome/oracle/preupgrade19c/${ORACLE_SID}
+
+	SQL> create restore point pre_upgrade guarantee flashback database;
+	SQL> select NAME,GUARANTEE_FLASHBACK_DATABASE,TIME from V$restore_point;
+
+
+##
+## UPGRADE
+##
+$ sid --> 19c
+$ echo " " > /orahome/12.2.0.1.201020/sqlplus/admin/glogin.sql
+$ echo " " > ${NewOH}/sqlplus/admin/glogin.sql
+$ dbua -silent -ignorePreReqs -skipListenersMigration -sid arcdv99 -useGRP PRE_UPGRADE -sysDBAUserName sys -sysDBAPassword 'hu2ctg' -recompile_invalid_objects true -upgradeTimezone true
+  - or -
+$ dbua -silent -skipListenersMigration -sid jders01 -useGRP PRE_UPGRADE -sysDBAUserName sys -sysDBAPassword 'abc1234' -recompile_invalid_objects true -upgradeTimezone true
+
+
+dbua -silent -ignorePreReqs -skipListenersMigration -sid jdepd01 -useGRP PRE_UPGRADE -sysDBAUserName sys -sysDBAPassword 'Plexus!dba2' -recompile_invalid_objects true -upgradeTimezone true
+dbua -silent -ignorePreReqs -skipListenersMigration -sid jdepd03 -useGRP PRE_UPGRADE -sysDBAUserName sys -sysDBAPassword 'hu2ctg' -recompile_invalid_objects true -upgradeTimezone true
+dbua -silent -ignorePreReqs -skipListenersMigration -sid bir -useGRP PRE_UPGRADE -sysDBAUserName sys -sysDBAPassword 'hu2ctg' -recompile_invalid_objects true -upgradeTimezone true
+dbua -silent -ignorePreReqs -skipListenersMigration -sid bchpd01 -sysDBAUserName sys -sysDBAPassword 'hu2ctg' -recompile_invalid_objects true -upgradeTimezone true
+dbua -silent -ignorePreReqs -skipListenersMigration -sid knxpd01 -sysDBAUserName sys -sysDBAPassword 'hu2ctg' -recompile_invalid_objects true -upgradeTimezone true
+
+
+@cparameter
+db_files
+
+##
+## AFTER UPGRADE
+##
+$ sid --> upgraded db
+$ cat /var/opt/oracle/oratab
+$ cp /dba/scripts/glogin.sql /orahome/12.2.0.1.201020/sqlplus/admin/glogin.sql
+$ cp /dba/scripts/glogin.sql ${NewOH}/sqlplus/admin/glogin.sql
+SQL> SELECT version FROM v$timezone_file;
+	-- 32
+	-- https://oracle-blog.com/upgrade-database-timezone-file-in-oracle-19c-upgrade/
+
+	---------------------------------------------------------------------------------------------------------
+	-- start the database in upgrade mode
+	sqlplus / as sysdba
+	shutdown immediate;
+	startup upgrade;
+
+	-- check the timezone file version
+	select * from v$timezone_file;
+
+	-- start the upgrade window (this will take a few minutes)
+	set serveroutput on
+	declare
+		l_tz_version pls_integer;
+	begin
+		l_tz_version := dbms_dst.get_latest_timezone_version;
+		dbms_output.put_line('l_tz_version=' || l_tz_version);
+		dbms_dst.begin_upgrade(l_tz_version);
+	end;
+	/
+
+	-- start the database in normal mode
+	shutdown immediate;
+	startup;
+
+	-- do the upgrade
+	set serveroutput on
+	declare
+		l_failures   pls_integer;
+	begin
+		dbms_dst.upgrade_database(l_failures);
+		dbms_output.put_line('dbms_dst.upgrade_database : l_failures=' || l_failures);
+		dbms_dst.end_upgrade(l_failures);
+		dbms_output.put_line('dbms_dst.end_upgrade : l_failures=' || l_failures);
+	end;
+	/
+
+	-- verify the new timezone file version
+	select * from v$timezone_file;
+	---------------------------------------------------------------------------------------------------------
+
+create or replace directory "/usr/oracle/utilout" as '/nfs/neen-data-ops/output/oracle';
+create or replace directory EXPORT as '/nfs/neen-data-ops/tmp/oracle';
+
+SQL> @cinvalid
+SQL> col COMP_ID for a10
+col COMP_NAME for a40
+col VERSION for a15
+set lines 180
+set pages 999
+select COMP_ID,COMP_NAME,VERSION,STATUS from dba_registry;
+SQL> @$ORACLE_HOME/rdbms/admin/utldirsymlink.sql
+SQL> @/orahome/oracle/preupgrade19c/bir/postupgrade_fixups.sql
+
+$ ls -lhtr /oradb/jders01/data/fast_recovery_area/JDERS01/flashback
+SQL> col name for a20
+col GUARANTEE_FLASHBACK_DATABASE for a10
+col TIME for a60
+set lines 190
+select NAME,GUARANTEE_FLASHBACK_DATABASE,TIME from V$restore_point;
+SQL>
+SQL> drop restore point PRE_UPGRADE;
+SQL> 
+SQL> select NAME,GUARANTEE_FLASHBACK_DATABASE,TIME from V$restore_point;
+SQL> 
+$ ls -lhtr /oradb/jders01/data/fast_recovery_area/JDERS01/flashback
+
+
+
+
+
+# Update COMPATIBLE parameter
+SQL> select value from v$parameter where name='compatible';
+SQL> ALTER SYSTEM SET COMPATIBLE = '19.0.0' SCOPE=SPFILE;
+SQL>
+SQL> shut immediate;
+SQL> startup;
+SQL>
+SQL> select value from v$parameter where name='compatible';
+SQL> select name,open_mode,version from v$database,v$instance;
+SQL>  
+SQL>
+
+
+
+### BIZTALK PACKAGES ###
+SQL> alter session set events '10946 trace name context forever, level 65536';
+SQL> select 'alter package '||owner||'.'||object_name||' compile;' stmt from dba_objects where owner='BIZTALK' and object_type='PACKAGE' order by 1;
+
+
+## UNIFIED AUDITING ##
+SQL> SELECT VALUE FROM V$OPTION WHERE PARAMETER = 'Unified Auditing';
+-- shutdown all databases and listeners for oracle home
+SQL> shutdown immediate;
+SQL> exit
+-- shutdown all databases and listeners for oracle home
+$ lsnrctl stop <LISTENER_NAME> 
+$ cd $ORACLE_HOME/rdbms/lib
+$ make -f ins_rdbms.mk uniaud_on ioracle ORACLE_HOME=$ORACLE_HOME
+$ sqlplus / as sysdba
+SQL> startup;
+SQL> SELECT VALUE FROM V$OPTION WHERE PARAMETER = 'Unified Auditing';
+
+
+
+
+Move listener to new OH
+mv -i ${OldTnsAdmin}/listener.ora ${OldTnsAdmin}/listener.ora.bak
+mv -i ${OldTnsAdmin}/listener.ora.new ${OldTnsAdmin}/listener.ora
+mv -i ${NewTnsAdmin}/listener.ora ${NewTnsAdmin}/listener.ora.bak
+mv -i ${NewTnsAdmin}/listener.ora.new ${NewTnsAdmin}/listener.ora
+	$ vi listener.ora
+$ lsnrctl start ${ORACLE_SID}
+$ /orahome/oracle/preupgrade19c/${ORACLE_SID}/lsnrs_start.sh
+PS> .\Test-OracleDbConnectionsUpgrades.ps1
+
+# set permissions on oraclehomeproperties.xml
+ls -l $ORACLE_HOME/inventory/ContentsXML/oraclehomeproperties.xml
+chmod 660 $ORACLE_HOME/inventory/ContentsXML/oraclehomeproperties.xml
+
+
+# update ORACLE_HOME in CommVault
+zone > Oracle > database > Properties
+For rmnpd01, also update /dba/scripts/commvault/rman_schema_export.sh
+
+
+
+# privs archive
+SQL> grant select on sys.v_$backup_files to appmgr_ora_env_status /*ctask061557*/;
+SQL> execute ca.arcprivs.archive;
+
+
+
+
+
+
+
+----------------------
+outage
+----------------------
+-- upgrades --
+gcc-ora-pd-003
+	jdepd01:/orahome/12.2.0.1.201020
+gcc-ora-pd-005
+	jdepd03:/orahome/12.2.0.1.201020
+gcc-ora-pd-007
+	bir:/orahome/12.2.0.1.201020
+gcc-ora-pd-008
+	bchpd01:/orahome/12.2.0.1.201020
+	knxpd01:/orahome/12.2.0.1.201020
+-- patching --
+gcc-ora-prd-001
+	mwspd01:/orahome/19.11.0.0.210420
+gcc-ora-pd-006
+	plx:/orahome/19.11.0.0.210420
+

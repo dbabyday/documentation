@@ -1,0 +1,178 @@
+Unix Patching --> Oracle Database Tasks
+------------------------------------------------
+
+
+-- co-ap-925
+
+
+Stop Apps
+--------------------------------
+disable commvault schedule
+disable OGG monitoring notifications
+stop OGG
+stop oem
+
+
+Stop databases
+--------------------------------
+sudo to Oracle owner (gloria/gfoster/oracle)
+sqlpulus / as sysdba
+@count_users
+shutdown immediate
+
+lsnrctl stop listener_name
+
+
+Relink oracle_homes
+--------------------------------
+sudo to Oracle owner (gloria/gfoster/oracle)
+cd $ORACLE_HOME/bin
+relink all
+root.sh
+
+
+Start databases
+--------------------------------
+sudo to Oracle owner (gloria/gfoster/oracle)
+sqlplus / as sysdba
+startup
+
+lsnrctl start listener_name
+
+
+Start Apps
+--------------------------------
+start OGG monitoring notifications
+start OGG
+start oem
+enable commvault schedule
+
+
+popular.dock.Denizen8
+popular.dock.Denizen8	
+
+
+
+tmux sessions
+--------------------------------
+adhoc
+	adhoc
+	tickets
+		gcc-ora-pd-003:jdepd01:/orahome/admin/jdepd01/adhoc/james
+		jla@gcc-ora-pd-005:jdepd03:/orahome/admin/jdepd03/adhoc/james
+	dmu
+		dcc-ora-dv-008:dmuts01:/orahome/19.11.0.0.210420/dmu-19.1/dmu
+		dcc-ora-dv-008:dmuts01:/oradb/dmuts01/arch
+	uc4np01
+		dcc-ora-dv-006:uc4np01:/orahome/oracle/preupgrade19c/uc4np01
+scripts
+	just_one
+		dcc-ora-dv-006:jsprpy:/dba/scripts
+	all_three
+		dcc-ora-dv-006:mwsdv01/dba/scripts
+		gcc-ora-pd-011:mwsdv01/dba/scripts
+		co-db-924:mwsdv01/dba/scripts
+gg
+	py
+		2 panes for ggsci
+		2 panes for ggserr.log
+	pd
+		2 panes for ggsci
+		2 panes for ggserr.log
+jde
+	jde
+		2 panes for alert_jdepd0#.log
+		2 panes for interacting
+refresh
+	gg
+		dcc-ora-py-001:jdepy01:/dba/scripts/refresh/gg
+		dcc-ora-py-001:jdepy01:/dba/scripts/refresh/gg2
+		dcc-ora-py-002:ggpy01:/dba/scripts/refresh/gg
+		dcc-ora-py-002:ggpy01:/dba/scripts/refresh/gg2
+	agile
+		co-db-924:agltrn01:/dba/scripts/refresh/agltrn01
+		co-db-054:aglqa01:/dba/scripts/refresh/aglqa01
+
+
+
+
+# co-db-924
+lsnrctl start agldev01
+lsnrctl start agltrn01
+
+# dcc-ora-ar-001
+lsnrctl start arcdv01
+
+# dcc-ora-cv-001
+lsnrctl start jdecv01_apac
+lsnrctl start jdecv01_biz
+lsnrctl start jdecv01_jde
+lsnrctl start jdecv01_ro
+lsnrctl start jdecv01_rw
+
+# dcc-ora-dev-001
+lsnrctl start bondv01
+lsnrctl start bonqa01
+
+# dcc-ora-dv-005
+lsnrctl start jdedv01_apac
+lsnrctl start jdedv01_biz
+lsnrctl start jdedv01_jde
+lsnrctl start jdedv01_ro
+lsnrctl start jdedv01_rw
+
+# dcc-ora-dv-006
+lsnrctl start mwsdv01
+lsnrctl start uc4np01
+#
+lsnrctl start jsprpy
+lsnrctl start olmdv01
+lsnrctl start plxdv01
+lsnrctl start spwdv01
+lsnrctl start windv02
+lsnrctl start winqa02
+
+# dcc-ora-dv-008
+lsnrctl start oemdv01
+lsnrctl start dbadv01
+lsnrctl start cdbdv01
+# lsnrctl start dmuts01
+
+# dcc-ora-ps-001
+lsnrctl start jdepr01
+lsnrctl start jdepr01_apac
+lsnrctl start jdepr01_jde
+lsnrctl start jdepr01_ro
+lsnrctl start jdepr01_rw
+
+# dcc-ora-py-001
+lsnrctl start jdepy01_apac
+lsnrctl start jdepy01_biz
+lsnrctl start jdepy01_gg
+lsnrctl start jdepy01_jde
+lsnrctl start jdepy01_ro
+lsnrctl start jdepy01_rw
+
+# dcc-ora-py-002
+lsnrctl start ggpy01
+lsnrctl start ggpy01_gg
+
+# dcc-ora-tr-001
+lsnrctl start jdetr01_apac
+lsnrctl start jdetr01_biz
+lsnrctl start jdetr01_jde
+lsnrctl start jdetr01_ro
+lsnrctl start jdetr01_rw
+
+
+
+
+
+
+
+
+
+
+
+
+

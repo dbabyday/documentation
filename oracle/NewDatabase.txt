@@ -1,0 +1,152 @@
+dcc-ora-dev-001:cogdev01:/oracle/12.1.0.2.171017:$ cd /oradb
+dcc-ora-dev-001:cogdev01:/oradb:$ ll
+total 12
+drwxr-xr-x   5 root     root           5 Oct 31 13:21 bondv01
+drwxr-xr-x   5 root     root           5 Oct 31 07:44 bonqa01
+drwxrwx---   5 gloria   dba            5 Mar 14  2018 cogdev01
+drwxr-xr-x   5 gloria   dba            5 Apr 18  2018 cogdev02
+dcc-ora-dev-001:cogdev01:/oradb:$ cd bondv01
+dcc-ora-dev-001:cogdev01:/oradb/bondv01:$ cd redo
+dcc-ora-dev-001:cogdev01:/oradb/bondv01/redo:$ ll
+total 0
+dcc-ora-dev-001:cogdev01:/oradb/bondv01/redo:$ mkdir controlfile
+dcc-ora-dev-001:cogdev01:/oradb/bondv01/redo:$ sg
+Password:
+Oracle Corporation      SunOS 5.11      11.3    July 2018
+
+*****************************************************
+ Current ORACLE_SID:
+ Valid Oracle SIDs on this server:
+
+  SID#:   1  grcdev01            SID#:   2  cogdev01
+  SID#:   3  cogdev02
+ Enter SID# of the SID from above list  : 2
+/oracle/12.1.0.2.171017/bin:/oracle/12.1.0.2.171017/ctx/bin:/oracle/12.1.0.2.171017/OPatch:/usr/bin::/ops/bin:/ops/bin/sparc:/usr/sfw/bin:/opt/csw/bin
+The Oracle base has been set to /oracle
+
+*****************************************************
+ New ORACLE_SID is   cogdev01
+ New ORACLE_HOME is  /oracle/12.1.0.2.171017
+ New PATH is         /oracle/12.1.0.2.171017/bin:/oracle/12.1.0.2.171017/ctx/bin:/oracle/12.1.0.2.171017/OPatch:/usr/bin::/ops/bin:/ops/bin/sparc:/usr/sfw/bin:/opt/csw/bin
+*****************************************************
+
+Environment variables for easy navigation:
+
+bdump     /oracle/diag/rdbms/cogdev01/cogdev01/trace
+udump     /oracle/diag/rdbms/cogdev01/cogdev01/trace
+cdump     /oracle/diag/rdbms/cogdev01/cogdev01/cdump
+pfile     /oracle/12.1.0.2.171017/dbs
+dba       /oracle/admin/cogdev01
+db        /oradb/cogdev01/data
+dbtemp    /oradb/cogdev01/data
+arch      /oradb/cogdev01/arch
+/oracle/12.1.0.2.171017/bin:/oracle/12.1.0.2.171017/ctx/bin:/oracle/12.1.0.2.171017/OPatch:/usr/bin::/ops/bin:/ops/bin/sparc:/usr/sfw/bin:/opt/csw/bin:/usr/ccs/bin
+[dcc-ora-dev-001:cogdev01]/oracle:$ echo $JAVA_HOME
+
+[dcc-ora-dev-001:cogdev01]/oracle:$ export $JAVA_HOME
+[dcc-ora-dev-001:cogdev01]/oracle:$
+[dcc-ora-dev-001:cogdev01]/oracle:$
+[dcc-ora-dev-001:cogdev01]/oracle:$ export JAVA_HOME=/usr/java
+[dcc-ora-dev-001:cogdev01]/oracle:$ who
+james.lutsey.admin   pts/9        Nov  1 10:06  (wneel31146.neenah.na.plexus.com)
+root       pts/19       Sep 14 11:12    (zone:global)
+james.lutsey.admin   pts/30       Oct 26 12:16  (co-ap-918.na.plexus.com)
+james.lutsey.admin   pts/34       Oct 26 12:16  (co-ap-918.na.plexus.com)
+james.lutsey.admin   pts/33       Oct 26 12:16  (co-ap-918.na.plexus.com)
+james.lutsey.admin   pts/40       Oct 31 09:56  (co-ap-918.na.plexus.com)
+[dcc-ora-dev-001:cogdev01]/oracle:$ export DISPLAY=wneel31146.neenah.na.plexus.com:0.0
+[dcc-ora-dev-001:cogdev01]/oracle:$ cd $ORACLE_HOME/bin
+[dcc-ora-dev-001:cogdev01]/oracle/12.1.0.2.171017/bin:$ dbca
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------
+
+sudo su - gloria/gfoster/oracle
+
+Directories (owned by gloria/gfoster/oracle)
+	/oradb/olmdv01/arch
+	/oradb/olmdv01/data
+	/oradb/olmdv01/redo
+	/oradb/olmdv01/redo/controlfile
+
+echo $DISPLAY
+echo $JAVA_HOME
+
+who
+export DISPLAY=10.250.129.69:0.0
+export JAVA_HOME=$ORACLE_HOME/jdk
+
+cd $ORACLE_HOME/bin
+dbca
+
+----------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------
+
+** Verify Parameter Configs Before Creating DB
+       - Characterset --> select * from nls_database_parameters;
+       - Language characterset --> select * from nls_database_parameters;
+       - block size --> show parameter db_block_size
+
+Database Credentials
+	all use same pw
+
+Storage Locations
+	Enable Archiving
+	Archive Log File Format: olmdv01_%t_%s_%r.arc
+	Location: /oradb/olmdv01/arch/
+
+Creation Options
+	Customize Storage
+		Control Files
+			control01.ctl    /oradb/olmdv01/redo/controlfile/
+			control02.ctl    /oradb/olmdv01/redo/controlfile/
+		Datafiles
+			/oradb/olmdv01/data
+		Redo Log Groups
+			/oradb/olmdv01/redo/redo01a.rdo    - 200 MB
+			/oradb/olmdv01/redo/redo01b.rdo    - 200 MB
+			(repeat for groups 2 and 3)
+
+
+sid --> new db
+
+Enable user DBSNMP and set pw
+run scripts
+	@/dba/scripts/create_db/1.1_plexus_svc_verify_function.sql
+	@/dba/scripts/create_db/1.2_plexus_user_verify_function.sql
+	@/dba/scripts/create_db/2.1_plexus_svc_profile.sql
+	@/dba/scripts/create_db/2.2_plexus_user_profile.sql
+	@/dba/scripts/create_db/3.1_parameters.sql
+	@/dba/scripts/create_db/4.1_plexus_dba_users.sql
+
+    - or -
+
+    @/dba/scripts/james/newdb.sql
+
+
+
+
+
+## Verify RMAN is in tnsnames.ora
+
+RMNPRD01 =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = gcc-ora-prd-001.na.plexus.com)(PORT = 15623))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = rmnprd01)
+    )
+  )
+
+
+## Register database in rman catalog
+		rman target=/ catalog=rman@rmnprd01
+		register database;
+		crosscheck archivelog all;
+
+
+
+
+## command line
+https://www.thegeekstuff.com/2017/01/create-database-oracle/
