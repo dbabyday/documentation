@@ -1,0 +1,72 @@
+sbxts01
+/oradb/sbxts01
+
+
+cd /oradb/${ORACLE_SID}/redo
+mkdir controlfile
+
+export DISPLAY=10.250.129.69:0.0
+export JAVA_HOME=$ORACLE_HOME/jdk
+
+cd $ORACLE_HOME/bin
+dbca
+
+
+** Verify Parameter Configs Before Creating DB
+       - Characterset --> select * from nls_database_parameters;
+       - Language characterset --> select * from nls_database_parameters;
+       - block size --> show parameter db_block_size
+
+Database Credentials
+	save sys and system passwords in CyberArk
+
+Storage Locations
+	Enable Archiving
+	Archive Log File Format: sbxts01_%t_%s_%r.arc
+	Location: /oradb/sbxts01/arch/
+
+Creation Options
+	Customize Storage
+		Control Files
+			control01.ctl    /oradb/sbxts01/redo/controlfile/
+			control02.ctl    /oradb/sbxts01/redo/controlfile/
+		Datafiles
+			/oradb/sbxts01/data
+		Redo Log Groups
+			/oradb/sbxts01/redo/redo01.rdo    - 1024 MB
+			/oradb/sbxts01/redo/redo02.rdo    - 1024 MB
+			/oradb/sbxts01/redo/redo03.rdo    - 1024 MB
+			
+
+sid --> new db
+
+Enable user DBSNMP and set pw
+
+@/dba/scripts/create_db/0.1_run_all.sql
+
+
+hu2ctg
+
+
+## Verify RMAN is in tnsnames.ora
+
+RMNPD01 =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = rmnpd01-db.na.plexus.com)(PORT = 15623))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = rmnpd01)
+    )
+  )
+
+
+## Register database in rman catalog
+		rman target=/ catalog=rman@rmnprd01
+		register database;
+		crosscheck archivelog all;
+
+
+
+
+## command line
+https://www.thegeekstuff.com/2017/01/create-database-oracle/

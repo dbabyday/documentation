@@ -1,0 +1,39 @@
+ftp File Transfer
+-----------------------------------------------------
+
+Save file(s) in same location as psftp.exe (C:\Putty)
+Convert files to UNIX/OSX Format (NotePad++)
+Review File
+
+Run psftp.exe
+
+lcd C:\JamesDownloads
+open co-db-001
+password
+cd /oracle/admin/jdpd/adhoc/james
+
+Move from local working directory to working directory
+	put filename.sql
+    put filename.sql newfilename.sql
+    mput *.sql
+    
+Move from working directory to local working directory
+	get fileName.sql
+    get fileName.sql newFileName.sql
+    
+Other Commands
+	ls    - list
+	dir   - list directory (exactly same as ls)
+	pwd   - print working directory
+	lpwd  - local print working directory
+	cd    - change directory
+	lcd   - local change directory
+	reget - resume get (use if file transfered failed part way through)
+	reput - resume put (use if file transfered failed part way through)
+	del   - delete remote files (del filename.dat)
+	rm    - remove (works same as del)
+	ren   - rename (ren oldname newname)
+	!     - run command on Windows (start command with '!', the rest of the line will be sent to Windows)
+
+Resource for other commands
+http://the.earth.li/~sgtatham/putty/0.52/htmldoc/Chapter6.html

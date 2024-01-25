@@ -1,0 +1,28 @@
+
+ebsdv01
+dcc-ora-dv-007
+. /u01/app/oracle/12.1.0.2/ebsdv01_ebsdv01-db.env
+
+ebssb01
+dcc-ora-sb-001
+. /u01/app/oracle/12.1.0.2/ebssb01_ebssb01-db.env
+
+ebsts01
+dcc-ora-ts-001
+. /u01/app/oracle/12.1.0.2/ebsts01_ebsts01-db.env
+
+ebsaput1
+dcc-ora-ut-001
+. /u01/app/oracle/12.1.0.2/ebsaput1_ebsaput1-db.env
+
+ebsut01
+dcc-ora-ut-002
+. /u01/app/oracle/12.1.0.2/ebsut01_ebsut01-db.env
+
+ebsappd1
+gcc-ora-pd-004
+. /u01/app/oracle/12.1.0.2/ebsappd1_ebsappd1-db.env
+
+ebspd01
+gcc-ora-pd-009
+. /u01/app/oracle/12.1.0.2/ebspd01_ebspd01-db.env

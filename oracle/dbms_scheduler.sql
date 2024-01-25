@@ -34,44 +34,41 @@ update proddta.a set y=(select trunc(dbms_random.value(1,10)) where y=(select tr
 
 
 
-
-
-
--- create a program the execute the procedure
 begin
+	-- create a program the execute the procedure
 	dbms_scheduler.create_program (
-		program_name   => 'proddta.a_update_prog',
-		program_type   => 'plsql_block',
-		program_action => 'update proddta.a set y=(select trunc(dbms_random.value(1,10)) where y=(select trunc(dbms_random.value(1,10));');
-end;
-/
+		  program_name   => 'PRODDTA.P_F5541043_LOT2_UPD_PROG'
+		, program_type   => 'STORED_PROCEDURE'
+		, program_action => 'PRODDTA.P_F5541043_LOT2_UPD'
+		, enabled        => TRUE
+	);
 
--- enable the program
-exec dbms_scheduler.enable('proddta.a_update_prog');
-
--- create a schedule
-begin
+	-- create a schedule
 	dbms_scheduler.create_schedule (
-		schedule_name   => 'proddta.a_update_every_5_seconds',
-		repeat_interval => 'freq=secondly; interval=5',
-		comments        => 'every 5 seconds');
+		  schedule_name   => 'PRODDTA.P_F5541043_LOT2_UPD_SCHED'
+		, start_date      => to_timestamp('2023-11-22 15:30:00','YYYY-MM-DD HH24:MI:SS')
+		, repeat_interval => 'FREQ=MINUTELY; INTERVAL=5'
+		, comments        => 'Every 5 minutes'
+	);
+
+	-- create a job to run the program on the schedule
+	dbms_scheduler.create_job (
+		  job_name      => 'PRODDTA.P_F5541043_LOT2_UPD_JOB'
+		, program_name  => 'PRODDTA.P_F5541043_LOT2_UPD_PROG'
+		, schedule_name => 'PRODDTA.P_F5541043_LOT2_UPD_SCHED'
+		, enabled       => TRUE
+	);
 end;
 /
 
--- create a job to run the program on the schedule
-begin
-	dbms_scheduler.create_job (
-		job_name      => 'proddta.a_update_job',
-		program_name  => 'proddta.a_update_prog',
-		schedule_name => 'proddta.a_update_every_5_seconds');
-end;
-/
+
 
 -- enable the job
-exec dbms_scheduler.enable('proddta.a_update_job');
+exec dbms_scheduler.enable('CA.ARCHIVE_EXTENTS_JOB');
 
+-- disable the job
+exec dbms_scheduler.disable('CA.ARCHIVE_EXTENTS_JOB');
 
-TO_TIMESTAMP_TZ('2020/11/19 11:07:00.000000 -06:00','yyyy/mm/dd hh24:mi:ss.ff tzr')
 
 
 
@@ -91,9 +88,9 @@ select owner||'.'||job_name job_name, enabled from dba_scheduler_jobs where enab
 exec dbms_scheduler.disable('PRODDTA.a_update_JOB');
 
 -- drop job
-exec dbms_scheduler.drop_job('PRODDTA.a_update_JOB');
-exec dbms_scheduler.drop_schedule('PRODDTA.a_update_every_3_seconds');
-exec dbms_scheduler.drop_program('PRODDTA.a_update_PROG');
+exec dbms_scheduler.drop_job('PRODDTA.P_F5541043_LOT2_UPD_JOB');
+exec dbms_scheduler.drop_schedule('PRODDTA.P_F5541043_LOT2_UPD_SCHED');
+exec dbms_scheduler.drop_program('PRODDTA.P_F5541043_LOT2_UPD_PROG');
 
 
 
@@ -144,9 +141,9 @@ EXECUTE PRODDTA.MTRL_PO_NEXT_STATUS_UPDATE_PROG;
 -- update the schedule's end date
 BEGIN
   SYS.DBMS_SCHEDULER.SET_ATTRIBUTE
-    ( name      => 'PRODDTA.MTRL_PO_NEXT_STATUS_UPDATE_EVERY_2_HOURS'
+    ( name      => 'PRODDTA.P_F5541043_LOT2_UPD_SCHED'
      ,attribute => 'END_DATE'
-     ,value     => TO_TIMESTAMP_TZ('2020/10/17 19:00:00.000000 -05:00','yyyy/mm/dd hh24:mi:ss.ff tzr'));
+     ,value     => TO_TIMESTAMP('2024-01-13 00:00:00','YYYY-MM-DD HH24:MI:SS'));
 END;
 /
 

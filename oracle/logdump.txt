@@ -9,3 +9,44 @@ RECLEN 280
 
 
 ALTER REPLICAT rpdd extseqno 3128 extrba 357565019
+
+
+
+
+## Example script
+
+#!/bin/sh
+
+SEQNO=$1
+RBA=$2
+
+
+LOGDUMP_OUTPUT_FILE=/ops/tmp/james/lgtran_${SEQNO}_${RBA}.txt
+GG_HOME=/orahome/oracle/goldengate19
+TRAIL_NAME=/orahome/oracle/goldengate19/dirdat/rd000${SEQNO}
+
+
+${GG_HOME}/logdump <<-EOF > ${LOGDUMP_OUTPUT_FILE}
+	GHDR ON
+	DETAIL DATA
+	USERTOKEN ON
+	GGSTOKEN ON
+	RECLEN 200
+	open ${TRAIL_NAME}
+	POS FIRST
+	TRANSHIST 200
+	TRANSBYTELIMIT 1000000
+	TRANSRECLIMIT 100000000
+	COUNT
+	POS ${RBA}
+	NEXT
+	exit
+EOF
+echo "Logdump output can be found in the file: $LOGDUMP_OUTPUT_FILE"
+
+
+unset SEQNO
+unset RBA
+unset LOGDUMP_OUTPUT_FILE
+unset GG_HOME
+unset TRAIL_NAME

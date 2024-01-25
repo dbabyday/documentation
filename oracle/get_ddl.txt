@@ -1,0 +1,27 @@
+# https://docs.oracle.com/database/121/ARPLS/d_metada.htm#ARPLS66885
+
+DBMS_METADATA.GET_DDL (
+object_type     IN VARCHAR2,
+name            IN VARCHAR2,
+schema          IN VARCHAR2 DEFAULT NULL,
+version         IN VARCHAR2 DEFAULT 'COMPATIBLE',
+model           IN VARCHAR2 DEFAULT 'ORACLE',
+transform       IN VARCHAR2 DEFAULT 'DDL')
+RETURN CLOB;
+
+
+
+
+
+
+
+select 'select dbms_metadata.get_ddl(''CONSTRAINT'','''||CONSTRAINT_NAME||''','''||OWNER||''') stmt from dual;' from dba_constraints where owner in ('PRODCTL','PRODDTA') order by owner, constraint_name;
+
+
+
+
+set long 2000000
+col stmt format a1000
+
+select dbms_metadata.get_ddl('CONSTRAINT','SYS_C008889','PRODDTA') stmt from dual;
+

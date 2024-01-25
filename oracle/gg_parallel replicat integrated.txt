@@ -1,0 +1,5 @@
+parallel replicat integrated
+	5x performance enhancement compared to integrated replicat
+	very helpful for RAC (has multiple targets, must use coordinated or parallel replicat)
+
+

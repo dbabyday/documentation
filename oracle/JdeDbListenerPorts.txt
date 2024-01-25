@@ -1,0 +1,25 @@
+JDE Databases Listener Ports
+
+
+
+----------------------------------------
+--// NON-PROD                       //--
+----------------------------------------
+
+15210 - JDE Application Server Use Only
+15211 - Biztalk Only
+15212 - Integrated Applications with R\W
+15213 - Read Only Use (Move to GG when ready\possible)
+15214 - Client Access Only - WMS, ARO, BanklInfo, LMC, DCR, DCM Datacap, EMS, VDL and Citrix delivered applications
+
+
+
+----------------------------------------
+--// PROD                           //--
+----------------------------------------
+
+16010 - JDE Application Server Use Only
+17041 - Biztalk Only
+18032 - Integrated Applications with R\W
+19023 - Read Only Use (Move to GG when ready
+20044 - Client Access - WMS, ARO, BanklInfo, LMC, DCR, DCM Datacap, EMS, VDL and Citrix delivered applications

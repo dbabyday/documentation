@@ -21,11 +21,11 @@ END;
 */
 
 /* new way */
-variable User_Login   = 'abc';
-variable Object_Class = 1;
-variable Start_Date   = to_date('2021-05-10 12:12:12','YYYY-MM-DD HH24:MI:SS');
-variable End_Date     = to_date('2021-05-10 11:11:11','YYYY-MM-DD HH24:MI:SS');
-variable All_Actions  = 1;
+variable User_Login   varchar2(10) = 'abc';
+variable Object_Class number       = 1;
+variable Start_Date   varchar2(19) = to_date('2021-05-10 12:12:12','YYYY-MM-DD HH24:MI:SS');
+variable End_Date     varchar2(19) = to_date('2021-05-10 11:11:11','YYYY-MM-DD HH24:MI:SS');
+variable All_Actions  number       = 1;
 
 
 

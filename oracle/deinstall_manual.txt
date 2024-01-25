@@ -1,0 +1,50 @@
+
+
+# https://support.oracle.com/epmos/faces/DocumentDisplay?_afrLoop=31631482274069&parent=EXTERNAL_SEARCH&sourceId=PROBLEM&id=1624580.1&_afrWindowMode=0&_adf.ctrl-state=i1w3y95rk_4
+
+
+#----------------------------------------------------------------
+SYMPTOMS
+#----------------------------------------------------------------
+While executing deinstall utility as original ORACLE_HOME owner
+./deinstall -home <ORACLE_HOME>
+received error "You must be the owner of this Oracle Home to deinstall/deconfigure it."
+
+
+#----------------------------------------------------------------
+SOLUTION
+#----------------------------------------------------------------
+Remove oracle home manually
+
+1) Detach oracle home using runInstaller (removing the ORACLE_HOME's entery from central inventory)
+
+$ cd $ORACLE_HOME/oui/bin$ ./runInstaller -silent -detachHome ORACLE_HOME="<Oracle_home_path>" ORACLE_HOME_NAME="<Oracle_home_name>"
+2) remove ORACLE_HOME by using unix command
+
+$ rm -rf $ORACLE_HOME
+3) Verify whether the central inventory is been updated
+
+$ cd $ORACLE_HOME/OPatch
+$ opatch lsinventory -all
+
+
+
+
+
+#----------------------------------------------------------------
+ORACLE_HOME_NAME
+#----------------------------------------------------------------
+
+# https://rajat1205sharma.wordpress.com/2015/02/17/what-is-oracle_home_name-and-how-to-find-it/
+
+The ORACLE_HOME_NAME is the name of the ORACLE_HOME which was given when the base release is installed.
+
+go to the "oraInventory/ContentsXML/" directory
+
+An example:
+	My ORACLE_HOME Directory
+		/u01/app/oracle/product/9.2.0/
+	My "oraInventory/ContentsXML" directory
+		/u01/app/oracle/oraInventory/ContentsXML/
+
+When in the ContentsXML directory, view the "inventory.xml" file

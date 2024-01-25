@@ -1,0 +1,18 @@
+
+
+
+
+
+
+sudo su – gfoster --> prod
+sudo su – gloria  --> dev
+sudo su - oracle  --> newer databases all environments
+
+ps –ef | grep smon
+connect as sysdba (if not running --> "Connected to an idle instance.")
+startup
+shutdown immediate
+
+ps –ef | grep lsnr  ( our naming convention --> listener_<db_name> )
+lsnrctl start listener_<db_name>
+lsnrctl stop listener_<db_name>

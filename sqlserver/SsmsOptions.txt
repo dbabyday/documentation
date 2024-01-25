@@ -1,0 +1,62 @@
+SSMS Configuration
+
+
+
+Registered Servers
+	- gcc-sql-pd-001 (uncheck encrypted connection)
+
+
+Tols > Code Snippets Manager
+	Add...
+	\\neen-dsk-011\it$\database\users\James\JamesScripts\SqlServer\Snippets\a
+	OK
+
+
+
+----------------------------------
+Tools > Options
+----------------------------------
+Environment
+	General
+		Color theme: Light
+	Documents
+		Reload modified files unles there are unsaved changes
+	Keyboard
+		Keyboard
+			Query.ChangeConnection : Ctrl + K, Ctrl + J (Global)
+		Query Shortcuts
+			Ctrl + 3 : sp_WhoIsActive
+			Ctrl + 4 : sp_BlitzFirst
+	Startup
+		Open empty environment
+	Tabs and Windows
+		Insert new tabs to the right of existing tabs
+		Show pinned tabs in a spearate row
+Text Editor
+	All Languages
+		General
+			Line numbers
+		Scroll Bars
+			Use map mode for vertical scroll bar > Wide
+		Tabs
+			Tab size: 8
+			Indent size: 8
+			Keep Tabs
+	Editor Tab and Status Bar
+		Tab Text
+			Include database name: False
+			Include login name: False
+			Include server name: False
+Query Results
+	SQL Server
+		Results to Grid
+			Retain CR/LF on copy or save
+		Results to Text
+			Right align numeric values
+SQL Server Object Explorer
+	Scripting
+		Table and view options
+			Script full-text indexes: True
+			Script indexes: True
+			Script Triggers: True
+

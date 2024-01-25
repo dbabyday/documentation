@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------------------------------------------------------------------
+# https://stackoverflow.com/questions/48426207/assign-output-of-an-oracle-sql-query-to-a-variable-in-shell-script
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+#!/bin/sh
+
+username=SCOTT
+password=Tiger
+## esmd is TNS alias in tnsnames.ora
+SID=esmd
+
+echo username:  $username
+echo password:  $password
+echo tns:       $SID
+
+billerrors=$(sqlplus -s $username/$password@$SID  << EOF
+set pagesize 0 feedback off verify off heading off echo off;
+show user;
+SELECT 'Date: '||to_char(sysdate,'DD-MM-YYYY HH24:MI')||' The test is passed' from dual;
+exit;
+EOF
+)
+
+echo $billerrors
+
+    oracle@esmd:~> ./test.sh
+    username: SCOTT
+    password: Tiger
+    tns: esmd
+    USER is "SCOTT" Date: 25-01-2018 08:32 The test is passed

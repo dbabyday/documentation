@@ -1,1 +1,8 @@
-dbca -silent -deleteDatabase -sourceDB adidv01 -sysDBAUserName sys -sysDBAPassword 'yze[%0u%V[fUF7HtYF_m9Y1MT!IQAQ' -forceArchiveLogDeletion
+
+dbca -silent -deleteDatabase -sourceDB amts99 -sysDBAUserName sys -sysDBAPassword 'M+nKKzSufVa1~jjKcARU[zCxaT~D1e' -forceArchiveLogDeletion
+
+dbca -silent -deleteDatabase -sourceDB wintmp02 -sysDBAUserName sys -sysDBAPassword 'Du3ZaA$6J5x[Jl8V9.Ve43UohZl^I3' -forceArchiveLogDeletion
+dbca -silent -deleteDatabase -sourceDB wcqdv01 -sysDBAUserName sys -sysDBAPassword 'N#T[tEZ7TJ7BT9sYbrc^V9[D.%huik' -forceArchiveLogDeletion
+dbca -silent -deleteDatabase -sourceDB wcqqa01 -sysDBAUserName sys -sysDBAPassword 'EbEZ^R!Sd-s8C.#PtLi%-dlSbsXpTJ' -forceArchiveLogDeletion
+
+

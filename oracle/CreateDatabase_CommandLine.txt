@@ -4,12 +4,18 @@ https://www.thegeekstuff.com/2017/01/create-database-oracle/
 --------------------------------------------------------------
 
 export ORACLE_BASE=/orahome
-export ORACLE_HOME=/orahome/12.2.0.1.201020
-export ORACLE_SID=amts01
-cp /dba/scripts/create_db/init_template.ora $ORACLE_HOME/dbs/initamts01.ora
-vi $ORACLE_HOME/dbs/initamts01.ora
-cp /dba/scripts/create_db/createdb_template1.sql $ORACLE_HOME/dbs/createdb_amts01.sql
-vi $ORACLE_HOME/dbs/createdb_amts01.sql
+export ORACLE_HOME=/orahome/19.17.0.0.221018
+export ORACLE_SID=<ORACLE_SID>
+cp /dba/scripts/create_db/init_template.ora $ORACLE_HOME/dbs/init${ORACLE_SID}.ora
+vi $ORACLE_HOME/dbs/init${ORACLE_SID}.ora
+cp /dba/scripts/create_db/createdb_template.sql $ORACLE_HOME/dbs/createdb_${ORACLE_SID}.sql
+vi $ORACLE_HOME/dbs/createdb_${ORACLE_SID}.sql
+	# update: 
+		# database name
+		# passwords
+		# file paths
+		# character set
+		# national character set
 
 mkdir /oradb/${ORACLE_SID}/redo/controlfile
 mkdir -p /orahome/admin/${ORACLE_SID}/adump
@@ -17,14 +23,14 @@ mkdir -p /orahome/admin/${ORACLE_SID}/adump
 sqlplus / as sysdba
 create spfile from pfile;
 startup nomount;
-@$ORACLE_HOME/dbs/createdb_amts01.sql
+@${ORACLE_HOME}/dbs/createdb_${ORACLE_SID}.sql
 shutdown immediate;
 startup upgrade;
 @$ORACLE_HOME/rdbms/admin/catalog.sql
 @$ORACLE_HOME/rdbms/admin/catproc.sql
 @$ORACLE_HOME/rdbms/admin/utlrp.sql
 shutdown immediate;
-startup;
+startup
 
 
 
