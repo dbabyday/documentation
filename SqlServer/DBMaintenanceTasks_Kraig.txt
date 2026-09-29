@@ -1,0 +1,25 @@
+I tracked down the maintenance tasks we used to have on every server “back in the day”.
+
+•	Security Trace – every day we’d kick off a 24 hour database trace.  The trace looked for changes in security and changes in objects.  If any changes were found, they were mailed to the DBAs for review.  This way we’d get alerted if anyone was screwing around in the production databases.  Results were saved off in a table that kept the changes for 2 years.  This was also used for auditing purposes – how changed what and when.
+•	Log Backups – For databases in full recovery mode, we’d backup the transaction log every 15 minutes (5 minutes for a few databases)
+•	Create Transaction Log Backups – Occasionally someone would create a database in full recovery mode, and the knothead would forget to set up t log backups.  It is no fun trying to clean up a server that’s run out of disk space because the t log has consumed all disk space.  This job would go through every db on the server, check to see if it was in full recovery mode, verify that a t log backup job existed for it, and if not, create a job.  This ran every 24 hours.
+•	Optimizations – This job would go through every database and look for any table or index that had fragmentation above a certain level.  If the index or table was overly fragmented, the job would run a DBCC INDEXDEFRAG or ALTER INDEX REBUILD statement. This ran once every 24 hours if we could.
+•	Update Statistics – This job updated all stats in the db.  It ran every 24 hours.  It may no longer be needed under the new versions of SQL Server.
+•	Integrity Checks – This job ran a DBCC CHECKDB.  It ran once every 24 hours if we could.
+•	Script Databases – This job created a DDL script that would recreated the database in its entirety – objects and security.  It could be used for source code control.  It ran every day and 5 days were kept on disk.
+•	Script Logins – Also ran every day.  It scripted out the logins on the server, in case they needed to be recreated.
+•	Cycle Error Log – Once a week we’d cycle the SQL Server Error Log.
+•	Backups – We’d do full or diff backups as required by the business.  Generally it was a full every day, unless it was too big.  Then we’d do full backups on the weekend, and diffs during the week.
+
+These kept our servers humming along with few issues.  If we have time next time we meet, I’ll go over some of these in detail.
+
+Thanks,
+
+Kraig Hughes
+Data Services Manager
+Plexus Corp.
+One Plexus Way
+Neenah, WI   54956
+Phone: (920) 751-3615
+Mobile: (920) 740-3227
+Kraig.Hughes@plexus.com

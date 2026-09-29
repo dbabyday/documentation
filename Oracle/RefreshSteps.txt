@@ -1,0 +1,55 @@
+01. Compare dbs --> script differences to put back
+@dbmap
+backup control file to trace --> crctl file (set, resetlogs, archivelog, datafiles)
+02. Stop app
+03. Stop listener
+04. Check for no sessions
+05. script pw hash values --> /dba/scripts/reset_pws_create_sql.sh
+06. Export
+force log switch --> ALTER SYSTEM SWITCH LOGFILE;
+07. Shutdown db
+08. unmout data volume
+09. mount new volumes with datafiles from jsprpd
+10. move/renmae any old archive logs, redo logs and control files
+11. copy and rename prod archive log files
+cp/mv files 
+	datafiles: dir --> prerefresh, refresh --> dir
+	arcs: dir --> prerefresh, refresh --> dir
+	redo: dir --> prerefresh
+	controlfiles: rename as a backup
+12. startup nomount
+13. create controlfile
+14. recover database until time '2019-03-16:04:45:00' using backup controlfile;
+15. alter database open reset logs
+16. add temp files
+17. alter users/objects/etc from differences comparisson
+		@directories
+		@permissions
+18. reset passwords --> ./reset_pws_windqa_20190322_113109.sql
+19. archivelog mode
+20. reset db id
+		SQL> shutdown immediate
+		SQL> startup mount
+		SQL> exit
+		$ nid target=/ 
+		sqlplus / as sysdba
+		SQL> startup mount
+		SQL> alter database open resetlogs;
+		SQL> select instance_name,status from v$instance;
+21. start listener --> lsnrctl start listener_windqa
+22. start app
+
+
+
+
+
+mv /archive2/windqa/controlfile/control02.ctl control02.ctl.20190322
+mv /db/windqa/controlfile/control01.ctl control01.ctl.20190322
+mv /archive2/windqa/archive2/*arc /archive2/windqa/archive2/prerefresh/
+cp /archive2/windqa/archive2/refresh/* /archive2/windqa/archive2/
+mv /archive1/windqa/redolog/*rdo /archive1/windqa/redolog/prerefresh/
+mv /archive2/windqa/redolog/*rdo /archive2/windqa/redolog/prerefresh/
+mv /db/windqa/*dbf /db/windqa/prerefresh/
+cp /db/windqa/refresh/* /db/windqa/
+
+

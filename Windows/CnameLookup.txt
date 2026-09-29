@@ -1,0 +1,9 @@
+Desktop admin
+DNS
+10.255.63.253  (get one from ipconfig /all)
+Forward Lookup Zones
+na.plexus.com
+db
+
+
+

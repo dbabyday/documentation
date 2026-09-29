@@ -1,0 +1,18 @@
+rsync
+----------------------------------------------------
+https://www.computerhope.com/unix/rsync.htm
+man rsync
+
+rsync [OPTION...] [USER@]HOST:SRC... [DEST]
+
+
+rsync -avz --progress --bwlimit=125k james.lutsey.admin@boise.db.host:/path/to/split /oradb/sfdm/data
+
+to test first (dry-run): rsync -avzn {rest is the same}
+
+--bwlimit=1m is 1 megabit; --bwlimit=125k is 125 kB/s...you can put whatever you want (bandwidth limit)
+--progress switch should confirm the bwlimit you choose
+-z flag to compress over the wire
+
+
+rsync -avz --progress --bwlimit=100k jlutsey@10.224.64.62:/nfs/namp-dsk-006/aprod1/iccn.orig/exp/ /oradb/iccn/data/exp/

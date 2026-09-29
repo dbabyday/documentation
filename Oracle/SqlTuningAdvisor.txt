@@ -1,0 +1,116 @@
+-- 1. Create Tuning Task
+DECLARE
+  l_sql_tune_task_id  VARCHAR2(100);
+BEGIN
+  l_sql_tune_task_id := DBMS_SQLTUNE.create_tuning_task (
+                          sql_id      => 'dy7k4vq86mw0w',
+                          scope       => DBMS_SQLTUNE.scope_comprehensive,
+                          time_limit  => 500,
+                          task_name   => 'JamesTuningTask_dy7k4vq86mw0w',
+                          description => 'Tuning task1 for statement dy7k4vq86mw0w');
+  DBMS_OUTPUT.put_line('l_sql_tune_task_id: ' || l_sql_tune_task_id);
+END;
+/
+
+
+-- 2. Execute Tuning task
+EXEC DBMS_SQLTUNE.execute_tuning_task(task_name => 'JamesTuningTask_dy7k4vq86mw0w');
+
+
+-- 3. Get the Tuning advisor report
+set long 65536
+set longchunksize 65536
+set linesize 200
+select dbms_sqltune.report_tuning_task('JamesTuningTask_dy7k4vq86mw0w') from dual;
+
+
+-- 4. Get list of tuning task present in database
+SELECT TASK_NAME, STATUS FROM DBA_ADVISOR_LOG WHERE TASK_NAME='JamesTuningTask_dy7k4vq86mw0w';
+
+
+-- 5. Drop a tuning task
+execute dbms_sqltune.drop_tuning_task('JamesTuningTask_dy7k4vq86mw0w');
+
+
+
+
+
+
+-- What if the sql_id is not present in the cursor , but present in AWR snap?
+-- SQL_ID =24pzs2d6a6b13
+
+
+-- 1. Find the begin snap and end snap of the sql_id
+select a.instance_number inst_id, a.snap_id,a.plan_hash_value, to_char(begin_interval_time,'dd-mon-yy hh24:mi') btime, abs(extract(minute from (end_interval_time-begin_interval_time)) + extract(hour from (end_interval_time-begin_interval_time))*60 + extract(day from (end_interval_time-begin_interval_time))*24*60) minutes,
+executions_delta executions, round(ELAPSED_TIME_delta/1000000/greatest(executions_delta,1),4) "avg duration (sec)" from dba_hist_SQLSTAT a, dba_hist_snapshot b
+where sql_id='&sql_id' and a.snap_id=b.snap_id
+and a.instance_number=b.instance_number
+order by snap_id desc, a.instance_number;
+ 
+-- begin_snap -> 235
+-- end_snap -> 240
+
+
+
+-- 2. Create the tuning task:
+DECLARE
+  l_sql_tune_task_id  VARCHAR2(100);
+BEGIN
+  l_sql_tune_task_id := DBMS_SQLTUNE.create_tuning_task (
+                          begin_snap  => 235,
+                          end_snap    => 240,
+                          sql_id      => '24pzs2d6a6b13',
+                          scope       => DBMS_SQLTUNE.scope_comprehensive,
+                          time_limit  => 60,
+                          task_name   => '24pzs2d6a6b13_AWR_tuning_task',
+                          description => 'Tuning task for statement 24pzs2d6a6b13  in AWR');
+  DBMS_OUTPUT.put_line('l_sql_tune_task_id: ' || l_sql_tune_task_id);
+END;
+/
+ 
+
+
+-- 3. Execute the tuning task:
+EXEC DBMS_SQLTUNE.execute_tuning_task(task_name => '24pzs2d6a6b13_AWR_tuning_task');
+
+
+ 
+-- 4. Get the tuning task recommendation report
+SET LONG 10000000;
+SET PAGESIZE 100000000
+SET LINESIZE 200
+SELECT DBMS_SQLTUNE.report_tuning_task('24pzs2d6a6b13_AWR_tuning_task') AS recommendations FROM dual;
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+begin
+    dbms_output.put_line(
+    dbms_spm.load_plans_from_cursor_cache
+       ( sql_id => 'dy7k4vq86mw0w' )
+    );
+end;
+/
+
+
+
+select sql_handle, 
+       substr(sql_text,1,10)||'...'||substr(sql_text,length(sql_text)-10) stext,
+       plan_name, 
+       enabled
+from   dba_sql_plan_baselines
+where  to_char(sql_text) in (select sql_text from v$sqltext where sql_id='dy7k4vq86mw0w');
+
+
+
+select plan_table_output from table(dbms_xplan.display_cursor('dy7k4vq86mw0w',null,'basic'));
+
+select SQL_HANDLE, PLAN_NAME, ACCEPTED from dba_sql_plan_baselines where sql_text like 'SELECT Region,%';

@@ -1,0 +1,143 @@
+Tracing an oracle JDE session can be challenging because it is hard to identify the session.  We'll come back to that.
+
+Assuming you can identify the session, oracle tracing can be enabled with OEM for the session, or you can do it from SQL Plus/SQL Developer.
+
+From SQL Plus,  you can issue this command to start tracing (you feed it the SID and SERIAL# from v$session):
+
+EXEC DBMS_SYSTEM.set_sql_trace_in_session(sid=>&1, serial#=>&2, sql_trace=>TRUE);
+
+Next, you find the tracefile identifier for the session this way:
+
+select  b.spid
+from    v$session a,
+        v$process b
+where   b.addr          = a.paddr
+ and sid in (&1)
+/
+
+To turn off tracing for the session:
+
+EXEC DBMS_SYSTEM.set_sql_trace_in_session(sid=>&1, serial#=>&2, sql_trace=>FALSE);
+
+Then, go to the trace directory (same location as the database alert log), and you will find the trace file having the spid number from above.
+
+You use tkprof to format the results of the trace:
+
+tkprof xxxxx.trc results.txt waits=y sys=n
+
+where xxxxx.trc is the trace file name from the trace directory.  results.txt is whatever filename you want to give the tkprof report.
+
+Then all the database actions from the trace will be summarized in results.txt
+
+
+
+
+
+
+                                                                       │START_TIME          SPID                            SID    SERIAL#
+START_TIME          SPID                            SID    SERIAL#     │------------------- ------------------------ ---------- ----------
+------------------- ------------------------ ---------- ----------     │2022-04-11 21:00:20 166477                        11402       2905
+2022-04-11 21:00:17 166365                         5538      63100     │2022-04-11 21:00:21 166507                        16274      21788
+2022-04-11 21:00:18 166405                         7961      42374     │2022-04-11 21:00:22 166554                         3153      44847
+2022-04-11 21:00:18 166419                        11772      54519     │2022-04-11 21:00:22 166570                         6279      28670
+2022-04-11 21:00:19 166436                        11092      23744     │2022-04-11 21:00:22 166610                        15232      62133
+2022-04-11 21:00:23 166632                         4176      58732     │2022-04-11 21:00:25 166672                         6907      32787
+2022-04-11 21:00:18 166393                        12088      37795     │2022-04-11 21:06:07 177641                        10399      53018
+
+
+
+
+tkprof jdepd01_ora_166365.trc INC1068168_20220411_166365.txt waits=y sys=n
+tkprof jdepd01_ora_166405.trc INC1061868_20220411_166405.txt waits=y sys=n
+tkprof jdepd01_ora_166419.trc INC1061868_20220411_166419.txt waits=y sys=n
+tkprof jdepd01_ora_166436.trc INC1061868_20220411_166436.txt waits=y sys=n
+tkprof jdepd01_ora_166632.trc INC1061868_20220411_166632.txt waits=y sys=n
+tkprof jdepd01_ora_166393.trc INC1061868_20220411_166393.txt waits=y sys=n
+
+
+tkprof jdepd03_ora_166477.trc INC1061868_20220411_166477.txt waits=y sys=n
+tkprof jdepd03_ora_166507.trc INC1061868_20220411_166507.txt waits=y sys=n
+tkprof jdepd03_ora_166554.trc INC1061868_20220411_166554.txt waits=y sys=n
+tkprof jdepd03_ora_166570.trc INC1061868_20220411_166570.txt waits=y sys=n
+tkprof jdepd03_ora_166610.trc INC1061868_20220411_166610.txt waits=y sys=n
+tkprof jdepd03_ora_166672.trc INC1061868_20220411_166672.txt waits=y sys=n
+tkprof jdepd03_ora_177641.trc INC1061868_20220411_177641.txt waits=y sys=n
+
+
+
+
+tkprof xxxxx.trc INC1061868_20220411_xxxxx.txt waits=y sys=n
+
+
+
+
+
+
+
+13486,26066
+
+EXEC DBMS_SYSTEM.set_sql_trace_in_session(sid=>&1, serial#=>&2, sql_trace=>TRUE);
+select b.spid from v$session a, v$process b where b.addr=a.paddr and sid in (&1);
+EXEC DBMS_SYSTEM.set_sql_trace_in_session(sid=>&1, serial#=>&2, sql_trace=>FALSE);
+
+
+
+SPID
+------------------------
+28658
+
+
+tkprof xxxxxxxxx.trc resutls_for_james.txt waits=y sys=n
+
+
+
+
+
+
+
+
+-- https://docs.oracle.com/database/121/TGSQL/tgsql_trace.htm#TGSQL800
+-- 
+
+
+set lines 1000 pages 500
+col username format a15
+col service_name format a15
+col module format a20
+select p.spid, s.sid, s.serial#, s.username, s.service_name, module
+from   v$session s
+join   v$process p on p.addr=s.paddr
+where  s.username like '%GSF%';
+
+--where  s.service_name='SYS$USERS' and s.module='SQL*Plus';
+--where  s.module='ISServerExec.exe';
+--where  s.username like '%GSF%';
+--where s.username='JLUTSEY';
+
+
+
+
+BEGIN 
+	DBMS_MONITOR.SERV_MOD_ACT_TRACE_ENABLE(
+		service_name  => 'jdepy01'          ,
+		module_name   => 'ISServerExec.exe' ,
+		waits         =>  true              ,
+		binds         =>  true              );
+END;
+
+
+
+BEGIN 
+	DBMS_MONITOR.SERV_MOD_ACT_TRACE_DISABLE(
+		service_name  => 'jdepy01'  ,
+		module_name   => 'ISServerExec.exe'  );
+END;
+
+
+
+
+
+trcsess output=jdepy01_DtsDebugHostexe_01.trc service='jdepy01' module='DtsDebugHost.exe'
+tkprof jdepy01_DtsDebugHostexe_01.trc jdepy01_DtsDebugHostexe_01.txt record=jdepy01_DtsDebugHostexe_01.sql
+
+

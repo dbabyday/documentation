@@ -1,0 +1,7 @@
+Create SQL Profile Manually
+------------------------------------------------------------------
+
+https://houseofbrick.com/blog/manual-creation-of-a-sql-profile/
+
+
+

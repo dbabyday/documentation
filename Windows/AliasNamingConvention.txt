@@ -1,0 +1,15 @@
+Alias Naming Convention
+-------------------------------------------
+
+application-location-environment-mssql.db.na.plexus.com
+
+examples:
+appl-db-002     wms-appl-prod-mssql.db.na.plexus.com
+neen-db-009     wms-neen-prod-mssql.db.na.plexus.com
+buff-db-001     wms-buff-prod-mssql.db.na.plexus.com
+namp-db-003     wms-namp-prod-mssql.db.na.plexus.com
+juar-db-002     wms-juar-prod-mssql.db.na.plexus.com
+kels-db-002     wms-kels-prod-mssql.db.na.plexus.com
+orad-db-001     wms-orad-prod-mssql.db.na.plexus.com
+frem-db-001     wms-frem-prod-mssql.db.na.plexus.com
+guad-db-001     wms-guad-prod-mssql.db.na.plexus.com

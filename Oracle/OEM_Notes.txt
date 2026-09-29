@@ -1,0 +1,40 @@
+    OEM Client Install
+
+Verify /opt/oem is owned by srvcoemagent.na
+	ssh onto server
+	sudo su - srvcoemagent.na
+    cd /opt
+    ls -l
+        drwxr-xr-x   2 srvcoemagent.na dba            2 Oct 18 14:23 oem
+
+cd /opt/oem
+make sure directory is empty
+
+
+In OEM Application
+setup > add target > add targets manually > install agent on host
+
+Add > enter host name, Platform: Orale Solaris on SPARC (64-bit)
+
+Next
+
+base dir: /opt/oem
+instance dir: <default>
+Named Cred: PROD
+Root Cred: leave blank (Doug to run script later)
+clear Privileged Delegation Setting	
+Port: <default>
+
+Next
+
+Deploy Agent
+
+
+Add DBs and Listeners
+
+Setup > add target > add targets manually > Add Using Guided Process
+Oracle Database, Listener and Automatic Storage Management
+Specify Host or Cluster: select zone
+
+
+

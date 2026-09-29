@@ -1,0 +1,18 @@
+Patching mirrored database instnaces
+-----------------------------------------
+
+1.  Remove witness
+2.  Safety level full
+3.  Wait for synchronis mode
+4.  Pause mirroring session
+5.  Backup
+6.  Patch mirror
+7.  Resume mirroring session
+8.  Manual failover
+9.  DBCC checkdb
+10. Pause mirroring session
+11. Patch
+12. Resume mirroring session
+13. Change safety level (if done in step 2)
+14. Add witness
+

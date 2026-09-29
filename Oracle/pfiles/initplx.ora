@@ -1,0 +1,73 @@
+##############################################################################
+# initplx.ora                                                                #
+#                                                                            #
+##############################################################################
+##############################################
+# NetApp Specific Parameters                 #
+#                                            #
+disk_asynch_io = false                       #
+db_writer_processes = 4                      #
+db_block_lru_latches = 12                    #
+cursor_space_for_time = true                 #
+replication_dependency_tracking = false      #
+#                                            #
+# end NetApp Specific Parameters             #
+##############################################
+
+audit_trail 			= DB
+
+background_dump_dest 		= /oracle/admin/plx/bdump
+
+compatible 			= "8.1.7"
+
+control_files = ("/archive1/plx/controlfile/control01.ctl", "/archive2/plx/controlfile/control02.ctl", "/db/plx/controlfile/control03.ctl")
+
+core_dump_dest = /oracle/admin/plx/cdump
+#cursor_space_for_time 		= true   ### set in NetApp Specific Parameters above
+
+db_block_buffers 		= 100
+#db_block_lru_latches 		= 12     ### set in NetApp Specific Parameters above
+db_block_size 			= 8192
+db_name 			= "plx"
+#db_writer_processes 		= 4      ### set in NetApp Specific Parameters above
+#disk_asynch_io 		= false  ### set in NetApp Specific Parameters above
+
+global_names 			= false
+
+instance_name 			= plx
+
+java_pool_size 			= 52428800
+job_queue_processes 		= 4      ### required by Precise Savant
+job_queue_interval 		= 60     ### required by Precise Savant
+
+large_pool_size 		= 614400
+log_archive_start 		= true
+log_archive_dest_1 		= "location=/archive1/plx/archive1/"
+log_archive_dest_2 		= "location=/archive2/plx/archive2/"
+log_archive_format 		= plx_%t_%s.arc
+log_buffer 			= 32768
+log_checkpoints_to_alert 	= true
+log_checkpoint_interval 	= 0
+log_checkpoint_timeout 		= 3600
+
+max_dump_file_size 		= 10000  # limit trace file size to 5M each
+max_enabled_roles 		= 30
+
+open_cursors 			= 500
+os_authent_prefix 		= ""
+
+processes 			= 500
+
+remote_login_passwordfile 	= exclusive
+#replication_dependency_tracking = false  ### set in NetApp Specific Parameters above
+
+service_names 			= plx
+session_cached_cursors 		= 100
+shared_pool_size 		= 104857600
+sort_area_size 			= 1024000
+sort_area_retained_size 	= 1024000
+
+timed_statistics 		= true    # if you want timed statistics
+
+user_dump_dest 			= /oracle/admin/plx/udump
+utl_file_dir 			= /usr/oracle/utilout

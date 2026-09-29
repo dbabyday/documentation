@@ -1,0 +1,27 @@
+Exceed Concurrent Connections
+-------------------------------------------------
+
+
+about 200-250 idle parallel query sessions that had been spawned by the PSP0 background process 
+	(PSP0 is the "Process Spawner Process", which spawns Oracle background processes after initial instance startup).  
+
+Once I cleared some of the idle processes, I could log in and check the database
+
+created organically by various internal oracle jobs 
+	(nightly stats and nightly maintenance activities like the Sql Tuning Advisor)
+
+The PROCESSES setting for TR is 700, so the additional 200 PQ background processes pushed us over the limit.
+
+I just changed the PARALLEL_MAX_SERVERS setting to 100 for TR, which seems to provide the throttle necessary to keep the database connections stable.
+
+------------------------------------------------------------------------------------------
+
+For the DBAs:
+
+1.  check the number of Oracle background processes spawned by PSP0:
+ps -ef | grep psp0
+
+2.  Taking the PID from step 1, count the number of PQ processes spawned by PSP0:
+ps -ef | grep PID | grep p0 | wc -l
+
+------------------------------------------------------------------------------------------

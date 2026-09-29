@@ -1,0 +1,21 @@
+OEM App
+--------------------------------------
+PROD: co-ap-167
+DEV: dcc-oem-dv-001
+
+sudo to oracle
+
+cd /opt/oem/middleware_135/bin
+
+./emctl status oms     #check the status
+./emctl stop oms –all  #stop the app
+./emctl start oms      #start the app
+
+
+
+OEM Agent
+--------------------------------------
+# Log on to the server
+sudo su - srvcoemagent.na
+cd /opt/oem/agent_13.2.0.0.0/bin  #will change as agents are upgraded, obviously
+. ./emctl (stop/start/status) agent

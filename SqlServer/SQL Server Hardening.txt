@@ -1,0 +1,33 @@
+SQL Server Hardening
+
+service account(s) not local admins
+login triggers to limit logins (time of day, excessive logons...)
+
+
+
+disale xp_cmdshell
+convert COM components to SQLCLR - disable COM components
+disable Database Mail adn SQL Mail (Prefer Database Mail if one is needed)
+
+Windows Authentication Mode
+Disable sa
+Change sa account name
+
+•	Configure named instances of SQL Server to use specific port assignments for TCP/IP rather than dynamic ports
+
+'cross db ownership chaining' off (0)
+
+listen on the required protocols and no others
+
+using Kerberos authentication for Windows Authentication clients
+
+Change the default SQL Server ports
+
+Hide the SQL Server instance and/or turn off the SQL Server Browser Service.
+
+Restrict the access to the SQL Server configuration and database file.
+
+
+
+
+

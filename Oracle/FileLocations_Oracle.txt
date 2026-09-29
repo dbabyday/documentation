@@ -1,0 +1,50 @@
+set oracle db environment variables : . $ORACLE_HOME/bin/oraenv
+
+listener log : /oracle/diag/tnslsnr/<host>/<listener>/trace/
+               /orahome/diag/tnslsnr/<host>/<listener>/trace/
+	- lsnrctl status <listener_name> --> Listener Log File
+		- .xml in alert directory
+		- .log in trace directory
+
+oratab       : /var/opt/oracle/oratab
+
+spfile       : $ORACLE_HOME/dbs/spfile<sid>.ora
+
+alert log : /orahome/diag/rdbms/<sid>/<sid>/trace/alert_<sid>.log
+
+            set linesize 200
+            col name format a30
+            col value format a70
+            select name,value from v$diag_info order by name;
+            
+
+AWR Report : $ORACLE_HOME/rdbms/admin/awrrpt.sql
+
+sqlplus : $ORACLE_HOME/bin/sqlplus
+
+Oracle Trace File Analyzer (TFA) : $ORACLE_HOME/suptools/tfa/release/tfa_home/bin/tfactl
+
+ampd sql scripts: /ops/scripts/uc4/oracle/
+ampd tnsnames.ora file: /opt/oracle/product/12.2.0/client_1/network/admin
+
+GoldenGate Monitoring: /ops/scripts/stats/bin/gg_monitoring_sid.sh
+
+Clone pfiles: /oracle/admin/<database>/pfile
+
+
+
+-------------------------
+--// EBS             //--
+-------------------------
+gcc-ora-pd-009
+gcc-ora-pd-009.na.plexus.com
+ebspd01-db
+ebspd01-db.na.plexus.com
+
+oratab      : /ebshome/gcc-ora-pd-009/var/oratab
+listener.ora: /u01/app/oracle/12.1.0.2/network/admin/ebspd01_gcc-ora-pd-009/listener.ora
+listener log: /u01/app/oracle/12.1.0.2/admin/ebspd01_gcc-ora-pd-009/diag/tnslsnr/gcc-ora-pd-009/ebspd01/trace/ebspd01.log
+ORACLE_HOME : /u01/app/oracle/12.1.0.2
+spfile      : /u01/app/oracle/12.1.0.2/dbs/spfileebspd01.ora
+pfile       : /u01/app/oracle/12.1.0.2/dbs/initebspd01.ora
+alert log   : /u01/app/oracle/12.1.0.2/admin/ebspd01_ebspd01-db/diag/rdbms/ebspd01/ebspd01/trace/alert_ebspd01.log

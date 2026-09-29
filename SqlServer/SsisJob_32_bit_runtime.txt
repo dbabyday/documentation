@@ -1,0 +1,6 @@
+SSIS Job - Change to 32-bit runtime
+
+SQL Server Agent
+Right Click on Job > Properties > Steps
+Select the job step > Edit
+General > Configuration tab > Advanced tab > 32-bit runtime

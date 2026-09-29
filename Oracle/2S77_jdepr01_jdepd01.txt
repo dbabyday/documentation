@@ -1,0 +1,7 @@
+Database: jdepr01
+Username: 2S77
+Password: items+698307
+
+Database: jdepd01
+Username: 2S77
+Password: jury:9452976

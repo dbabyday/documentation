@@ -1,0 +1,22 @@
+ssh to AMPD in 2 sessions (2nd session only if you want to monitor while it runs)
+
+sudo to appworx in both sessions
+
+Session1: cd /ops/scripts/uc4/92/exec
+
+$ ./runSOXjde.sh jders01 $(date +%Y%m%d) create > out/BACKUPRESTOREVER_JDEPD03.$(date +%Y%m%d).log.txt 2>&1
+
+
+If you want to monitor while it runs, tail the output file in the 2nd session.
+Session2: cd /ops/scripts/uc4/92/exec/out
+
+$ less +F BACKUPRESTOREVER_JDEPD03.$(date +%Y%m%d).log.txt
+
+
+get log.txt files from the /out directory to your laptop
+
+open in Adobe Acrobat
+
+sign the doc, which prompts you to save as a pdf
+
+Upload to the Wdesk ticket

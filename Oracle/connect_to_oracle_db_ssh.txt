@@ -1,0 +1,120 @@
+
+JDEDV01
+--------------------------------------
+ssh dcc-tmux-001
+ssh dcc-ora-npadm-011
+
+sudo su - oracle
+
+. oraenv
+cdbnp032
+
+s
+
+show pdbs
+
+alter session set container=jdedv01;
+show con_name
+
+
+
+
+
+
+JDEPY01
+--------------------------------------
+ssh dcc-tmux-001
+ssh dcc-ora-npadm-011
+
+sudo su - oracle
+
+. oraenv
+cdbnp012
+
+s
+
+show pdbs
+
+alter session set container=jdepy01;
+show con_name
+
+
+
+
+
+
+JDEPD03
+--------------------------------------
+ssh dcc-tmux-001
+ssh gcc-ora-pdadm-010
+
+sudo su - oracle
+
+. oraenv
+cdbjd021
+
+s
+
+show pdbs
+
+alter session set container=jdepd03;
+show con_name
+
+
+
+
+
+
+JDEPD01
+--------------------------------------
+ssh dcc-tmux-001
+ssh gcc-ora-pdadm-010
+
+sudo su - oracle
+
+. oraenv
+cdbjd011
+
+s
+
+show pdbs
+
+alter session set container=jdepd01;
+show con_name
+
+
+
+
+
+
+AGLPD02
+--------------------------------------
+ssh dcc-tmux-001
+ssh gcc-ora-pdam-020
+
+sudo su - oracle
+
+. oraenv
+cdbpd101
+
+s
+
+show pdbs
+
+alter session set container=aglpd02;
+show con_name
+
+
+
+
+
+
+The production Agile database is an ITAR database hosted in the cdbpd10 container database. Its TNS alias configuration is:
+AGLPD02 =
+(DESCRIPTION =
+(ADDRESS = (PROTOCOL = TCP)(HOST = aglprd01-db.na.plexus.com)(PORT = 15210))
+(CONNECT_DATA =
+(SERVER = DEDICATED)
+(SERVICE_NAME = aglpd02)
+)
+)

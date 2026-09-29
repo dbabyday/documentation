@@ -1,0 +1,4 @@
+# rename files from winpd02 to winqa02
+for file in winpd02_1_*_1049051411.arc; do
+	mv "${file}" "${file/winpd02/winqa02}"
+done

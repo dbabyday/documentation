@@ -1,0 +1,73 @@
+linux timout
+	$TMOUT
+	echo $TMOUT
+	export TMOUT=0 
+		no timout time
+
+ASM
+	alter commands in oracle
+	asm command line
+	disks are shared
+	each node 
+
+grid user
+	separate logon / sudo
+
+instances
+	srvctl commands to control everything
+	oracle user
+
+set aliases
+	o for sudo to oracle
+	g for sudo to grid
+
+
+crs : Cluster Ready Services
+grid user
+	olsnodes -c : list clusters
+	crsctl check crs : quick check for cluster services
+	crsctl check cluster -all : shows info for each node
+	crsctl stat res -t : details for resources...looking for "STABLE"
+		one scan listener
+			handles all traffic for everything
+			runs on each instance
+	crsctl get cluster configuration : get cluster class and type, ...
+
+Voting Disks
+	crsctl query css votedisk
+
+asmcmd (lots of linux commands)
+	as grid user
+	ls
+		DATANP/ : Data files
+		RECONP/ : Recovery (redo, archive logs)
+		SPARNP/ : sparse clone (created with all initial disks in disk group mapped to database...new changes saved here)
+	cd
+		in CDBNP01/
+			log ids are the pluggable databases
+
+
+
+oracle user
+	sid : alias for script to list all databases
+		choose the one you want to connect to
+
+srvctl
+	as oracle user
+	srvclt status database -d cdbnp06
+	srvclt stop database -d cdbnp06
+	srvclt stop database -d cdbnp06 -o immediate
+	srvclt start database -d cdbnp06
+	srvctl stop instance -i cdbnp052 -d cdbnp05	(stops just the specified node/instance)
+	srvctl start instance -i cdbnp052 -d cdbnp05	(starts just the specified node/instance)
+
+	srvctl status listener
+
+
+/etc/oratab
+
+scripts directory
+	rac_status.sh (quick view status on environment)
+
+
+

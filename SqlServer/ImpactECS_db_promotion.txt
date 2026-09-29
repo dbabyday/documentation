@@ -1,0 +1,209 @@
+Source:
+Server: gcc-sql-pd-041
+DB: Pricing
+
+Destination:
+Server: dcc-sql-qa-021
+DB: Pricing
+
+Added Task:
+
+ALTER AUTHORIZATION ON DATABASE::Pricing TO [NA\srvcImpactECS.na];
+
+
+
+
+
+
+
+-- gcc-sql-pd-041
+BACKUP DATABASE Pricing
+TO     DISK = N'F:\Backup\Pricing_PD_20230912.bak'
+WITH   COPY_ONLY,
+       CHECKSUM,
+       STATS = 5;
+
+
+# PowerShell
+mv \\gcc-sql-pd-041\F$\Backup\Pricing_PD_20230912.bak \\dcc-sql-qa-021F$\Backup\
+
+
+-- dcc-sql-qa-021
+
+-- SECURITY_ScriptPermissions_Database.sql
+
+BACKUP DATABASE Pricing
+TO     DISK = N'F:\Backup\Pricing_QA_20220707.bak'
+WITH   COPY_ONLY,
+       CHECKSUM,
+       STATS = 5;
+
+alter database pricing set single_user with rollback immediate;
+drop database pricing;
+RESTORE DATABASE Pricing  
+FROM    DISK = N'F:\Backup\Pricing_PD_20230912.bak'
+WITH    RECOVERY,
+        MOVE 'Pricing_Data' TO 'F:\Databases\Pricing.mdf',   
+        MOVE 'Pricing_Log'  TO 'G:\Logs\Pricing_log.ldf';  
+ 
+ALTER AUTHORIZATION ON DATABASE::Pricing TO [NA\srvcImpactECS.na];
+
+-- remove db privileges
+-- SECURITY_RemoveAllDatabasePermissions.sql
+
+-- replace db privileges
+
+
+
+
+Before Restore
+    Script DB Permissions
+    Get logical and physical db file names
+    Check file sizes and drive space
+
+Restore
+    Change destination
+    Change database name
+    Change physical file names
+
+After Restore
+    Set recovery model
+    Change database owner
+    Change logical file names
+    Remove DB permissions from previous environment
+    Grant DB permissions for this environment
+ALTER AUTHORIZATION ON DATABASE::Pricing TO [NA\srvcImpactECS.na];
+
+
+
+
+
+Database      File   physical_name type_desc     Size_MB       Used_MB
+
+Pricing       Pricing_Data  F:\Databases\Pricing.mdf    ROWS   86,625.9      82,715.9
+Pricing       Pricing_Log   G:\Logs\Pricing_log.ldf     LOG    10,344.0      164.7
+
+Pricing       Pricing_Data  F:\Databases\Pricing.mdf    ROWS   32,043.5      25,575.3
+Pricing       Pricing_Log   G:\Logs\Pricing_log.ldf     LOG    8.0    0.8
+
+
+
+
+
+/*
+    Server:       gcc-sql-pd-041
+    Database:     Pricing
+    Date:         2023-09-12 13:03:40
+    DB Principal: All
+*/
+
+
+
+-----------------------------------------------
+--// LOGINS                                //--
+-----------------------------------------------
+
+USE master;
+
+-- create windows logins
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\srvcImpactECS.na') CREATE LOGIN [NA\srvcImpactECS.na] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'EXT\Gaurav.Batra.admin') CREATE LOGIN [EXT\Gaurav.Batra.admin] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'EXT\Peter.Howard.admin') CREATE LOGIN [EXT\Peter.Howard.admin] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\craig.suda') CREATE LOGIN [NA\craig.suda] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\derrick.basler') CREATE LOGIN [NA\derrick.basler] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Guadalajara-MX Dev Team Users in NA') CREATE LOGIN [NA\Guadalajara-MX Dev Team Users in NA] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\jean.pierre') CREATE LOGIN [NA\jean.pierre] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\jenny.achin') CREATE LOGIN [NA\jenny.achin] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\jeremy.headington') CREATE LOGIN [NA\jeremy.headington] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\jim.hatlak') CREATE LOGIN [NA\jim.hatlak] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Neenah-US Business Intelligence Dev Team Edit Users in NA') CREATE LOGIN [NA\Neenah-US Business Intelligence Dev Team Edit Users in NA] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA') CREATE LOGIN [NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Neenah-US Systems Integration Development Users in Neenah-US') CREATE LOGIN [NA\Neenah-US Systems Integration Development Users in Neenah-US] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\srvcLbrWkbkUpldPD.na') CREATE LOGIN [NA\srvcLbrWkbkUpldPD.na] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Srvcscomsql.plx') CREATE LOGIN [NA\Srvcscomsql.plx] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NT SERVICE\HealthService') CREATE LOGIN [NT SERVICE\HealthService] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+
+-- create sql logins
+
+-- disable logins
+
+-- no access logins
+
+
+
+-----------------------------------------------
+--// DATABASE USERS AND PERMISSIONS        //--
+-----------------------------------------------
+
+USE [Pricing];
+
+-- create users
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'EXT\Gaurav.Batra.admin') CREATE USER [EXT\Gaurav.Batra.admin] FOR LOGIN [EXT\Gaurav.Batra.admin] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'EXT\Peter.Howard.admin') CREATE USER [EXT\Peter.Howard.admin] FOR LOGIN [EXT\Peter.Howard.admin] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\craig.suda') CREATE USER [NA\craig.suda] FOR LOGIN [NA\craig.suda] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\derrick.basler') CREATE USER [NA\derrick.basler] FOR LOGIN [NA\derrick.basler] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Guadalajara-MX Dev Team Users in NA') CREATE USER [NA\Guadalajara-MX Dev Team Users in NA] FOR LOGIN [NA\Guadalajara-MX Dev Team Users in NA];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\jean.pierre') CREATE USER [NA\jean.pierre] FOR LOGIN [NA\jean.pierre] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\jenny.achin') CREATE USER [NA\jenny.achin] FOR LOGIN [NA\jenny.achin] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\jeremy.headington') CREATE USER [NA\jeremy.headington] FOR LOGIN [NA\jeremy.headington] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\jim.hatlak') CREATE USER [NA\jim.hatlak] FOR LOGIN [NA\jim.hatlak] WITH DEFAULT_SCHEMA = [NA\jim.hatlak];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Neenah-US Business Intelligence Dev Team Edit Users in NA') CREATE USER [NA\Neenah-US Business Intelligence Dev Team Edit Users in NA] FOR LOGIN [NA\Neenah-US Business Intelligence Dev Team Edit Users in NA];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA') CREATE USER [NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA] FOR LOGIN [NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Neenah-US Systems Integration Development Users in Neenah-US') CREATE USER [NA\Neenah-US Systems Integration Development Users in Neenah-US] FOR LOGIN [NA\Neenah-US Systems Integration Development Users in Neenah-US];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\srvcLbrWkbkUpldPD.na') CREATE USER [NA\srvcLbrWkbkUpldPD.na] FOR LOGIN [NA\srvcLbrWkbkUpldPD.na] WITH DEFAULT_SCHEMA = [NA\srvcLbrWkbkUpldPD.na];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Srvcscomsql.plx') CREATE USER [NA\Srvcscomsql.plx] FOR LOGIN [NA\Srvcscomsql.plx] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NT SERVICE\HealthService') CREATE USER [NT SERVICE\HealthService] FOR LOGIN [NT SERVICE\HealthService] WITH DEFAULT_SCHEMA = [dbo];
+
+-- create roles
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'LbrWkbkUpld') CREATE ROLE [LbrWkbkUpld];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'SCOM_HealthService') CREATE ROLE [SCOM_HealthService];
+
+-- add role members
+ALTER ROLE [db_datareader] ADD MEMBER [NA\craig.suda];
+ALTER ROLE [LbrWkbkUpld] ADD MEMBER [NA\srvcLbrWkbkUpldPD.na];
+ALTER ROLE [SCOM_HealthService] ADD MEMBER [NT SERVICE\HealthService];
+
+-- apply permissions
+GRANT CONNECT ON DATABASE::[Pricing] TO [EXT\Gaurav.Batra.admin] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [EXT\Peter.Howard.admin] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [LbrWkbkUpld] AS [dbo];
+GRANT DELETE ON SCHEMA::[staging] TO [LbrWkbkUpld] AS [dbo];
+GRANT INSERT ON SCHEMA::[staging] TO [LbrWkbkUpld] AS [dbo];
+GRANT SELECT ON SCHEMA::[staging] TO [LbrWkbkUpld] AS [dbo];
+GRANT UPDATE ON SCHEMA::[staging] TO [LbrWkbkUpld] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\craig.suda] AS [dbo];
+GRANT EXECUTE ON SCHEMA::[staging] TO [NA\craig.suda] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\derrick.basler] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\derrick.basler] AS [dbo];
+GRANT VIEW DEFINITION ON DATABASE::[Pricing] TO [NA\derrick.basler] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\Guadalajara-MX Dev Team Users in NA] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\jean.pierre] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\jean.pierre] AS [dbo];
+GRANT VIEW DEFINITION ON DATABASE::[Pricing] TO [NA\jean.pierre] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\jenny.achin] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\jenny.achin] AS [dbo];
+GRANT VIEW DEFINITION ON DATABASE::[Pricing] TO [NA\jenny.achin] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\jeremy.headington] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\jeremy.headington] AS [dbo];
+GRANT VIEW DEFINITION ON DATABASE::[Pricing] TO [NA\jeremy.headington] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\jim.hatlak] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\jim.hatlak] AS [dbo];
+GRANT VIEW DEFINITION ON DATABASE::[Pricing] TO [NA\jim.hatlak] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\Neenah-US Business Intelligence Dev Team Edit Users in NA] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\Neenah-US Business Intelligence Dev Team Edit Users in NA] AS [dbo];
+GRANT SELECT ON SCHEMA::[staging] TO [NA\Neenah-US Business Intelligence Dev Team Edit Users in NA] AS [dbo];
+GRANT VIEW DEFINITION ON DATABASE::[Pricing] TO [NA\Neenah-US Business Intelligence Dev Team Edit Users in NA] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA] AS [dbo];
+GRANT SELECT ON SCHEMA::[staging] TO [NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA] AS [dbo];
+GRANT VIEW DEFINITION ON DATABASE::[Pricing] TO [NA\Neenah-US Business Intelligence Dev Team Non-ITAR Users in NA] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\Neenah-US Systems Integration Development Users in Neenah-US] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\Neenah-US Systems Integration Development Users in Neenah-US] AS [dbo];
+GRANT SELECT ON SCHEMA::[staging] TO [NA\Neenah-US Systems Integration Development Users in Neenah-US] AS [dbo];
+GRANT VIEW DEFINITION ON DATABASE::[Pricing] TO [NA\Neenah-US Systems Integration Development Users in Neenah-US] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\srvcLbrWkbkUpldPD.na] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NA\Srvcscomsql.plx] AS [dbo];
+GRANT SELECT ON DATABASE::[Pricing] TO [NA\Srvcscomsql.plx] AS [dbo];
+GRANT CONNECT ON DATABASE::[Pricing] TO [NT SERVICE\HealthService] AS [dbo];
+GRANT VIEW ANY COLUMN ENCRYPTION KEY DEFINITION ON DATABASE::[Pricing] TO [public] AS [dbo];
+GRANT VIEW ANY COLUMN MASTER KEY DEFINITION ON DATABASE::[Pricing] TO [public] AS [dbo];

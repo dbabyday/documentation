@@ -1,0 +1,1 @@
+YESTERDAY=$(gdate -d "-1 days" +%F)

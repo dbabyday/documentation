@@ -1,0 +1,7 @@
+Notes for Oracle 7
+
+there is no sysdba ( sqlplus "/ as sysdba" )
+	- sudo su - <db owner>
+	- svrmgrl
+	- connect internal
+

@@ -1,0 +1,153 @@
+
+--------------------------------------
+--// Servers and Databases //--
+--------------------------------------
+
+gcc-ora-pd-003: jdepd01
+gcc-ora-pd-004: ebsappd1
+gcc-ora-pd-005: jdepd03
+gcc-ora-pd-009: ebspd01
+co-db-054: aglprd01
+gcc-ora-pd-006: ampd01
+
+gcc-ora-pd-006: winpd02
+gcc-ora-pd-007: bir
+
+
+
+
+
+
+
+--------------------------------------
+--// DR Recovery - Steps          //--
+--------------------------------------
+
+VPN into DR bubble
+    - www44.plexus.com
+** or **
+Use DR jump host if you have the access
+	ssh jlutsey@dr1-ap-005
+	ssh james.lutsey.admin@gcc-ora-pd-005
+	# use tmux if you want to use multiple panes from one session
+	cp /dba/scripts/dr/.tmux.conf .
+	tmux new-session -s dr
+
+
+ssh to the Solaris host with the database that you need to recover
+
+# ALWAYS verify you are on a DR server for tests!
+uptime
+
+
+
+# sudo to the database owner account
+sudo su - gfoster/oracle
+
+
+
+# For EBS hosts set oraenv (gcc-ora-pd-009 and gcc-ora-pd-004)
+. /u01/app/oracle/12.1.0.2/ebspd01_gcc-ora-pd-009.env
+. /u01/app/oracle/12.1.0.2/ebsappd1_ebsappd1-db.env
+
+
+
+# For all hosts:
+cd /dba/scripts/dr
+mkdir tmp
+cd tmp
+/dba/scripts/dr/db_recover.sh | tee -a /dba/scripts/dr/db_recover_$(hostname).log
+
+
+
+
+(sys)aglqa01 SQL> (sys)aglqa01 SQL> (sys)aglqa01 SQL> (sys)aglqa01 SQL>
+    GROUP# STATUS                       TYPE                         MEMBER                                                                 IS_RECOVERY_DEST_FILE     CON_ID
+---------- ---------------------------- ---------------------------- ---------------------------------------------------------------------- --------------------- ----------
+         1                              ONLINE                       /redolog1/aglqa01/redo01a.rdo                                          NO                             0
+         2                              ONLINE                       /redolog1/aglqa01/redo02a.rdo                                          NO                             0
+         3                              ONLINE                       /redolog1/aglqa01/redo03a.rdo                                          NO                             0
+         4                              ONLINE                       /redolog1/aglqa01/redo04a.rdo                                          NO                             0
+         5                              ONLINE                       /redolog1/aglqa01/redo05a.rdo                                          NO                             0
+         1                              ONLINE                       /redolog2/aglqa01/redo01b.rdo                                          NO                             0
+         2                              ONLINE                       /redolog2/aglqa01/redo02b.rdo                                          NO                             0
+         3                              ONLINE                       /redolog2/aglqa01/redo03b.rdo                                          NO                             0
+         4                              ONLINE                       /redolog2/aglqa01/redo04b.rdo                                          NO                             0
+         5                              ONLINE                       /redolog2/aglqa01/redo05b.rdo                                          NO                             0
+
+
+alter database rename file
+	  '/redolog1/aglqa01/redo01a.rdo'
+	, '/redolog1/aglqa01/redo02a.rdo'
+	, '/redolog1/aglqa01/redo03a.rdo'
+	, '/redolog1/aglqa01/redo04a.rdo'
+	, '/redolog1/aglqa01/redo05a.rdo'
+	, '/redolog2/aglqa01/redo01b.rdo'
+	, '/redolog2/aglqa01/redo02b.rdo'
+	, '/redolog2/aglqa01/redo03b.rdo'
+	, '/redolog2/aglqa01/redo04b.rdo'
+	, '/redolog2/aglqa01/redo05b.rdo'
+to
+	  '/db/aglqa01/redo/redo01a.rdo'
+	, '/db/aglqa01/redo/redo02a.rdo'
+	, '/db/aglqa01/redo/redo03a.rdo'
+	, '/db/aglqa01/redo/redo04a.rdo'
+	, '/db/aglqa01/redo/redo05a.rdo'
+	, '/db/aglqa01/redo/redo01b.rdo'
+	, '/db/aglqa01/redo/redo02b.rdo'
+	, '/db/aglqa01/redo/redo03b.rdo'
+	, '/db/aglqa01/redo/redo04b.rdo'
+	, '/db/aglqa01/redo/redo05b.rdo';
+
+ '/oradb/uc4np01/redo/tmp/winqa01/redo01a.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo01b.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo02a.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo02b.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo03a.rdo'
+                         , '/oradb/uc4np01/redo/tmp/winqa01/redo03b.rdo'
+                       to  '/oradb/winqa01/redo/redo01a.rdo'
+                         , '/oradb/winqa01/redo/redo01b.rdo'
+                         , '/oradb/winqa01/redo/redo02a.rdo'
+                         , '/oradb/winqa01/redo/redo02b.rdo'
+                         , '/oradb/winqa01/redo/redo03a.rdo'
+                         , '/oradb/winqa01/redo/redo03b.rdo';
+
+
+If db_recover.sh script does not work, the manual steps are:
+	# get the database names that need to be recovered, repeat the process for each one
+	cat /var/opt/oracle/ora_dr_tab
+
+	# set oraenv for the database you want to recover
+	sid
+
+	# get current controlfile locations
+	sqlplus / as sysdba
+	SQL> startup nomount
+	SQL> select value from v$parameter where name='control_files';
+	SQL> exit
+
+	# rename existing control files (path/files from previous step)
+	mv <path/file> <path/file>.old
+
+	# copy backup control file from /oradb/<sid>/data/backup.ctl.galaxy to current control file locations
+	# note: redo volume is not mirrored; need to create the controlfile dir
+	mkdir /oradb/<sid>/redo/controlfile
+	mv /oradb/<sid>/data/backup.ctl.galaxy <path/file>
+
+	# recover database
+	sqlplus / as sysdba
+	SQL> alter database mount;
+	SQL> recover automatic database until cancel using backup controlfile parallel 64;
+	SQL> cancel
+	SQL> alter database open resetlogs;
+	SQL> exit;
+
+	# start listeners listed in listener_tab for this database
+	cat /var/opt/oracle/listener_tab
+	lsnrctl start <listener_name>
+
+	# repeat process to recover other databases on the same Solaris zone
+
+
+
+   

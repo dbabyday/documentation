@@ -1,0 +1,42 @@
+SQLcl & Liquibase
+	Automated Change Management for your Database
+	Jeff Smith (thatJeffSmith) - Product Manager
+
+New SQL Developer coming
+
+Liquibase
+	Track, version, and deploy db changes
+	open-source (java)
+	supports 14+ databases (including oracle)
+
+	capture state to ChangeLog
+	create a changeSet
+	apply change
+	rollback
+
+Oracle-enanced Liquibase
+	Liquibase open-source with SQLcl
+	Oracle support (open sr)
+
+SQLcl
+	Jeff Smith YouTube video
+	oracle.com/sqlcl
+	included with sql developer
+	oracle database home
+
+	tab complete insight
+	sql hsitroy
+	DDL, CTAS, INFO, LIQUIBASE, DATAPUMP, LOAD, REPEAT, ALIAS
+
+	lb help
+	lb help <subcommand>
+	lb help <subcommand> -ex  # include examples
+
+
+	lb diff
+
+	# manual review
+	lb generate-schema
+	lb update-sql -changelog-file [name]  #view the sql
+
+	

@@ -1,0 +1,125 @@
+
+	
+
+## BEFORE OUTAGE ##
+1. Install GoldenGate 19 and configure manager, extract, and replicat parameter files
+## START OF OUTAGE ##
+2. Stop GoldenGate 12.3.0.1.4
+3. Stop listeners and bounce the source database to ensure there are no connections doing DML on replicated tables.
+4. Start GoldenGate 12.3.0.1.4 and wait for all transactions to be processed (no lag).
+5. Stop GoldenGate 12.3.0.1.4
+6. Upgrade databases
+7. Register new extracts and replicats
+8. Start GoldenGate 19 extracts
+9. Get source database current scn
+10. Start GoldenGate 19 replicats with AFTERCSN parameter
+11. Start listeners
+## END OF OUTAGE ##
+
+2553336271617
+
+
+	
+Hello James
+
+Your steps are fine. You could "reuse" Old GoldenGate setup/dir* files into the new install.
+
+-------- here are some very high level steps for upgrading both source and target db/goldengate ---------
+https://docs.oracle.com/en/middleware/goldengate/core/19.1/upgrading/upgrading-oracle-goldengate.pdf
+
+1-Stop the source and target application that connect to the source and target database.
+2-Stop all the extracts process either by using a bounded recovery checkpoint or by specifying the LOGEND option.
+	-- the Recovery Checkpoint field shows the oldest time needed for recovery
+	GGSCI> INFO EXTRACT EPDA, SHOWCH
+	GGSCI> INFO EXTRACT EPDC, SHOWCH
+	-- see open transactions gg is waiting on...go clean them up
+	GGSCI> SEND EXTRACT EPDA, SHOWTRANS
+	GGSCI> SEND EXTRACT EPDC, SHOWTRANS
+	-- After you are finished cleaning up the long-running transactions, force a Bounded Recovery checkpoint
+	GGSCI> SEND EXTRACT EPDA, BR BRCHECKPOINT IMMEDIATE
+	GGSCI> SEND EXTRACT EPDC, BR BRCHECKPOINT IMMEDIATE
+	-- get the current scn
+	SQL> SELECT MIN(SCN) AS INSTANTIATION_SCN
+	FROM (SELECT MIN(START_SCN) AS SCN
+	FROM gv$transaction
+	UNION ALL
+	SELECT CURRENT_SCN
+	FROM gv$database);
+	-- compare to Recovery Checkpoint field
+	GGSCI> INFO EXTRACT EPDA, SHOWCH
+	GGSCI> INFO EXTRACT EPDC, SHOWCH
+	-- verify there is no more redo data to capture ( You can skip this step, if you are using an integrated Extract)
+	GGSCI> SEND EXTRACT EPDA LOGEND
+	GGSCI> SEND EXTRACT EPDC LOGEND
+	-- stop extracts
+	GGSCI> STOP EXTRACT EPD*
+	GGSCI> STOP EXTRACT DPD*
+	-- remove ddl_trigger (If you are using integrated Extract, then you can skip this step)
+3-Stop the Replicat processes and the managers.
+4-Initiate the source and target database upgrade.
+x 5-Install the 19c GoldenGate binaries in the new directory by deselecting the Start Manager option.
+6-Once the Soucre and target databases are upgraded proceed with the further steps.
+7-Execute the ulg.sql script as sysdba in the source database.
+8-Move the parameter file to the newly installed Golden Gate directory.
+9-Start the manager, extract and replicat processes.
+-------------
+
+check #5 and #8.
+
+The full upgrade guide is available at
+---------
+https://docs.oracle.com/en/middleware/goldengate/core/19.1/upgrading/upgrading-oracle-goldengate.pdf
+
+Part II Upgrading Oracle GoldenGate Classic
+---------
+
+thanks
+Carlos
+
+
+
+
+upgrade target first to avoid having to manually switch trial file format
+
+Extract upgrade considerations
+	- If you are using trigger-based DDL support, you must rebuild the DDL objects
+	- After completing the upgrade, run the UPGRADE HEARTBEATTABLE command to add extra columns for tables and lag views
+
+Replicat upgrade considerations
+	- All Replicat installations should be upgraded at the same time
+	- When upgrading from the 18c release of Oracle GoldenGate to the 19c (19.1.0) release, ensure that you do not use the SOURCEDEF parameter in Replicat, otherwise the Replicat will abend. However, if the trail file format is pre-12.2, then SOURCEDEF is still required because no metadata exists in the trail file
+
+
+Disable the DDL trigger if there is no native DDL support. Integrated Extract in Oracle 11.2.0.4 and up does not require the DDL trigger.
+When upgrading your database and Oracle GoldenGate simultaneously, you must upgrade the database first
+
+
+runInstaller -silent -nowait -responseFile /installs/goldengate_19.1.0.0/oggcore.rsp
+
+
+
+
+
+
+
+
+-rw-r--r--   1 oracle   dba          362 Jan 21 15:32 dpda.prm
+-rw-r--r--   1 oracle   dba          362 Jan 21 15:32 dpdc.prm
+-rw-r--r--   1 oracle   dba          363 Jan 21 15:34 dpya.prm
+-rw-r--r--   1 oracle   dba          362 Jan 21 15:34 dpyc.prm
+-rw-r--r--   1 oracle   dba        26.4K Jan 21 15:32 epda.prm
+-rw-r--r--   1 oracle   dba        1.12K Jan 21 15:32 epdc.prm
+-rw-r--r--   1 oracle   dba          26K Jan 21 15:34 epya.prm
+-rw-r--r--   1 oracle   dba        1.12K Jan 21 15:34 epyc.prm
+-rw-r--r--   1 oracle   dba          264 Jan 21 15:34 mgr.prm.001
+-rw-r--r--   1 oracle   dba          264 Jan 21 15:33 mgr.prm.002
+-rw-r--r--   1 oracle   dba          266 Jan 21 15:32 mgr.prm.005
+-rw-r--r--   1 oracle   dba          266 Jan 21 15:30 mgr.prm.007
+-rw-r--r--   1 oracle   dba        1.19K Jan 21 15:30 rpda.prm
+-rw-r--r--   1 oracle   dba        1.52K Jan 21 15:30 rpdc.prm
+-rw-r--r--   1 oracle   dba        1.23K Jan 21 15:33 rpya.prm
+-rw-r--r--   1 oracle   dba        1.04K Jan 21 15:33 rpyc.prm
+oracle@gcc-ora-pd-005:jdepd03:/installs/xfr/dirprm$
+
+
+

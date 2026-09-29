@@ -1,0 +1,5 @@
+
+Service Catalog > Request an Account > Additional Accounts
+•	Account Action: Creation
+•	Application: OTHER APPLICATION
+•	Other Application not listed: Citrix Oracle SQL Developer

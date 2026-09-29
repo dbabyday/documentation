@@ -1,0 +1,13 @@
+oracle enqueue - a lock you can see in v$lock
+
+buffer busy waits - The process wants to access a data block that is currently not in memory, but another process has already issued an I/O request to read the block into memory. (The process is waiting for the other process to finish bringing the block into memory.). The hot blocks can be found using view V$BH
+
+db file scattered read - This typically happens during a full table scan or full index scan. The process has issued an I/O request to read a series of contiguous blocks from a data file into the buffer cache, and is waiting for the operation to complete. 
+
+db file sequential read - The process has issued an I/O request to read one block from a data file into the buffer cache, and is waiting for the operation to complete. This typically happens during an index lookup or a fetch from a oracle table by ROWID when the required data block is not already in memory.
+
+direct path read, direct path write - The process has issued asynchronous I/O requests that bypass the buffer cache, and is waiting for them to complete. These wait events typically involve sort segments. SQL statements with functions that require sorts, such as ORDER BY, GROUP BY, UNION, DISTINCT, and ROLLUP, write sort runs to the temporary tablespace when the input size is larger than work-area in PGA
+
+
+
+

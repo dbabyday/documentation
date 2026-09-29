@@ -1,0 +1,87 @@
+01. prep scripts
+        - TableName_exp.par
+
+              USERID='/ as sysdba'
+              DIRECTORY=GGEXPORT
+              DUMPFILE=TableName.dmp
+              LOGFILE=TableName_exp.log
+              COMPRESSION=ALL
+              FLASHBACK_SCN=
+              EXCLUDE=CONSTRAINT,INDEX,STATISTICS,GRANT,TRIGGER
+              TABLES=PRODDTA.TableName
+
+        - TableName_imp.par
+
+              USERID='/ as sysdba'
+              DIRECTORY=GGEXPORT
+              DUMPFILE=TableName.dmp
+              LOGFILE=TableName_imp.log
+              TRANSFORM=DISABLE_ARCHIVE_LOGGING:Y
+              TABLE_EXISTS_ACTION=REPLACE
+              REMAP_TABLESPACE=(PRODDTAI_160K:PRODDTAI,
+              PRODDTAI_4M:PRODDTAI,
+              PRODDTAI_8M:PRODDTAI,
+              PRODDTAI_16M:PRODDTAI,
+              PRODDTAI_32M:PRODDTAI,
+              PRODDTAI_64M:PRODDTAI,
+              PRODDTAI2:PRODDTAI,
+              PRODDTAIP2_32M:PRODDTAI,
+              UMPDCTLI:PRODCTLI,
+              UMPDCTLT:PRODCTLT,
+              PRODDTATP2:PRODDTAT,
+              PRODDTAT2:PRODDTAT)
+
+        - TableName_post_imp.par
+
+              set echo on feedback on define off timing on
+              spool TableName_post_imp
+
+              SELECT TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') NOW FROM DUAL;
+              
+              -- script indexes (pk index and any others you want)
+              
+              -- script constraints (pk and any others you want)
+              
+              -- script grants 
+
+              -- gather table stats 
+              EXECUTE DBMS_STATS.GATHER_TABLE_STATS('<owner_name>','<table_name>');
+
+              SELECT TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') NOW FROM DUAL;
+              
+              spool off
+
+02. add trandata
+
+03. stop replicat
+
+04. update extract paramter file: add table
+
+05. stop extract
+
+06. start extract
+
+07. get current scn
+
+08. update export parameter file: FLASBACK_SCN value
+
+09. export table
+
+10. update replicat parameter file: add a mapping command with a filter for the same scn/csn as export
+
+        MAP SchemaName.TableName, TARGET SchemaName.TableName, FILTER ( @GETENV ('TRANSACTION', 'CSN') > ExportFlashbackScn);
+
+11. import table
+
+12. execute post import script (indexes, constraints, grants, stats)
+
+13. start replicat
+
+14. wait for replication to catch up
+
+15. update replicat parameter file: remove (comment out) the new filtered mapping command
+
+16. stop the replicat
+
+17. start the replicat
+

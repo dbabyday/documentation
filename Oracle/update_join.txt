@@ -1,0 +1,3 @@
+UPDATE ca.arc_sqlstats_analyze a
+SET    a.id = (SELECT b.id FROM ca.tmp b WHERE a.arc_time = b.arc_time)
+WHERE  EXISTS (SELECT null FROM ca.tmp b WHERE a.arc_time = b.arc_time);

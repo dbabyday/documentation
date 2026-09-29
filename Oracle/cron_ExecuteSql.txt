@@ -1,0 +1,131 @@
+#! /bin/bash
+
+
+
+#-------------------------------
+#-- ORACLE_SID                --
+#-------------------------------
+
+# user inputs sid
+export ORACLE_SID=$1
+SQL_SCRIPT=$2
+
+# verify input
+if [[ $ORACLE_SID == "" ]]
+then
+	echo ""
+	echo "ERROR: You must enter an ORACLE_SID value"
+	echo ""
+	echo "EXAMPLE: /dba/scripts/james/execute_sql_script.sh <ORACLE_SID> <ORACLE_HOME>"
+	echo ""
+	exit 1
+fi
+
+if [[ $SQL_SCRIPT == "" ]]
+then
+	echo ""
+	echo "ERROR: You must enter a path for SQL_SCRIPT value"
+	echo ""
+	echo "EXAMPLE: /dba/scripts/james/execute_sql_script.sh <ORACLE_SID> <ORACLE_HOME>"
+	echo ""
+	exit 2
+fi
+
+if [[ ! -f $SQL_SCRIPT ]]
+then
+	echo ""
+	echo "ERROR: ${SQL_SCRIPT} does not exist"
+	echo ""
+	echo "EXAMPLE: /dba/scripts/james/execute_sql_script.sh <ORACLE_SID> <ORACLE_HOME>"
+	echo ""
+	exit 3
+fi
+
+
+
+#-------------------------------
+#-- ORACLE_HOME               --
+#-------------------------------
+
+# make sure oratab exists in its default location
+if [[ ! -f /var/opt/oracle/oratab ]]
+then
+	echo "/var/opt/oracle/oratab does not exist"
+	exit 4
+fi
+
+# look through oratab for matching sid...get the oracle home
+FOUND_MATCH=no
+while read LINE
+do
+	LINE_SID=`echo ${LINE} | cut -d':' -f 1`
+	if [[ ${LINE_SID} == ${ORACLE_SID} ]]
+	then
+		FOUND_MATCH=yes
+		ORACLE_HOME=`echo ${LINE} | cut -d':' -f 2`
+		export ORACLE_HOME
+	fi
+done < /var/opt/oracle/oratab
+
+# if sid does not exist, exit the script
+if [[ $FOUND_MATCH == "no" ]]
+then
+	echo ""
+	echo "ERROR: ORACLE_SID does not have a match in oratab."
+	echo ""
+	echo "Here are the ORACLE_SIDs in oratab:"
+	cat /var/opt/oracle/oratab | grep -v "#" | cut -d':' -f 1
+	echo ""
+	exit 5
+fi
+
+# check if database is running
+FOUND_MATCH=no
+EXPECTED_PROCESS_NAME="ora_smon_${ORACLE_SID}"
+PROCESS_NAME_LENGTH=`expr length ${EXPECTED_PROCESS_NAME}`
+mapfile -t PS_SMON < <(ps -ef | grep ${EXPECTED_PROCESS_NAME} | grep -v grep)
+i=0
+while [[ $i -lt ${#PS_SMON[@]} ]]
+do
+	LINE=${PS_SMON[$i]}
+	((i++))
+
+	CHECK_PROCESS_NAME=${LINE:(-$PROCESS_NAME_LENGTH)}
+	if [[ ${EXPECTED_PROCESS_NAME} == ${CHECK_PROCESS_NAME} ]]
+	then
+		FOUND_MATCH=yes
+	fi
+done
+
+
+
+
+# if smon process was not found, alert user and exit
+if [[ ${FOUND_MATCH} == "no" ]]
+then
+	echo ""
+	echo "ERROR: Database ${ORACLE_SID} is not running."
+	echo ""
+	exit 6
+fi
+
+
+
+#-------------------------------
+#-- LD_LIBRARY_PATH           --
+#-------------------------------
+
+export LD_LIBRARY_PATH=${ORACLE_HOME}/lib:${ORACLE_HOME}/ctx/lib
+
+
+
+#-------------------------------
+#-- EXECUTE SQL SCRIPT/CMDS   --
+#-------------------------------
+
+${ORACLE_HOME}/bin/sqlplus -s /nolog <<-!EOSQL
+	whenever sqlerror exit failure
+	whenever oserror exit failure
+	connect /as sysdba
+	@${SQL_SCRIPT}
+!EOSQL

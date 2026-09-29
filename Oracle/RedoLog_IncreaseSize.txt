@@ -1,0 +1,161 @@
+------------------------------------------------------------------------------------
+-- Change Size of Redo Logs
+-- Uwe Hesse
+-- https://uhesse.com/2010/01/20/how-to-change-the-size-of-online-redologs/
+------------------------------------------------------------------------------------
+
+-- get redo log info
+col member format a50
+select   l.group#
+       , l.members
+       , l.status
+       , l.bytes/1024/1024/1024 as gb
+       , f.member
+from     v$log l
+join     v$logfile f on f.group#=l.group#
+order by l.group#
+       , f.member;
+
+-- create new log groups of desired size
+alter database add logfile ('/oradb/jdedv01/redo/redo04a.rdo') size 16g;
+alter database add logfile ('/oradb/jdedv01/redo/redo05a.rdo') size 16g;
+alter database add logfile ('/oradb/jdedv01/redo/redo06a.rdo') size 16g;
+alter database add logfile ('/oradb/jdedv01/redo/redo01a.rdo') size 16g;
+alter database add logfile ('/oradb/jdedv01/redo/redo02a.rdo') size 16g;
+alter database add logfile ('/oradb/jdedv01/redo/redo03a.rdo') size 16g;
+-- or as one statment
+alter database add logfile group 1 ('/oradb/arcdv01/redo/redo1.rdo') size 5g
+                         , group 2 ('/oradb/arcdv01/redo/redo2.rdo') size 5g
+                         , group 3 ('/oradb/arcdv01/redo/redo3.rdo') size 5g
+                         , group 4 ('/oradb/arcdv01/redo/redo4.rdo') size 5g
+                         , group 5 ('/oradb/arcdv01/redo/redo5.rdo') size 5g;
+
+alter database add logfile group 6 ('/oradb/jdepy01/redo/redo06.rdo') size 1g
+                         , group 7 ('/oradb/jdepy01/redo/redo07.rdo') size 1g
+                         , group 8 ('/oradb/jdepy01/redo/redo08.rdo') size 1g;
+
+alter database add logfile group 6 ('/oradb/jdecv01/redo/redo06.rdo') size 1g
+                         , group 7 ('/oradb/jdecv01/redo/redo07.rdo') size 1g
+                         , group 8 ('/oradb/jdecv01/redo/redo08.rdo') size 1g;
+
+alter database add logfile group 6 ('/oradb/jdetr01/redo/redo06.rdo') size 1g
+                         , group 7 ('/oradb/jdetr01/redo/redo07.rdo') size 1g
+                         , group 8 ('/oradb/jdetr01/redo/redo08.rdo') size 1g;
+
+alter database add logfile group 1 ('/oradb/jdedv01/redo/redo01.rdo') size 16g
+                         , group 2 ('/oradb/jdedv01/redo/redo02.rdo') size 16g
+                         , group 3 ('/oradb/jdedv01/redo/redo03.rdo') size 16g
+                         , group 4 ('/oradb/jdedv01/redo/redo04.rdo') size 16g
+                         , group 5 ('/oradb/jdedv01/redo/redo05.rdo') size 16g;
+
+alter database add logfile group 1 ('/oradb/jdepy01/redo/redo01.rdo') size 16g
+                         , group 2 ('/oradb/jdepy01/redo/redo02.rdo') size 16g
+                         , group 3 ('/oradb/jdepy01/redo/redo03.rdo') size 16g
+                         , group 4 ('/oradb/jdepy01/redo/redo04.rdo') size 16g
+                         , group 5 ('/oradb/jdepy01/redo/redo05.rdo') size 16g;
+
+alter database add logfile group 1 ('/oradb/jdecv01/redo/redo01.rdo') size 16g
+                         , group 2 ('/oradb/jdecv01/redo/redo02.rdo') size 16g
+                         , group 3 ('/oradb/jdecv01/redo/redo03.rdo') size 16g
+                         , group 4 ('/oradb/jdecv01/redo/redo04.rdo') size 16g
+                         , group 5 ('/oradb/jdecv01/redo/redo05.rdo') size 16g;
+
+alter database add logfile group 1 ('/oradb/jdetr01/redo/redo01.rdo') size 16g
+                         , group 2 ('/oradb/jdetr01/redo/redo02.rdo') size 16g
+                         , group 3 ('/oradb/jdetr01/redo/redo03.rdo') size 16g
+                         , group 4 ('/oradb/jdetr01/redo/redo04.rdo') size 16g
+                         , group 5 ('/oradb/jdetr01/redo/redo05.rdo') size 16g;
+
+
+
+!df -h /oradb/ggpy01/redo
+
+-- check log status
+col member format a50
+select   l.group#
+       , l.members
+       , l.status
+       , l.bytes/1024/1024/1024 as gb
+       , f.member
+from     v$log l
+join     v$logfile f on f.group#=l.group#
+order by l.group#
+       , f.member;
+
+-- force log switch to get "CURRENT" log as one of the new ones
+alter system switch logfile;
+
+-- if old log is "ACTIVE", force a checkpoint
+alter system checkpoint;
+
+-- when all old logs are "INACTIVE", you can drop them
+alter database drop logfile group 1;
+alter database drop logfile group 2;
+alter database drop logfile group 3;
+alter database drop logfile group 4;
+alter database drop logfile group 5;
+alter database drop logfile group 6;
+alter database drop logfile group 7;
+alter database drop logfile group 8;
+alter database drop logfile group 9;
+alter database drop logfile group 10;
+alter database drop logfile group 11;
+alter database drop logfile group 12;
+alter database drop logfile group 13;
+
+
+
+-- after logs are dropped in Oracle, you can delete the physical files from the OS
+rm redo01.rdo
+rm redo02.rdo
+rm redo03.rdo
+
+
+
+------------------------------------------------------------------------------------
+-- repeat the process if you want the log groups to be 1,2,3 instead of 4,5,6     --
+------------------------------------------------------------------------------------
+
+-- create the log groups
+alter database add logfile ('/oradb/ampd01/redo/redo01a.rdo','/oradb/ampd01/redo/redo01b.rdo') size 500m;
+alter database add logfile ('/oradb/ampd01/redo/redo02a.rdo','/oradb/ampd01/redo/redo02b.rdo') size 500m;
+alter database add logfile ('/oradb/ampd01/redo/redo03a.rdo','/oradb/ampd01/redo/redo03b.rdo') size 500m;
+
+-- check log status
+col member format a50
+select   l.group#
+       , l.members
+       , l.status
+       , l.bytes/1024/1024 as mb
+       , f.member
+from     v$log l
+join     v$logfile f on f.group#=l.group#
+order by l.group#
+       , f.member;
+
+-- force log switch to get "CURRENT" log as one of the new ones
+alter system switch logfile;
+
+-- if old log is "ACTIVE", force a checkpoint
+alter system checkpoint;
+
+-- when all old logs are "INACTIVE" or "UNSUED", you can drop them
+alter database drop logfile group 4;
+alter database drop logfile group 5;
+alter database drop logfile group 6;
+
+-- after logs are dropped in Oracle, you can delete the physical files from the OS
+rm redo04a.rdo
+rm redo04b.rdo
+rm redo05a.rdo
+rm redo05b.rdo
+rm redo06a.rdo
+rm redo06b.rdo
+
+
+
+
+
+
+
+

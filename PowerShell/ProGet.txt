@@ -1,0 +1,32 @@
+ProGet
+
+Feed: SQL (like a DNS setting...points/connects you to it)
+
+gcc-utl-na-001
+
+James.Lutsey
+Plexus1
+in group: SQL
+
+
+
+
+
+Invoke-Command
+
+error ---> run Enable-PSRemoting on the server  ---> y  ---> y ....
+
+
+Get-PSSessionConfiguration
+
+
+
+
+
+Enter-PSSession   (enter ps on the remote computer...interactive)
+Exit-PSSession
+
+
+
+
+

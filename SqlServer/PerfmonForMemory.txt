@@ -1,0 +1,24 @@
+caching raw data
+caching execution palns
+working on your queries
+
+
+Perfmon counters
+----------------------------------------------------------
+Memory – Available MBytes
+SQLServer: Buffer Manager – Page Life Expectancy
+SQLServer: Memory Manager – Memory Grants Pending (number of quries waiting on memory before it can start)
+SQLServer: Memory Manager – Target Server Memory  (size of the barrel)
+SQLServer: Memory Manager – Total Server Memory   (huw full it is right now)
+SQLServer: SQL Statistics – Batch Requests/sec
+SQLServer: SQL Statistics – Compilations/sec
+
+
+
+If Memory Grants Pending is averaging over 0, queries can’t even start because they can’t get enough memory. You may have queries that have incorrect memory grants, or you may just desperately need more RAM.
+
+If Compiles/Sec is over 10% of Batch Requests/Sec, SQL Server may not be able to cache execution plans. This causes increased CPU use and slower queries. There’s a lot of gotchas with this one, though – now the hard work starts, because you have to spend time analyzing your workload to see if the execution plans can even be reused.
+
+If Page Life Expectancy is low, you may need memory to cache more data pages. In the video, I explain how to start with tuning indexes and queries first (since that’s typically a lower cost than buying more memory once you’re over 64GB). I mention these tools:
+
+

@@ -1,0 +1,46 @@
+D. deduplicate
+E. eliminate unused
+A. add high value missing indexes
+T. tune indexes for expensive queries
+H. heaps probably should have clustered index
+
+
+
+1. Look at whole instance
+sp_BlitzIndex @GetAllDatabases = 1
+
+2. Run on one database
+
+
+3. Pick tables and look at one at a time
+	query to run sp_blitzindex on one table is in more info column
+		drop and create statements are in results
+	drop indexes with 0 reads (E.)
+	combine indexes that start with same keys (D.)
+
+
+
+
+
+A. sp_BlitzIndex
+	sp_BlitzIndex
+	sp_BlitzIndex @Mode=3  -- just the missing indexes
+
+
+
+T. tune indexes for expensive queries
+	sp_blitzcache @sortorder='reads'
+
+	-- if you find an expensive stored proc with multiple statements in it, and want to know which statements to focus on:
+	sp_blitzcache @StoredProcName='myStoredProc', @sortorder='reads'
+
+
+
+
+
+statisticsparser.com
+	-- put output of SET STATISTICS IO ON to get total reads
+
+
+-- see how many different values there are for a column
+;with distinct_vals as (select distinct COLUMN_NAME from dbo.TABLE_NAME) select count(*) from distinct_vals;

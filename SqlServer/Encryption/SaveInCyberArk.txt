@@ -1,0 +1,17 @@
+Save in CyberArk
+------------------------------------------------------------------
+
+Files:
+
+ServiceMasterKey_ServerName_InsanceName_Date.key
+DatabaseMasterKey_ServerName_InstanceName_DatabaesName_Date.key
+CERT_DatabaseName_Date.cert
+CERT_DatabaseName_Date.prvk
+
+Passwords:
+
+Service Master Key Backup: 
+Database Master Key [database]:
+Database Master Key [database] Backup:
+Certificate Backup: 
+

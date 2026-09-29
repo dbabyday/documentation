@@ -1,0 +1,30 @@
+Brent Ozar Notes
+
+Table Variables
+	SQL Server always estimates only 1 row
+	Ignore transactions 
+		- all variables are not affected by transaction rollbacks (only affects real tables)
+	Almost never use them
+		- only use them when you want to ignore transactions
+		- use them to log progress in a long procedure...in the catch of a try-catch they still have the entries
+	Table variables and temp tables try to be in memory, and both spill to tempdb
+
+
+CPU
+	why bottleneck when server not at 100%
+		- SQL Server does not load balance accross all cores
+		- 
+
+sp_BlitzCache @SortOrder = 'recent compilations', @SkipAnalysis = 1, @Top = 50
+
+sp_BlitzFirst
+	Batch Requests per Sec
+		- get used to what is normal for this sql server
+
+XML
+	SQL Server is CPU intensive with shredding xml
+
+
+
+
+

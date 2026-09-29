@@ -1,0 +1,27 @@
+
+# Compress files and directores into single archive file
+# The c, v, z, and f flags used in the aforementioned command stand for Create, Verbose, gzip, and Filename.
+tar -cvzf new.tar.gz ~/Documents ~/Downloads file1.txt file2.txt
+
+# Compress large files ( > 8G), use E function modifier (-E)
+tar -cvzEf new.tar.gz ~/Documents ~/Downloads file1.txt file2.txt
+
+
+
+# Extract compressed files with tar (-x)
+tar -xvzf archive.tar.gz
+
+# Extract to a specified location (-C)
+tar -xvzf archive.tar.gz -C /Downloads
+
+
+
+# To view (test) the content of an archive prior to extracting it (-t)
+tar -tvzf archive.tar.gz
+
+
+# Add file to an archive (-r)
+tar -rvzf archive.tar.gz newfile.txt
+
+
+

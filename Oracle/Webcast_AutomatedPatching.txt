@@ -1,0 +1,55 @@
+Oracle Webcast Series
+Deep Dive Enterprise Manager
+Use Automated Patching and Compliance to Improve Database Security Posture
+--------------------------------------------------------------------------------
+Fleet Maintenance using EM
+
+UI and command line support
+
+Database Fleet Maintenance
+	1. stnadardize environment
+	2. Create "gold" image --> subscribe target database to gold image
+	3. Push image to targets to subscribers and switch
+			Switch is only downtime (from old OH to new OH and execute sql)
+	4. Able to rollback
+
+
+
+Do you need license fleet mgmt.?
+	Fleet mgmt is part of Database Lifecycle Management Pack (DBLM Pack)
+
+Is it needed for patching and provisioning?
+	DBLM pack is required for DB provisioning, DB patching and configuration/compliance management
+
+DB LCM , it is a separately licensible pack, where do we find the licensing cost model for the DB LCM ?
+	DBLM (Database Lifecycle Management Pack) is licensed separately and a database option for Enterprise Edition databases. Please contact your Oracle account team for your pricing.
+
+More info on Fleet Maintenance
+	https://www.oracle.com/manageability/enterprise-manager/technologies/fleet-maintenance.html
+
+
+
+
+Automated DB Security Assessment with CIS Benchmark
+
+Where do we find the Oracle best practices and Security recommendations?
+	https://docs.oracle.com/en/enterprise-manager/cloud-control/enterprise-manager-cloud-control/13.4/emdbc/index.html
+
+is security and compliance part of DBLM pack ?
+	Yes, its is part of DBLM pack
+
+
+
+
+Slides
+	https://www.oracle.com/manageability/enterprise-manager/technologies/database-lifecycle-management-pack.html
+
+
+
+
+
+
+3/19 How to Patch your Oracle Database Software at scale with Minimal Downtime
+
+Entire serries
+	oracle.com/corporat/events/...something...check the slides when available

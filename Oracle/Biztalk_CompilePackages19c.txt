@@ -1,0 +1,2 @@
+1. alter session set events '10946 trace name context forever, level 65536';
+2. alter package <package_name> compile;

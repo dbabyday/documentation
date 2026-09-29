@@ -1,0 +1,11 @@
+decommissioning database server
+
+db backups
+logins
+linked servers
+jobs
+triggers
+certificate for ssl
+service accounts
+CNAMES
+

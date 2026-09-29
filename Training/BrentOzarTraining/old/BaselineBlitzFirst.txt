@@ -1,0 +1,56 @@
+Baseline Blitz First metrics
+---------------------------------------------
+
+right now
+	sp_BlitzFirst @ExpertMode=1;
+
+Agent Job
+	execute sp_BlitzFirst 
+		  @OutputDatabaseName = 'CentralAdmin'
+		, @OutputSchemaName = 'dbo'
+		, @OutputTableName = 'BlitzFirst'
+		, @OutputTableNameFileStats = 'BlitzFirst_FileStats'
+		, @OutputTableNamePerfmonStats = 'BlitzFirst_PerfmonStats'
+		, @OutputTableNameWaitStats = 'BlitzFirst_WaitStats'
+		, @OutputTableNameBlitzCache = 'BlitzCache'
+		, @OutputTableNameBlitzWho = 'BlitzWho';
+
+	schedule every 15 minutes
+
+	default retention is 7 days
+		- @OutputTableRetentionDays parameter to override that to a higher number if you want
+
+query
+	select * from dbo.BlitzFirst_FileStats order by CheckDate desc;
+		-- servername (so you can centralize data in one repository)
+		-- metrics are cumulative since restart
+	
+	-- automatically creates views for deltas
+		-- when did tempd grow?
+		select * 
+		from dbo.BlitzFirst_FileStats_Deltas
+		where DatabaseName='tempdb'
+			and SizeOnDiskMBgrowth>0
+		order by CheckDate desc;
+
+		-- what else was happening at that time?
+		select *
+		from dbo.BlitzFirst
+		where CheckDate>='2019-02-14 22:00:01.3483597 +00:00'
+			and CheckDate<='2019-02-14 23:30:01.3483597 +00:00'
+		order by CheckDate desc;
+
+		select *
+		from dbo.BlitzFirst_PerfmonStats_Deltas
+		where CheckDate>='2019-02-14 22:00:01.3483597 +00:00'
+			and CheckDate<='2019-02-14 23:30:01.3483597 +00:00'
+		order by CheckDate desc;
+
+		select *
+		from dbo.BlitzCache
+		where CheckDate>='2019-02-14 22:00:01.3483597 +00:00'
+			and CheckDate<='2019-02-14 23:30:01.3483597 +00:00'
+		order by CheckDate desc;
+
+https://www.brentozar.com/first-aid/first-responder-kit-power-bi-dashboard/
+

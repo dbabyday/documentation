@@ -1,0 +1,414 @@
+Sun OS Commands
+-----------------------------------------
+# https://docs.oracle.com/cd/E19455-01/806-2902/book-info/index.html
+
+uname -a --> OS Version
+psrinfo -p  --> physical processors
+psrinfo -vp --> virtual processors
+
+
+
+
+##################################
+##  BASIC                       ##
+##################################
+
+date
+Ctrl-U --> erase entire line
+logname --> current user logged in
+history
+!! --> repeat previous command
+!x --> repeat command number x
+!-2 --> repeat command second from last
+>  --> redirect output (ex: date > sample.file)
+|  --> pipe output to another command (ex: date | lp  --> print date)
+&  --> run command in background (bigjob &)
+nohup --> job will continue to run if you log off (nohup bigjob &)
+man --> reference manual
+whatis  --> one line description
+apropos --> command lookup by keyword
+declare -p  --> list all variables
+
+
+
+
+##################################
+##  FILES AND DIRECTORIES       ##
+##################################
+
+cd
+pwd
+touch
+ls
+cp
+mv
+rm
+
+more
+cat
+less <file_name> --> view file one page at a time
+less +F <file_name> --> view the end of the file and get updates as lines get added
+file <name> --> show file type
+~  --> home directory (ex: cd ~/tmux)
+
+mkdir
+rmdir
+
+diff  --> differences between files
+diff3 --> differences between three files
+bdiff --> differences between big files
+
+find --> looking up files
+	http://www.theunixschool.com/2010/08/find-files-modified-in-last-x-days-and.html
+		find . -mtime -5   # files modified in the last 5 days
+		find . -mtime +5   # files modified before 5 days
+		find . -mmin -40   # files modified in the last 40mins
+		find . -mmin +40   # files modified before 40mins
+		find . -type f -mmin -40   # only files
+		
+		touch -t 1008211020 temp   # creates a temp file whose time stamp is 2010,Aug 21, 10hours 20mins. [YYMMDDHHMM]
+		find . -newer temp         # files modified after the temp has been modified OR in other words find files which are newer than temp file
+		find . ! -newer temp       # files modified before the temp has been modified OR in other words find files which are older than temp file
+
+
+
+
+ls
+	-l --> long list
+	-a --> show hidden files
+
+chmod
+
+
+
+##################################
+##  SEARCHING FILES             ##
+##################################
+
+grep
+	grep string file
+	ls -l *.ps | grep May
+	grep "Louisa May" extensions
+	-v --> without (grep -v e *)
+	^ --> beginning of line (grep '^b' list)
+	$ --> end of line (grep '^b$' list)
+	. --> wildcard single character (grep 'an.' list)
+	* --> Zero or more occurrences of the preceding character or regular expression
+		grep 'nn*' list --> all words containing the letter "n"
+		grep 'nnn*' list --> all words containing the pattern "nn"
+		grep .* list -->  zero or more occurrences of any character in list
+	\ --> escape character (ex: grep ^\. --> lines that begin with ".")
+	[...] --> Any single character in the bracketed list or range 
+	[^...] --> Any character not in the list or range
+
+	-A num
+	Print num lines of trailing context after each match. See also the -B and -C options.
+
+	-B num
+	Print num lines of leading context before each match. See also the -A and -C options.
+
+	-C [num]
+	Print num lines of leading and trailing context surrounding each match. The default is 2 and is equivalent to -A 2 -B 2. Note: no whitespace may be given between the option and its argument.
+
+
+##################################
+## PROCESSES AND DISK STORRAGE  ##
+##################################
+
+ps -l --> processes currently running (long format)
+	S (status) in output:
+		O - Process is running on a processor.
+		S - Sleeping: Process is waiting for an event to complete.
+		R - Runnable: Process is on run queue.
+		I - Idle: Process is being created.
+		Z - Zombie state: Process terminated and parent not waiting.
+		T - Traced: Process stopped by a signal because parent is tracing it.
+		X - SXBRK state: Process is waiting for more primary memory.
+ps | grep <commandname>
+kill <PID> - stop process by PID
+
+df -k
+du --> directory usage
+
+
+
+##################################
+## vi                           ##
+##################################
+
+# Save/Quit
+-----------------------------------------
+:w  - save
+:wq - save and quit
+:q  - quit without any changes
+:q! = quit without saving changes
+
+
+
+# change tab size
+-----------------------------------------
+:set tabstop=4
+
+
+
+# Print
+-----------------------------------------
+lp - print
+
+
+
+# Move
+-----------------------------------------
+h  - move left
+l  - move right
+j  - move down
+k  - move up
+
+w  - move forward one word
+b  - move back one word
+W  - move forward one word (ignore punctuation)
+B  - move back one word (ignore punctuation)
+e  - move to end of current word
+
+^  - move to start of line
+$  - move to end of line
+
+H  - move to top of screen
+M  - move to middle of screen
+L  - move to bottom of screen
+
+Ctrl-F  - page forward
+Ctrl-D  - scroll down 1/2 screen
+Ctrl-B  - page back
+Ctrl-U  - scoll up 1/2 screen
+
+G  - move to last line
+nG - move to nth line of the file (ex: 64G --> move to line 64)
+
+
+
+# Insert
+-----------------------------------------
+a  - append to right of cursor
+A  - append to end of line
+i  - insert to left of cursor
+I  - insert to begginning of line
+o  - open line below cursor
+O  - open line above cursor
+
+
+
+# Change
+-----------------------------------------
+cw - change word (changes start at cursor to end of word)
+cc - change line (deletes line and leaves blank line in insert mode)
+C  - change part of line starting at cursor to end of line
+s  - substitute one or more characters fo rcharacter under cursor
+r  - replace character
+xp - transpose characters under cursor and next
+r<Return> - break line (replaces character with <Return>)
+J  - join line with next line
+
+
+
+# Undo
+-----------------------------------------
+u  - undo last command (u again will undo the undo)
+U  - undo all changes made to a line that have been made since the cursor has been on the line
+
+g-  - moves backwards through the undo tree
+g+  - will move forward through all changes until the final state is reached
+
+:earlier 10  - will move 10 changes backwards through the undo tree
+:earlier 1h  - will move to the state of the buffer as it existed 1 hour ago (use s for seconds, m for minutes, and h for hours), and then
+:later 10    - will move 10 changes forward through the undo tree
+:later 1h    - will move to the state of the buffer as it existed 1 hour forward
+
+
+
+# Delete
+-----------------------------------------
+x  - delete character
+X  - delete character before cursor
+dw - delete word (starting at cursor)
+dd - delete line
+D  - delete part of line to starting at cursor
+d0 - delete part of line to left of cursor
+dG - delete current line to end of file
+d1G - delete current line to start of file
+
+
+
+# Copying and Moving Text
+-----------------------------------------
+yy   - yank (copy) line
+Y    - yank line
+12yy - yank 12 lines
+dd   - delete (cut) line
+13dd - delete 13 lines
+p    - put (paste) line(s) below cursor
+P    - put (paste) line(s) above cursor
+"ayy" - yank line into named buffer a
+"b12dd" - delete 12 lines into named buffer b
+
+
+
+# Toggle Upper/Lower Case
+-----------------------------------------
+~    - Toggle case of the character under the cursor, or all visually-selected characters.
+3~   - Toggle case of the next three characters.
+g~3w - Toggle case of the next three words.
+g~iw - Toggle case of the current word (inner word – cursor anywhere in word).
+g~$  - Toggle case of all characters to end of line.
+g~~  - Toggle case of the current line (same as V~).
+# The above uses ~ to toggle case. In each example, you can replace ~ with u to convert to lowercase, or with U to convert to uppercase. For example:
+U    - Uppercase the visually-selected text. First press v or V then move to select text. If you don't select text, pressing U will undo all changes to the current line.
+gUU  - Change the current line to uppercase (same as VU).
+gUiw - Change current word to uppercase.
+u    - Lowercase the visually-selected text. If you don't select text, pressing u will undo the last change.
+guu  - Change the current line to lowercase (same as Vu).
+
+
+
+# Indent (tab) Multiple Lines
+-----------------------------------------
+Press "<SHIFT> + v" to enter VISUAL LINE mode.
+Select the text you wish to indent but using either the cursor keys or the "j" and "k" keys.
+To indent press "<SHIFT> + dot" (> character).
+
+
+
+# Count --> Repeat Commands
+-----------------------------------------
+3dd
+2dw
+4x
+3w
+2Ctrl-F
+
+
+
+# ex Commands
+-----------------------------------------
+:set nu <Return> --> turn line numbers on
+:set nonu <Return> --> set line number off
+
+:line#,line# co line# --> copy and paste lines
+	:1,5 co 12 --> copy lines 1-5, insert after line 12
+	:.,5 co 12 --> copy from current line through line 5, insert after line 12
+	:6,$ co 2  --> copy from line 6 to end of file, insert after line 2
+
+:line#,line# m line# --> move (remove and insert)
+	:1,5 m 12 --> move lines 1 through 5 to the line following 12
+
+:line#,line# d --> delete lines
+	:1,5 d --> delete lines 1-5
+
+
+
+# Search and Replace
+-----------------------------------------
+/  - search down
+?  - search up
+n  - next
+N  - previous
+:set ic   - ignore case
+:set noic - case sensitive
+\  - escape special character meaning ( / & ! . ^ * $ \ ? )
+
+/^xyz - match beginning of line (finds next line starting with "xyz")
+/xyz$ - match end of line (finds next line ending with "xyz")
+/\<xyz - match beginning of word (finds next word beginning with "xyz")
+/xyz\> - match end of word (finds next word ending in "xyz")
+/\<xyz\> - match word (finds next word matching "xyz")
+. and * - wildcards
+/[md]isinformation - finds "misinformation" and "disinformation"
+/[a-z]nd - finds any string starting with any letter a-z follwed by "nd"
+
+:%s/pattern//ng - count pattern matches
+
+:g/search-string/s//replace-string/g  - search and replace all
+:g/search-string/s//replace-string/gc - search and consult replace [y] or [n] (Ctrl-c to cancle out of)
+
+
+
+# Inserting One File into Another
+-----------------------------------------
+:line# r filename  --> inserts file "filename" at line number 
+	:84 r orwell   --> inserts file "orwell" below line 84
+	:r orwell      --> inserts file "orwell" below current line
+
+
+
+# Editing Multiple Files
+-----------------------------------------
+:w   - save current file
+:n filename - opens file "filename"
+:n #  - swap between files (must save first)
+
+vi file1 file2  --> open a serries files to edit
+vi demo*        --> open all file like demo*
+:n              --> go to next file in serries 
+:n!             --> go to next file without saving changes to current file
+
+copy/paste between files
+	vi file1  --> open first file
+	"a5Y"     --> yank 5 lines into named buffer "a"
+	:n file2  --> open second file
+	"ap"      --> put from buffer "a"
+    
+note: named buffer contents are lost when you exit vi
+
+
+
+# Setting vi Paramters
+-----------------------------------------
+:set all
+
+
+
+# Recovering from a Crash
+-----------------------------------------
+vi -r filename  --> if system crashes, you can often recover most of your work by restarting vi with this command
+
+
+
+
+##################################
+## MAIL                         ##
+##################################
+
+mailx  --> open mailbox
+mailx username@hostname --> create letter
+Ctrl-d  --> send letter
+
+1   --> read letter in mailx, enter the number of the letter
+q   --> quit mailx; moves read letters to mbox
+x   --> quit without saving changes/deletions, nor moving letters to mbox
+
+d 2 --> delete letter 2
+d 1 3 --> delete letters 1 and 3
+d 1-3 --> delete letters 1 through 3
+
+u 2 --> undelete letter 2 (if entered before quitting)
+
+|3 lp --> print letter 3
+
+r 5 --> reply to letter 5
+
+s 3 filename --> save letter 3 to file "filename"
+
+
+# HTML mail message
+--------------------------------------------------
+# create a header file
+$ vi mailheader
+To: user@gmail.com
+Subject: my subject
+Content-Type: text/html
+
+# send
+$ cat mailheader email.html | sendmail -t
+--------------------------------------------------
+
+

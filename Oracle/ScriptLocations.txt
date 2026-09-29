@@ -1,0 +1,9 @@
+echo $SQLPATH
+
+./:/dba/scripts:/dba/scripts/toolkit:/dba/scripts/toolkit/sp:/dba/scripts/work/lock_waits:/dba/scripts/work/oadmin:/dba/scripts/work/oscripts
+
+
+/dba/scripts
+	gcc-ora-pd-011
+	dcc-ora-dv-006
+	co-db-924

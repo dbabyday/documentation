@@ -1,0 +1,18 @@
+# see connections to/from host...ip addresses, ports...
+
+netstat -an
+
+netstat -an | grep <source ip> | grep <dest ip>
+
+
+
+
+
+   Local Address        Remote Address     Swind  Send-Q  Rwind  Recv-Q    State
+-------------------- -------------------- ------- ------ ------- ------ -----------
+10.250.51.65.15210   10.250.51.64.31572     42496      0  401096      0 ESTABLISHED
+10.250.51.65.15210   10.250.51.64.37444    209408      0  401096      0 ESTABLISHED
+      *.15210              *.*                  0      0  400000      0 LISTEN
+10.250.51.65.20923   10.250.51.65.15210    400816      0  409600      0 ESTABLISHED
+10.250.51.65.15210   10.250.51.65.20923    409000      0  400820      0 ESTABLISHED
+10.250.51.65.64044   10.250.51.65.15210    400816      0  409600      0 ESTABLISHED

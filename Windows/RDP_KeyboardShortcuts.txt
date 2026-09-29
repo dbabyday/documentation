@@ -1,0 +1,19 @@
+10. Ctrl+Alt+plus sign (+) — captures a snapshot of the entire client window area of Remote Desktop and is the same as pressing Print Screen on your local desktop.
+
+9. Ctrl+Alt+minus sign (-) — captures a snapshot of just the active window within the remote desktop session. This key combination is the same as pressing Alt+Print Screen on your local desktop.
+
+8. Alt+Home — displays the Start menu on the remote system.This key combination is he same as pressing the Windows key on your local desktop.
+
+7. Alt+Delete — opens the Windows menu of an application running on the remote system.
+
+6. Ctrl+Alt+Break — toggle the Remote Desktop session between a window and a full-screen display
+
+5. Ctrl+Alt+Pause — switches between full screen and windowed mode. However, with this keyboard shortcut, the remote desktop window remains at its standard size and doesn't fill the entire local desktop. Instead, it's displayed on a black background.
+
+4. Alt+Insert — cycle through the programs on the remote system in the order that they were opened. This process is the same as using Alt+Tab on your local desktop.
+
+3. Alt+Page Down — switch between programs on the remote desktop session, moving from right to left in the Windows task switcher. This is the same as Alt+Shift+Tab on your standard desktop.
+
+2. Alt+Page Up — switch between programs on the Remote Desktop session, moving from left to right in the Windows task switcher. This is the same as Alt+Tab on your standard desktop.
+
+1. Ctrl+Alt+End — send a Ctrl+Alt+Del signal to the remote system.

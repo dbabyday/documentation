@@ -1,0 +1,11 @@
+Multitenanncy Workshop
+---------------------------------------------------------------
+
+Backup as one database; recover at pluggable db level
+
+Can use Resource Manager to guarantee CPU/Memory percentages
+
+Upgrading to Multitenanncy
+	- 12.1 and up --> plug into root container
+	- provision new PDBG --> replicate with GG or DataPump
+

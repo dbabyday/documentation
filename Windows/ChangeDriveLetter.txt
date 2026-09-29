@@ -1,0 +1,3 @@
+Change Drive Letter
+
+Control Panel > Administrative Tools > Computer Management > Disk Management > Rt. Click - Drive > Change Drive Letter and Paths... > Change

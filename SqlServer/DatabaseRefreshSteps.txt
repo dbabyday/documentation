@@ -1,0 +1,112 @@
+Before Restore
+    Script DB Permissions
+    Get logical and physical db file names
+    Check file sizes and drive space
+
+Restore
+    Change destination
+    Change database name
+    Change physical file names
+
+After Restore
+    Set recovery model
+    Change database owner
+    Change logical file names
+    Remove DB permissions from previous environment
+    Grant DB permissions for this environment
+
+
+
+
+
+MailReader_PROD
+ - Source Server: CO-DB-205
+ - Destination Server: GCC-SQL-PD-057
+
+
+Database    File    physical_name   type_desc   Size_MB Used_MB
+
+MailReader_PROD MailReader_PROD F:\Databases\MailReader_PROD.mdf    ROWS    1,792.0 1,771.5
+MailReader_PROD MailReader_PROD_log G:\Logs\MailReader_PROD_log.ldf LOG 5.6 0.8
+
+
+
+/*
+    Server:       CO-DB-205
+    Database:     MailReader_PROD
+    Date:         2023-09-12 10:49:38
+    DB Principal: All
+*/
+
+
+
+-----------------------------------------------
+--// LOGINS                                //--
+-----------------------------------------------
+
+USE master;
+
+-- create windows logins
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'AP\richard.loh') CREATE LOGIN [AP\richard.loh] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'AP\tony.chua') CREATE LOGIN [AP\tony.chua] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'AP\yong-han.thung') CREATE LOGIN [AP\yong-han.thung] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Guadalajara-MX Dev Team Users in NA') CREATE LOGIN [NA\Guadalajara-MX Dev Team Users in NA] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\liz.valenta') CREATE LOGIN [NA\liz.valenta] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\srvcDCMailReadPD.na') CREATE LOGIN [NA\srvcDCMailReadPD.na] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\Srvcscomsql.plx') CREATE LOGIN [NA\Srvcscomsql.plx] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NA\srvcvCOps.na') CREATE LOGIN [NA\srvcvCOps.na] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'NT SERVICE\HealthService') CREATE LOGIN [NT SERVICE\HealthService] FROM WINDOWS WITH DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+
+-- create sql logins
+IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = N'sa') CREATE LOGIN [sa] WITH PASSWORD = 0x0200F4217EB841E4F5503CBE1A83700969E2C362C5BC6691F4619D55D5840F210AA296CD8883764D9CE23E45FB6FACD5C3D6CFE7F96E7B139DD2292C53490F4438BC20F5E0B3 HASHED, CHECK_EXPIRATION = ON, CHECK_POLICY = OFF, DEFAULT_DATABASE = [master], DEFAULT_LANGUAGE = [us_english];
+
+-- disable logins
+ALTER LOGIN [sa] DISABLE;
+
+-- no access logins
+
+
+
+-----------------------------------------------
+--// DATABASE USERS AND PERMISSIONS        //--
+-----------------------------------------------
+
+USE [MailReader_PROD];
+
+-- create users
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'AP\richard.loh') CREATE USER [AP\richard.loh] FOR LOGIN [AP\richard.loh] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'AP\tony.chua') CREATE USER [AP\tony.chua] FOR LOGIN [AP\tony.chua] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'AP\yong-han.thung') CREATE USER [AP\yong-han.thung] FOR LOGIN [AP\yong-han.thung] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Guadalajara-MX Dev Team Users in NA') CREATE USER [NA\Guadalajara-MX Dev Team Users in NA] FOR LOGIN [NA\Guadalajara-MX Dev Team Users in NA];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\liz.valenta') CREATE USER [NA\liz.valenta] FOR LOGIN [NA\liz.valenta] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\srvcDCMailReadPD.na') CREATE USER [NA\srvcDCMailReadPD.na] FOR LOGIN [NA\srvcDCMailReadPD.na] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\Srvcscomsql.plx') CREATE USER [NA\Srvcscomsql.plx] FOR LOGIN [NA\Srvcscomsql.plx] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NA\srvcvCOps.na') CREATE USER [NA\srvcvCOps.na] FOR LOGIN [NA\srvcvCOps.na] WITH DEFAULT_SCHEMA = [dbo];
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'NT SERVICE\HealthService') CREATE USER [NT SERVICE\HealthService] FOR LOGIN [NT SERVICE\HealthService] WITH DEFAULT_SCHEMA = [dbo];
+
+-- create roles
+IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name = N'SCOM_HealthService') CREATE ROLE [SCOM_HealthService];
+
+-- add role members
+ALTER ROLE [db_datareader] ADD MEMBER [AP\richard.loh];
+ALTER ROLE [db_datareader] ADD MEMBER [AP\tony.chua];
+ALTER ROLE [db_datareader] ADD MEMBER [AP\yong-han.thung];
+ALTER ROLE [db_datareader] ADD MEMBER [NA\Guadalajara-MX Dev Team Users in NA];
+ALTER ROLE [db_datareader] ADD MEMBER [NA\liz.valenta];
+ALTER ROLE [db_datareader] ADD MEMBER [NA\srvcDCMailReadPD.na];
+ALTER ROLE [db_owner] ADD MEMBER [NA\srvcDCMailReadPD.na];
+ALTER ROLE [db_datareader] ADD MEMBER [NA\srvcvCOps.na];
+ALTER ROLE [SCOM_HealthService] ADD MEMBER [NT SERVICE\HealthService];
+
+-- apply permissions
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [AP\richard.loh] AS [dbo];
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [AP\tony.chua] AS [dbo];
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [AP\yong-han.thung] AS [dbo];
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [NA\Guadalajara-MX Dev Team Users in NA] AS [dbo];
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [NA\liz.valenta] AS [dbo];
+GRANT VIEW DEFINITION ON SCHEMA::[dbo] TO [NA\liz.valenta] AS [dbo];
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [NA\srvcDCMailReadPD.na] AS [dbo];
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [NA\Srvcscomsql.plx] AS [dbo];
+GRANT SELECT ON DATABASE::[MailReader_PROD] TO [NA\Srvcscomsql.plx] AS [dbo];
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [NA\srvcvCOps.na] AS [dbo];
+GRANT CONNECT ON DATABASE::[MailReader_PROD] TO [NT SERVICE\HealthService] AS [dbo];

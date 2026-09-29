@@ -1,0 +1,30 @@
+jsprpy.__db_cache_size=973078528
+jsprpy.__java_pool_size=16777216
+jsprpy.__large_pool_size=83886080
+jsprpy.__oracle_base='/oracle'#ORACLE_BASE set from environment
+jsprpy.__pga_aggregate_target=1493172224
+jsprpy.__sga_target=2801795072
+jsprpy.__shared_io_pool_size=0
+jsprpy.__shared_pool_size=1660944384
+jsprpy.__streams_pool_size=16777216
+*.audit_file_dest='/oracle/admin/jsprpy/adump'
+*.audit_trail='db'
+*.compatible='11.2.0.4.0'
+*.control_files='/db/jsprpy/controlfile/control01.ctl','/archive1/jsprpy/controlfile/control02.ctl'
+*.db_block_size=8192
+*.db_domain=''
+*.db_name='jsprpy'
+*.db_recovery_file_dest='/oracle/fast_recovery_area'
+*.db_recovery_file_dest_size=5218762752
+*.diagnostic_dest='/oracle'
+*.dispatchers='(PROTOCOL=TCP) (SERVICE=jsprpyXDB)'
+*.java_jit_enabled=TRUE
+*.local_listener='LISTENER_JSPRPY'
+*.log_archive_dest_1='location=/archive2/jsprpy/archive2/'
+*.log_archive_format='%t_%s_%r.arc'
+*.memory_max_target=4294967296
+*.memory_target=4294967296
+*.open_cursors=300
+*.processes=150
+*.remote_login_passwordfile='EXCLUSIVE'
+*.undo_tablespace='UNDOTBS1'

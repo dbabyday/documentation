@@ -1,0 +1,41 @@
+Multitenant Administration
+Oracle Database Multitenant CDB & PDB Administration 12c/19c Part-1
+-----------------------------------
+
+-- check if database is cdb
+SQL> select cdb from v$database;
+YES
+
+-- which container are we in?
+SQL> show con_name
+
+SQL> show pdbs
+
+-- change connection to different pdb (or the CDB$ROOT)
+SQL> altr session set container=<CONTAINER_NAME>;
+
+-- CDB_VIEWS - use CON_ID column to know which contanier record is for
+
+
+
+
+
+
+
+
+-- Oracle Documentation
+Database Concepts
+Database Administrator's Guide
+Multitennant Administrator's Guide
+
+
+
+----------------------------------------
+OTHER THINGS TO LOOK UP
+----------------------------------------
+select * from database_properties;
+adrci
+SQL> startup upgrade;
+AutoUpdate
+proxy pdb
+

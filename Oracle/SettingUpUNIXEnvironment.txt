@@ -1,0 +1,40 @@
+Logon to the server then
+
+vi .profile
+
+type SHIFT G  ( capitol G ) this will take you to the bottom of the file.
+
+hit esc i ( lower case i ) to enter insert mode
+
+copy and paste these lines to the bottom of the file
+
+
+set -o vi
+export EDITOR=vi
+. /dba/bin/newsid.sh
+umask 022
+
+
+
+hit esc 
+type :wq 
+
+
+Don't log off without testing your .profile   an error in the file could prevent you from being able to log back on.
+
+
+At the command prompt type:
+
+. ./.profile
+
+
+thats dot space dot slash dot profile
+
+If it runs successfully you're all set, otherwise you'll have to fix the errors.
+
+
+
+You'll need to do this on one prod and one dev database server. The .profile is shared across servers but not across the prod and dev environments.
+
+
+

@@ -1,0 +1,80 @@
+
+-- Connect with user B's authentication, but get the permissions of user A
+ALTER USER A GRANT CONNECT THROUGH B;
+connect B[A]/Password@Database
+
+
+ZEER - Avanija.Mandali@plexus.com
+WWOR - sanketh.kamatala@cloudio.io
+22G7 - sarath.arangi@cloudio.io
+LUBS - lakshmi.dharani@cloudio.io
+
+
+'ZEER','WWOR','22G7','LUBS'
+
+exec ca.privs.user('22G7');
+exec ca.privs.user('WWOR');
+exec ca.privs.user('22G7');
+exec ca.privs.user('22G7');
+
+
+exec ca.privs.user('22G7');
+exec ca.privs.user('LUBS');
+exec ca.privs.user('WWOR');
+exec ca.privs.user('ZEER');
+
+
+
+
+grant CLOUDIODEV to WWOR;
+alter user WWOR default role all;
+
+alter user XXAPPS grant connect through "22G7";
+alter user XXAPPS grant connect through "LUBS";
+alter user XXAPPS grant connect through "WWOR";
+alter user XXAPPS grant connect through "ZEER";
+
+alter user XXCLOUDIO grant connect through "22G7";
+alter user XXCLOUDIO grant connect through "LUBS";
+alter user XXCLOUDIO grant connect through "WWOR";
+alter user XXCLOUDIO grant connect through "ZEER";
+
+
+22G7[XXAPPS]
+LUBS[XXAPPS]
+WWOR[XXAPPS]
+ZEER[XXAPPS]
+
+22G7[XXCLOUDIO]
+LUBS[XXCLOUDIO]
+WWOR[XXCLOUDIO]
+ZEER[XXCLOUDIO]
+
+select 'alter user "'||client||'" grant connect through "'||proxy||'";' stmt from dba_proxies order by proxy, client;
+
+Avanija.Mandali@plexus.com;sanketh.kamatala@cloudio.io;sarath.arangi@cloudio.io;lakshmi.dharani@cloudio.io
+
+
+
+create user "TUSER"
+identified by "+H]f#qm1SySnP8"
+default tablespace "USERS"
+temporary tablespace "TEMP"
+profile "DEFAULT";
+alter user "TUSER" quota unlimited on "USERS";
+
+
+-- proxies
+alter user "XXAPPS" grant connect through "TUSER";
+alter user "XXCLOUDIO" grant connect through "TUSER";
+
+
+-- roles
+grant "CLOUDIODEV" to "TUSER";
+grant "PLEXUSSA" to "TUSER";
+grant "PLXDEV" to "TUSER";
+alter user "TUSER" default role all;
+
+
+-- system privleges
+grant CREATE SESSION to "TUSER";

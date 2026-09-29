@@ -1,0 +1,34 @@
+ssh to AMPD
+
+sudo to appworx
+
+cd /ops/scripts/uc4/92/exec
+
+./runall_jders01.sh jders01 20190820 create >out/jders01.log 2>&1
+
+./runcog_2.sh cogrs01 20190820 create >out/cogrs01.log 2>&1
+
+get cogrs01.log and jders01.log from the /out directory to your laptop
+
+rename as .txt and open in Adobe Pro.
+
+sign the doc, which prompts you to save as a pdf
+
+Go to the CTST ticket in S/N and click on the evidence link to upload the 2 files.
+
+Close the ticket as 'Success'
+
+
+Files get submitted with this naming convention:
+
+BACKUPRESTOREVER_COGPRD02.20190820.log.txt
+
+BACKUPRESTOREVER_JDEPD03.20190820.log.txt
+
+
+
+
+
+
+CTST0014031
+

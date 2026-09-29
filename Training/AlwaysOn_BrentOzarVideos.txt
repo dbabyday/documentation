@@ -1,0 +1,4 @@
+https://learnfrom.brentozar.com/courses/dbas-guide-to-sql-server-high-availability-and-disaster-recovery/
+
+kraig.hughes@plexus.com
+Plexusdbas321

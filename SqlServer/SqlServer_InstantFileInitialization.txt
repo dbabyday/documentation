@@ -1,0 +1,11 @@
+Instant File Initialization
+
+Local Security Policy (secpol.msc)
+(Left Pane)
+Local Policies
+User Rights Assignment
+(Right Pane)
+Perform volume maintenance tasks
+Add User or Group  --> sql server service account
+
+

@@ -1,0 +1,39 @@
+
+
+https://ittutorial.org/ora-01194-file-1-needs-more-recovery-to-be-consistent/
+
+
+
+
+SQL> show parameter undo
+
+NAME TYPE VALUE
+--------------- ------- --------
+undo_management string  AUTO
+undo_retention  integer 900
+undo_tablespace string  UNDO_TBS
+
+SQL> alter system set undo_management=manual scope=spfile;
+System altered.
+
+
+
+
+
+SQL> ALTER SYSTEM SET "_allow_resetlogs_corruption"= TRUE SCOPE = SPFILE;
+System altered.
+
+
+
+
+SQL> startup mount;
+ORACLE instance started.
+
+
+
+
+SQL> ALTER DATABASE OPEN RESETLOGS;
+Database altered.
+
+
+

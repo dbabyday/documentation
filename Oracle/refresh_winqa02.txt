@@ -1,0 +1,58 @@
+Refresh winqa02
+------------------------------------------------------------------------------
+backup winpd02 controlfile to trace
+backup winqa02 controlfile to trace
+copy (netcat) winpd02 .snapshot dbf's to winqa02 data/pd/ directory
+copy winpd02 archivelogs to winqa02 arch/pd/ directory
+	scp james.lutsey.admin@winpd02-db.plexus.com:/oradb/winpd02/arch/winpd02_1_679*_1049051411.arc /oradb/winqa02/arch/pd
+	scp james.lutsey.admin@winpd02-db.plexus.com:/oradb/winpd02/arch/winpd02_1_680*_1049051411.arc /oradb/winqa02/arch/pd
+	scp james.lutsey.admin@winpd02-db.plexus.com:/oradb/winpd02/arch/winpd02_1_681*_1049051411.arc /oradb/winqa02/arch/pd
+	scp james.lutsey.admin@winpd02-db.plexus.com:/oradb/winpd02/arch/winpd02_1_682*_1049051411.arc /oradb/winqa02/arch/pd
+	scp james.lutsey.admin@winpd02-db.plexus.com:/oradb/winpd02/arch/winpd02_1_683*_1049051411.arc /oradb/winqa02/arch/pd
+	# rename files from winpd02 to winqa02
+	for file in winpd02_1_*_1049051411.arc; do
+		mv "${file}" "${file/winpd02/winqa02}"
+	done
+edit script for create controlfile winqa02
+export ca
+	create or replace directory refresh as '/oradb/winqa02/data/';
+	expdp DUMPFILE=ca.dmp LOGFILE=ca_exp.log SCHEMAS=CA
+shutdown winqa02 database and listener
+mv winqa02 data, arch, redo, control files to ./old/ directories
+mv pd files (data and arch) to reglar data and arch directories
+**(or have storage swap out volume)
+recover database
+	STARTUP NOMOUNT
+	@ctlcr_winqa02.sql
+	RECOVER DATABASE UNTIL TIME '2020/12/08:09:00:00' USING BACKUP CONTROLFILE PARALLEL 8;
+	ALTER DATABASE ENABLE BLOCK CHANGE TRACKING USING FILE '/oradb/winpd02/data/block_change_tracking.dbf' REUSE;
+	ALTER DATABASE OPEN RESETLOGS;
+	ALTER TABLESPACE TEMP ADD TEMPFILE '/oradb/winpd02/data/temp01.dbf' SIZE 32767M REUSE AUTOEXTEND ON NEXT 268435456  MAXSIZE 32767M;
+	ALTER TABLESPACE TEMP ADD TEMPFILE '/oradb/winpd02/data/temp02.dbf' SIZE 1024M REUSE AUTOEXTEND ON NEXT 268435456  MAXSIZE 32767M;
+new dbid
+import ca
+	create or replace directory refresh as '/oradb/winqa02/data/';
+	drop user ca cascade;
+	impdp DUMPFILE=ca.dmp LOGFILE=ca_imp.log
+compare privileges
+	exec ca.arcprivs.archive;
+	exec ca.arcprivs.compare;
+clean up
+	rm -rf /oradb/winqa02/data/old/
+	rm -rf /oradb/winqa02/arch/old/
+	rm -rf /oradb/winqa02/redo/old/
+	rm -rf /oradb/winqa02/redo/controlfile/old/
+	rm -rf /oradb/winqa02/data/pd/
+	rm -rf /oradb/winqa02/arch/pd/
+	rm -rf /installs/winqa02_rf/
+	rm /oradb/winqa02/data/*dmp
+	rm /oradb/winqa02/data/*log
+
+
+
+2020-12-08 06:00
+gcc-ora-pd-006:/oradb/winpd02/data/.snapshot/SP_2_13036237_7094754_1607428829
+
+
+winqa02-data:/winqa02_data
+dcc-ora-dv-006:/oradb/winqa02/data

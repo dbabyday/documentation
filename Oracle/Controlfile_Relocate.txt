@@ -1,0 +1,84 @@
+
+Relocate/Rename Control Files
+
+http://www.oracledistilled.com/oracle-database/administration/movingrenaming-control-files/
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+-----------------------------------------------
+--// Connect                               //--
+-----------------------------------------------
+
+sudo su - oracle
+sqlplus / as sysdba
+
+
+
+
+-----------------------------------------------
+--// Verify location(s)                    //--
+-----------------------------------------------
+
+select name from v$controlfile;
+
+	NAME
+	--------------------------------------------------------------------------------
+	/oradb/uc4np01/redo/tmp/winqa01/controlfile/control01.ctl
+	/oradb/uc4np01/redo/tmp/winqa01/controlfile/control02.ctl
+
+
+
+
+-----------------------------------------------
+--// Set the CONTROL_FILES parameter       //--
+-----------------------------------------------
+
+alter system set control_files='/oradb/grcdev01/redo/controlfile/control01.ctl',
+                               '/oradb/grcdev01/redo/controlfile/control02.ctl'
+             scope=spfile;
+
+	System altered.
+-- to remove a controlfile, just remove it from the control_files parameter
+
+
+
+-----------------------------------------------
+--// Move the files                        //--
+-----------------------------------------------
+
+shutdown immediate
+	Database closed.
+	Database dismounted.
+	ORACLE instance shut down.
+
+host
+mv /redo1/grcdev01/controlfile/control01.ctl /oradb/grcdev01/redo/controlfile/control01.ctl
+mv /redo2/grcdev01/controlfile/control02.ctl /oradb/grcdev01/redo/controlfile/control02.ctl
+exit
+
+startup
+	ORACLE instance started.
+
+	Total System Global Area 1069252608 bytes
+	Fixed Size                  2188408 bytes
+	Variable Size             343939976 bytes
+	Database Buffers          700448768 bytes
+	Redo Buffers               22675456 bytes
+	Database mounted.
+	Database opened.
+
+
+
+
+-----------------------------------------------
+--// Verify location(s)                    //--
+-----------------------------------------------
+
+select name from v$controlfile;
+
+	NAME
+	--------------------------------------------------------------------------------
+	/oradb/winqa01/redo/controlfile/control01.ctl
+	/oradb/winqa01/redo/controlfile/control02.ctl

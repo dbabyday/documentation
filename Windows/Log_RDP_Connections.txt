@@ -1,0 +1,6 @@
+Event Viewer 
+	> Applications and Services Logs 
+		> Microsoft 
+			> Windows 
+				> TerminalServices-LocalSessionMananger 
+					> Operational

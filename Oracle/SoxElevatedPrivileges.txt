@@ -1,0 +1,16 @@
+
+
+SOX Certification - IT-UA3 (Oracle)
+Review elevated privilegs in JDE databases
+
+1. ssh jdepd01-db and jdepd03-db
+2. @/dba/scripts/user_audit_jde2.sql
+3. copy csv files to local machine
+4. open in Excel
+	- Font: Consolas
+	- Size: 8
+	- Auto-adjust column widths
+	- Save As: .xlsx
+5. open in Adobe Acrobat
+	- Digitally Sign
+6. upload csv and pdf files in WDesk

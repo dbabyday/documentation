@@ -1,0 +1,34 @@
+http://noc.plexus.com/doku.php/docs:application:powershell:00_start
+
+# view possibilites
+get-module -listavailable
+get-command -module PLXS_VMWare
+Get-PSSnapin -Registered
+
+
+PS C:\> Add-PSSnapin "VMware.VimAutomation.Core"
+PS C:\> Connect-VIServer -Server vcenter.na.plexus.com      (or dcc-vc-comp-001.na.plexus.com for dev)
+
+Name                           Port  User
+----                           ----  ----
+vcenter.na.plexus.com          443   NA\james.lutsey.admin
+
+PS C:\> Install-Module -Repository ProGetDev -Name PLXS_VMWare
+PS C:\> Import-Module PLXS_VMWare
+PS C:\> Get-PLXSVMDiskMap GCC-CTX-SQL-002
+
+cmdlet Get-Credential at command pipeline position 1
+Supply values for the following parameters:
+Credential
+
+VM_SCSIController VM_DiskName VM_SCSI_Id VM_RDMMode VM_DiskFile                                                       VM_Format VolumeName              DiskSize    Offset Aligned Drive
+----------------- ----------- ---------- ---------- -----------                                                       --------- ----------              --------    ------ ------- -----
+SCSI controller 0 Hard disk 1 0 : 0                 [vm51ProdT2FCcrashvault03] Gcc-ctx-sql-002/Gcc-ctx-sql-002_3.vmdk Thin                              0.00 PB    1048576 YES     \\?\Volume{31068fcb-5a43-11e6-80fb-806e6f6e6963}\
+SCSI controller 0 Hard disk 1 0 : 0                 [vm51ProdT2FCcrashvault03] Gcc-ctx-sql-002/Gcc-ctx-sql-002_3.vmdk Thin      Server Operating System 0.00 PB  368050176 YES     C:
+SCSI controller 0 Hard disk 2 0 : 1                 [vm51ProdT3FCnobackup03] Gcc-ctx-sql-002/Gcc-ctx-sql-002_4.vmdk   Thin      Transient Data          0.00 PB    1048576 YES     D:
+SCSI controller 1 Hard disk 3 1 : 0                 [vm51ProdT3FCnobackup03] Gcc-ctx-sql-002/Gcc-ctx-sql-002_2.vmdk   Thin      SQL Data                0.00 PB    1048576 YES     F:
+SCSI controller 2 Hard disk 4 2 : 0                 [vm51ProdT3FCnobackup03] Gcc-ctx-sql-002/Gcc-ctx-sql-002_1.vmdk   Thin      SQL Log                 0.00 PB    1048576 YES     G:
+SCSI controller 3 Hard disk 5 3 : 0                 [vm51ProdT3FCnobackup03] Gcc-ctx-sql-002/Gcc-ctx-sql-002.vmdk     Thin      TempDB                  0.00 PB    1048576 YES     T:
+
+
+PS C:\>

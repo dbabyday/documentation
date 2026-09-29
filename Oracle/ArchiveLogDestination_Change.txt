@@ -1,0 +1,74 @@
+		
+Change Archive Log Destination
+
+https://www.oracle.com/ocom/groups/public/@otn/documents/webcontent/283256.htm#c
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+-------------------------------------------------
+--// Connect                                 //--
+-------------------------------------------------
+
+sudo su - oracle
+sqlplus / as sysdba
+
+
+
+
+-------------------------------------------------
+--// Verify location(s)                      //--
+-------------------------------------------------
+
+set linesize 300
+set pagesize 50
+column dest_name format a20
+column destination format a100
+select dest_name, destination from v$archive_dest where destination is not null;
+
+
+	DEST_NAME            DESTINATION
+	-------------------- ----------------------------------------------------------------------------------------------------
+	LOG_ARCHIVE_DEST_1   /oradb/uc4np01/arch/tmp/winqa01/
+
+
+
+
+-------------------------------------------------
+--// Set the LOG_ARCHIVE_DEST_n parameter(s) //--
+-------------------------------------------------
+
+alter system set LOG_ARCHIVE_DEST_1='LOCATION=/oradb/winqa01/arch/';
+
+	System altered.
+
+
+
+
+-------------------------------------------------
+--// Verify location(s)                      //--
+-------------------------------------------------
+
+select dest_name, destination from v$archive_dest where destination is not null;
+
+
+	DEST_NAME            DESTINATION
+	-------------------- ----------------------------------------------------------------------------------------------------
+	LOG_ARCHIVE_DEST_1   /oradb/winqa01/arch/
+
+
+
+
+
+-------------------------------------------------
+--// Move the files                          //--
+-------------------------------------------------
+
+exit
+mv /oradb/uc4np01/arch/tmp/winqa01/*.arc /oradb/winqa01/arch/
+
+
+
+
+

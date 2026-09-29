@@ -1,0 +1,16 @@
+OEM Overview Workshop
+--------------------------------------------------------------
+
+OEM connect to Oracle Support
+	- log service request from OEM
+
+Real Application Testing
+	- capture workload
+	- run on different environment (ie: create a test environment and upgrade it, then run the workload)
+		- find any errors, or performance changes
+	- SQL Performance Analyzer (SPA)
+		- Test imp0act of change on SQL query performance
+		- capture sql workload in prod including stats and bind variables
+		- re-execute SQL queries in test environment
+
+https://www.oracle.com/manageability/enterprise-manager/technologies/screenwatches.html

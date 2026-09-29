@@ -1,0 +1,29 @@
+
+
+
+$cn="co-db-079"
+
+
+
+
+
+## METHOD 1
+
+# get environment variables
+Invoke-Command -ComputerName $cn -ScriptBlock {Get-ChildItem -Path Env:}
+
+# get Path values, separated on new lines so it is easy to read
+(Invoke-Command -ComputerName $cn -ScriptBlock {Get-ChildItem -Path Env:\Path}).Value.Replace(";","`r`n")
+
+
+
+
+
+## METHOD 2
+
+# Path Env Variable
+[Environment]::GetEnvironmentVariables("Machine").Path.Replace(";","`n")
+
+# on remote computer
+Invoke-Command -ComputerName $cn -ScriptBlock {[Environment]::GetEnvironmentVariables("Machine").Path.Replace(";","`n")}
+

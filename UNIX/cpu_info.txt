@@ -1,0 +1,6 @@
+/usr/sbin/psrinfo
+
+/usr/sbin/psrinfo -p
+
+/usr/sbin/psrinfo -pv
+

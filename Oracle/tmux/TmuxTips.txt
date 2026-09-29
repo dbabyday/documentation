@@ -1,0 +1,82 @@
+TMUX Tips
+
+Getting started...
+
+Prefix Key = <ctrl> (Control)
+A = A on keyboard
+
+Hold <ctrl> down and tap A key
+
+This is often written as
+        Ctrl-a or
+        ctrl a or
+        <prefix> a
+
+Essential commands:
+
+# Getting Started
+man tmux                                         # get help
+tmux new-session -s sessionname -n windowname    # create a new session; -s is session name; -n is window name
+tmux ls                                          # list sessions
+tmux a -t sessionname                            # attach to session called sessionname
+tmux d                                           # detach to allow auto-resize
+
+Ctrl-a ?   # help  ( q to quit)
+Ctrl-a c   # create window
+Ctrl-a #   # change to other window
+Ctrl-a |   # split window into another vertical pane
+Ctrl-a -   # split window into another horizontal pane
+Ctrl-a q   # display pane numbers
+Ctrl-a o   # next ordered pane
+Ctrl-a d   # detach from the session
+
+
+
+# Monday 10/1/2018
+Session / Window / Pane Navigation
+Ctrl-a "        # chooser, select session or pane to navigate
+Ctrl-a (        # previous session
+Ctrl-a )        # next session
+Ctrl-a L        # last session
+Ctrl-a p        # previous window
+Ctrl-a n        # next window
+Ctrl-a '        # select window by number
+Ctrl-a a        # nav to last window
+
+# Pane Nav
+Ctrl-a q        # select pane by number
+Ctrl-a ;        # nav to last pane
+Ctrl-a o        # next pane in ordinal sequence
+
+# Multi-pane input / synchronize panes
+Ctrl-a y        # Send same input to all panes
+Ctrl-a t        # Show a clock, also disables input
+
+# Copy / Paste
+Ctrl-a [        # Begin copy mode
+<space>         # start copy at cursor selection
+<enter>         # finalize copy a cursor selection
+Ctrl-a ]        # Paste at current cursor location
+/               # forward search
+?               # backward search
+Ctrl-a =        # Show paste buffer, arrow or number to select
+
+# Move pane to different session
+<prefix>:move-pane -t <session_name>:<window number>
+
+# Shared sessions
+sunos(bob)$      tmux -S /tmp/tmux-shared new-session -s shared -n shared       # create new session (shared) with a window named (shared) via named socket
+sunos(tmux:bob)# chmod o=u /tmp/tmux-shared                     # give everyone permission to connect
+
+sunos(frank)$   ssh sunos                                       # remote user
+sunos(frank)$   tmux -S /tmp/tmux-shared attach                 # attach to bob's server and the session (shared), everyone sees/does everything
+sunos(frank)$   tmux -S /tmp/tmux-shared new -t frank           # attach to socket, create new session (frank).
+sunos(frank)$   tmux -S /tmp/tmux-shared attach -t frank        # attach to socket, attach to session (frank).
+
+sunos(tmux:bob)# tmux kill-sess -t shared                       # Kill the session
+sunos(bob)$      rm /tmp/tmux-shared                            # Delete the session
+
+
+
+
+

@@ -1,0 +1,72 @@
+1 monitoring tool - Operations Manager
+
+os and up with SCOM
+hardware with vROPS
+
+not predictive...more traditional reactive to changes
+
+Management packs
+	- collectin of discovery and monitoring rules
+	- SCOM - base - monitors only itself
+	- MP - Windows Server OS (windows default)
+	- MP - SQL, SSRS, SSIS (permissions chanllenges)
+	- MP - other applications
+
+Access
+	- https://scom.na.plexs.com/operationsmanager
+	- Silverlight (not fast)
+	- Fat client in next Citrix ITADMIN desktop
+	- named account = read only
+	- .Admin = interact with alerts, push clients
+
+Start in monitoring tab
+top ones on left pane are for all
+Folders for groups
+
+Alert details:
+right click - Health Explorer 
+
+Can make own custom view - colletion/group of computers (folder)
+Save things to "My Workspace"
+
+Maintenance mode - define timeframe to not monitor (use during maintenance outages)
+
+Overrides - set values for alerts (override the defaults)
+
+subscriptions
+	- can tie in email message with alerts
+
+Not monitored - SCOM discovered a computer, but it is not actively monitored
+	- if it should be, rt click, refresh
+
+Views
+	- alert
+	- diagram
+	- 
+	- 
+
+Windows computer tasks
+	- can do some remote interaction (Computer Management, Powershell, ...)
+
+Summary
+	- 
+
+Authoring
+	- ceate groups
+	- 	
+
+
+
+
+
+metrics and graphs - performance view?
+	pulls in perfmon metrics
+
+ability for custom metrics
+	
+
+start using, creating views, groups...
+	- feedback to Eric
+	- custom objects: start with 'PLXS'
+
+

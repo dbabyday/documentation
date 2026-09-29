@@ -1,0 +1,32 @@
+PATTERN      STYLED DATE                SYNTAX                                  STYLE  LENGTH
+-----------  -------------------------  --------------------------------------  -----  ------
+
+YYYY MM DD   20010223                   convert(varchar, your_data_here ,112)   112    8
+YY MM DD     010223                     convert(varchar, your_data_here ,12)    12     6
+
+YYYY MM DD   2001/02/23                 convert(varchar, your_data_here ,111)   111    10
+YY MM DD     01/02/23                   convert(varchar, your_data_here ,11)    11     8
+MM DD YYYY   02/23/2001                 convert(varchar, your_data_here ,101)   101    10
+MM DD YY     02/23/01                   convert(varchar, your_data_here ,1)     1      8
+DD MM YYYY   23/02/2001                 convert(varchar, your_data_here ,103)   103    10
+DD MM YY     23/02/01                   convert(varchar, your_data_here ,3)     3      8
+
+YYYY MM DD   2001.02.23                 convert(varchar, your_data_here ,102)   102    10
+YY MM DD     01.02.23                   convert(varchar, your_data_here ,2)     2      8
+DD MM YYYY   23.02.2001                 convert(varchar, your_data_here ,104)   104    10
+DD MM YY     23.02.01                   convert(varchar, your_data_here ,4)     4      8
+
+MMM DD YYYY  Feb 23 2001 4:05:06:007AM  convert(varchar, your_data_here ,9)     9      26
+MMM DD YYYY  Feb 23 2001 4:05:06:007AM  convert(varchar, your_data_here ,109)   109    26
+MMM DD YYYY  Feb 23 2001 4:05AM         convert(varchar, your_data_here ,100)   100    19
+MMM DD YYYY  Feb 23, 2001               convert(varchar, your_data_here ,107)   107    12
+MMM DD YY    Feb 23, 01                 convert(varchar, your_data_here ,7)     7      10
+DD MMM YYYY  23 Feb 2001 04:05:06:007   convert(varchar, your_data_here ,13)    13     24
+DD MMM YYYY  23 Feb 2001 04:05:06:007   convert(varchar, your_data_here ,113)   113    24
+DD MM YYYY   23 Feb 2001                convert(varchar, your_data_here ,106)   106    11
+DD MM YY     23 Feb 01                  convert(varchar, your_data_here ,6)     6      9
+
+hh:mm:ss:ms  04:05:06:007               convert(varchar, your_data_here ,14)    14     12
+hh:mm:ss:ms  04:05:06:007               convert(varchar, your_data_here ,114)   114    12
+hh:mm:ss     04:05:06                   convert(varchar, your_data_here ,8)     8      8
+hh:mm:ss     04:05:06                   convert(varchar, your_data_here ,108)   108    8

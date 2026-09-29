@@ -1,0 +1,561 @@
+$credential = Get-Credential 
+
+
+Invoke-Command
+
+
+
+
+
+PS C:\Users\james.lutsey> $host
+
+
+Name             : Windows PowerShell ISE Host
+Version          : 5.0.10586.117
+InstanceId       : 550e7eb3-d6a7-41b2-98f8-78f744047666
+UI               : System.Management.Automation.Internal.Host.InternalHostUserInterface
+CurrentCulture   : en-US
+CurrentUICulture : en-US
+PrivateData      : Microsoft.PowerShell.Host.ISE.ISEOptions
+DebuggerEnabled  : True
+IsRunspacePushed : False
+Runspace         : System.Management.Automation.Runspaces.LocalRunspace
+
+
+
+
+PS C:\Users\james.lutsey> Get-PSSessionConfiguration
+dir : Cannot find path 'localhost\Plugin' because it does not exist.
+At line:98 char:3
++   dir 'WSMan:\localhost\Plugin\' -Force:$force | ? { $_.name -like "$ ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (localhost\Plugin:String) [Get-ChildItem], ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand
+ 
+
+PS C:\Users\james.lutsey> Get-Module -ListAvailable
+
+
+    Directory: C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+
+
+    Directory: C:\Program Files (x86)\PowerShell Community Extensions\Pscx3
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     3.2.0.0    Pscx                                {Add-PathVariable, Clear-MSMQueue, ConvertFrom-Base64, ConvertTo-Base64...}
+
+
+    Directory: C:\Program Files\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     0.8.709    dbatools                            {Start-SqlMigration, Copy-SqlDatabase, Copy-SqlLogin, Copy-SqlServerAgen...
+Binary     1.0.0.1    PackageManagement                   {Find-Package, Get-Package, Get-PackageProvider, Get-PackageSource...}     
+Manifest   1.4.1      PLXS_Default                        {Add-PLXSLocalAdmins, ConvertTo-KMG, Get-LocalAdmins, Get-PLXSEmptyField...
+Manifest   0.6.2      PLXS_VMWare                         {Compare-PLXSVMHostDSVAName, Export-PLXSHostLists, Initialize-PLXSVMHost...
+Script     1.0.0.1    PowerShellGet                       {Install-Module, Find-Module, Save-Module, Update-Module...}               
+Manifest   20.0       SqlServer                           {Add-SqlColumnEncryptionKeyValue, Complete-SqlColumnMasterKeyRotation, G...
+
+
+    Directory: C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0.0.0    AppLocker                           {Set-AppLockerPolicy, Get-AppLockerPolicy, Test-AppLockerPolicy, Get-App...
+Manifest   1.0.0.0    BitsTransfer                        {Add-BitsFile, Remove-BitsTransfer, Complete-BitsTransfer, Get-BitsTrans...
+Manifest   1.0.0.0    CimCmdlets                          {Get-CimAssociatedInstance, Get-CimClass, Get-CimInstance, Get-CimSessio...
+Script     1.2.2      Graphite-PowerShell                                                                                            
+Script     1.0.0.0    ISE                                 {New-IseSnippet, Import-IseSnippet, Get-IseSnippet}                        
+Manifest   1.0.0.0    Microsoft.PowerShell.Archive        {Compress-Archive, Expand-Archive}                                         
+Manifest   3.0.0.0    Microsoft.PowerShell.Diagnostics    {Get-WinEvent, Get-Counter, Import-Counter, Export-Counter...}             
+Manifest   3.0.0.0    Microsoft.PowerShell.Host           {Start-Transcript, Stop-Transcript}                                        
+Manifest   3.1.0.0    Microsoft.PowerShell.Management     {Add-Content, Clear-Content, Clear-ItemProperty, Join-Path...}             
+Script     1.0        Microsoft.PowerShell.ODataUtils     Export-ODataEndpointProxy                                                  
+Manifest   3.0.0.0    Microsoft.PowerShell.Security       {Get-Acl, Set-Acl, Get-PfxCertificate, Get-Credential...}                  
+Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Format-List, Format-Custom, Format-Table, Format-Wide...}                 
+Manifest   3.0.0.0    Microsoft.WSMan.Management          {Disable-WSManCredSSP, Enable-WSManCredSSP, Get-WSManCredSSP, Set-WSManQ...
+Manifest   1.0.0.0    NetworkSwitchManager                {Disable-NetworkSwitchEthernetPort, Enable-NetworkSwitchEthernetPort, Ge...
+Script     3.2.0.0    Pscx                                {Add-PathVariable, Clear-MSMQueue, ConvertFrom-Base64, ConvertTo-Base64...}
+Manifest   1.1        PSDesiredStateConfiguration         {Set-DscLocalConfigurationManager, Start-DscConfiguration, Test-DscConfi...
+Script     1.0.0.0    PSDiagnostics                       {Disable-PSTrace, Disable-PSWSManCombinedTrace, Disable-WSManTrace, Enab...
+Binary     1.1.0.0    PSScheduledJob                      {New-JobTrigger, Add-JobTrigger, Remove-JobTrigger, Get-JobTrigger...}     
+Manifest   2.0.0.0    PSWorkflow                          {New-PSWorkflowExecutionOption, New-PSWorkflowSession, nwsn}               
+Manifest   1.0.0.0    PSWorkflowUtility                   Invoke-AsWorkflow                                                          
+Manifest   1.0.0.0    TroubleshootingPack                 {Get-TroubleshootingPack, Invoke-TroubleshootingPack}                      
+Manifest   1.0.0.0    WebAdministration                   {Start-WebCommitDelay, Stop-WebCommitDelay, Get-WebConfigurationLock, Re...
+
+
+    Directory: C:\Program Files (x86)\Microsoft SQL Server\120\Tools\PowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        SQLASCMDLETS                        {Add-RoleMember, Backup-ASDatabase, Invoke-ASCmd, Invoke-ProcessCube...}   
+Manifest   1.0        SQLPS                               {Backup-SqlDatabase, Add-SqlAvailabilityDatabase, Add-SqlAvailabilityGro...
+
+
+    Directory: C:\Program Files (x86)\Microsoft SQL Server\110\Tools\PowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        SQLASCMDLETS                        {Add-RoleMember, Backup-ASDatabase, Invoke-ASCmd, Invoke-ProcessCube...}   
+Manifest   1.0        SQLPS                               {Backup-SqlDatabase, Add-SqlAvailabilityDatabase, Disable-SqlAlwaysOn, E...
+
+
+    Directory: C:\Program Files (x86)\Microsoft SQL Server\130\Tools\PowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   2.0        SQLASCMDLETS                        {Add-RoleMember, Backup-ASDatabase, Invoke-ASCmd, Invoke-ProcessCube...}   
+Manifest   1.0        SQLPS                               {Add-SqlColumnEncryptionKeyValue, Complete-SqlColumnMasterKeyRotation, G...
+
+
+
+PS C:\Users\james.lutsey> Set-Location C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules> Get-ChildItem
+
+
+    Directory: C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules
+
+
+Mode                LastWriteTime         Length Name                                                                                
+----                -------------         ------ ----                                                                                
+d-----         3/3/2017   2:02 PM                PLXS_SQL                                                                            
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules> Set-Location PLXS_SQL
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL> Get-ChildItem
+
+
+    Directory: C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL
+
+
+Mode                LastWriteTime         Length Name                                                                                
+----                -------------         ------ ----                                                                                
+d-----         3/3/2017   2:09 PM                1.0                                                                                 
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL> Set-Location 1.0
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> get-chid
+get-chid : The term 'get-chid' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the 
+spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ get-chid
++ ~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (get-chid:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-ChildItem
+
+
+    Directory: C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0
+
+
+Mode                LastWriteTime         Length Name                                                                                
+----                -------------         ------ ----                                                                                
+d-----         3/3/2017   2:57 PM                Functions                                                                           
+-a----         3/3/2017   2:21 PM           6664 PLXS_SQL.psd1                                                                       
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Test-ModuleManifest .\PLXS_SQL.psd1
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-PLXSRdpSessions -computername "co-d-042" -username "james"
+qwinsta : Error 1722 getting sessionnames
+At C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0\Functions\Get-PLXSRdpSessions.psm1:68 char:30
++             $queryResults = (qwinsta /server:$c)
++                              ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Error 1722 getting sessionnames:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Error [1722]:The RPC server is unavailable.
+
+
+
+
+-----------------------------------------------
+--// logged in by *james*
+-----------------------------------------------
+
+
+
+
+none
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-PLXSRdpSessions -computername "co-db-042" -username "james"
+
+
+
+
+-----------------------------------------------
+--// logged in by *james*
+-----------------------------------------------
+
+
+
+
+none
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-PSRepository
+
+Name                      PackageManagementProvider InstallationPolicy   SourceLocation                                              
+----                      ------------------------- ------------------   --------------                                              
+PSGallery                 NuGet                     Untrusted            https://www.powershellgallery.com/api/v2/                   
+ProGetDev                 NuGet                     Trusted              http://neen-ap-994:81/nuget/Plexus                          
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Publish-Module -name PLXS_SQL -Repository ProGetDev -NuGetApiKey admin:admin
+Publish-Module : Module 'PLXS_SQL' cannot be published because it is missing required metadata. Verify that the module manifest 
+specifies Description and Author.
+At line:1 char:1
++ Publish-Module -name PLXS_SQL -Repository ProGetDev -NuGetApiKey admi ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (PLXS_SQL:String) [Publish-Module], InvalidOperationException
+    + FullyQualifiedErrorId : MissingRequiredModuleManifestKeys,Publish-Module
+ 
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Update-ModuleManifest -Path .\PLXS_SQL.psd1 -Description "SQL Server Stuff" 
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Publish-Module -name PLXS_SQL -Repository ProGetDev -NuGetApiKey admin:admin
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Find-Module -Repository ProGetDev
+
+Version    Name                                Type       Repository           Description                                           
+-------    ----                                ----       ----------           -----------                                           
+3.4.3      Pester                              Module     ProGetDev            Pester provides a framework for running BDD style T...
+1.2        PLXS_Citrix                         Module     ProGetDev            Plexus Custom Module to ease administration of Citrix.
+1.0        PLXS_CitrixDefault                  Module     ProGetDev            Citrix module ot ease administration                  
+1.5.7      PLXS_Default                        Module     ProGetDev            General Use commands to assist in system admin acti...
+1.6        PLXS_Exchange                       Module     ProGetDev            PowerShell module for ease of Exchange 2010 adminis...
+1.1        PLXS_Module                         Module     ProGetDev            Module for default Plexus Module management           
+0.6.1      PLXS_Plexster                       Module     ProGetDev            Beta release of Module wrapper for Pester             
+1.0        PLXS_SQL                            Module     ProGetDev            SQL Server Stuff                                      
+0.8        PLXS_VMWare                         Module     ProGetDev            Plexus Created Module to streamline administration ...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Install-Module -name PLXS_Citrix -Repository ProGetDev
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-Command -module PLXS_Citrix
+
+CommandType     Name                                               Version    Source                                                 
+-----------     ----                                               -------    ------                                                 
+Function        Get-PLXSDiskStatus                                 1.2        PLXS_Citrix                                            
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> get-module -ListAvailable
+
+
+    Directory: C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+
+
+    Directory: C:\Program Files (x86)\PowerShell Community Extensions\Pscx3
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     3.2.0.0    Pscx                                {Add-PathVariable, Clear-MSMQueue, ConvertFrom-Base64, ConvertTo-Base64...}
+
+
+    Directory: C:\Program Files\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     0.8.709    dbatools                            {Start-SqlMigration, Copy-SqlDatabase, Copy-SqlLogin, Copy-SqlServerAgen...
+Binary     1.0.0.1    PackageManagement                   {Find-Package, Get-Package, Get-PackageProvider, Get-PackageSource...}     
+Manifest   1.2        PLXS_Citrix                         Get-PLXSDiskStatus                                                         
+Manifest   1.4.1      PLXS_Default                        {Add-PLXSLocalAdmins, ConvertTo-KMG, Get-LocalAdmins, Get-PLXSEmptyField...
+Manifest   0.6.2      PLXS_VMWare                         {Compare-PLXSVMHostDSVAName, Export-PLXSHostLists, Initialize-PLXSVMHost...
+Script     1.0.0.1    PowerShellGet                       {Install-Module, Find-Module, Save-Module, Update-Module...}               
+Manifest   20.0       SqlServer                           {Add-SqlColumnEncryptionKeyValue, Complete-SqlColumnMasterKeyRotation, G...
+
+
+    Directory: C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0.0.0    AppLocker                           {Set-AppLockerPolicy, Get-AppLockerPolicy, Test-AppLockerPolicy, Get-App...
+Manifest   1.0.0.0    BitsTransfer                        {Add-BitsFile, Remove-BitsTransfer, Complete-BitsTransfer, Get-BitsTrans...
+Manifest   1.0.0.0    CimCmdlets                          {Get-CimAssociatedInstance, Get-CimClass, Get-CimInstance, Get-CimSessio...
+Script     1.2.2      Graphite-PowerShell                                                                                            
+Script     1.0.0.0    ISE                                 {New-IseSnippet, Import-IseSnippet, Get-IseSnippet}                        
+Manifest   1.0.0.0    Microsoft.PowerShell.Archive        {Compress-Archive, Expand-Archive}                                         
+Manifest   3.0.0.0    Microsoft.PowerShell.Diagnostics    {Get-WinEvent, Get-Counter, Import-Counter, Export-Counter...}             
+Manifest   3.0.0.0    Microsoft.PowerShell.Host           {Start-Transcript, Stop-Transcript}                                        
+Manifest   3.1.0.0    Microsoft.PowerShell.Management     {Add-Content, Clear-Content, Clear-ItemProperty, Join-Path...}             
+Script     1.0        Microsoft.PowerShell.ODataUtils     Export-ODataEndpointProxy                                                  
+Manifest   3.0.0.0    Microsoft.PowerShell.Security       {Get-Acl, Set-Acl, Get-PfxCertificate, Get-Credential...}                  
+Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Format-List, Format-Custom, Format-Table, Format-Wide...}                 
+Manifest   3.0.0.0    Microsoft.WSMan.Management          {Disable-WSManCredSSP, Enable-WSManCredSSP, Get-WSManCredSSP, Set-WSManQ...
+Manifest   1.0.0.0    NetworkSwitchManager                {Disable-NetworkSwitchEthernetPort, Enable-NetworkSwitchEthernetPort, Ge...
+Script     3.2.0.0    Pscx                                {Add-PathVariable, Clear-MSMQueue, ConvertFrom-Base64, ConvertTo-Base64...}
+Manifest   1.1        PSDesiredStateConfiguration         {Set-DscLocalConfigurationManager, Start-DscConfiguration, Test-DscConfi...
+Script     1.0.0.0    PSDiagnostics                       {Disable-PSTrace, Disable-PSWSManCombinedTrace, Disable-WSManTrace, Enab...
+Binary     1.1.0.0    PSScheduledJob                      {New-JobTrigger, Add-JobTrigger, Remove-JobTrigger, Get-JobTrigger...}     
+Manifest   2.0.0.0    PSWorkflow                          {New-PSWorkflowExecutionOption, New-PSWorkflowSession, nwsn}               
+Manifest   1.0.0.0    PSWorkflowUtility                   Invoke-AsWorkflow                                                          
+Manifest   1.0.0.0    TroubleshootingPack                 {Get-TroubleshootingPack, Invoke-TroubleshootingPack}                      
+Manifest   1.0.0.0    WebAdministration                   {Start-WebCommitDelay, Stop-WebCommitDelay, Get-WebConfigurationLock, Re...
+
+
+    Directory: C:\Program Files (x86)\Microsoft SQL Server\120\Tools\PowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        SQLASCMDLETS                        {Add-RoleMember, Backup-ASDatabase, Invoke-ASCmd, Invoke-ProcessCube...}   
+Manifest   1.0        SQLPS                               {Backup-SqlDatabase, Add-SqlAvailabilityDatabase, Add-SqlAvailabilityGro...
+
+
+    Directory: C:\Program Files (x86)\Microsoft SQL Server\110\Tools\PowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        SQLASCMDLETS                        {Add-RoleMember, Backup-ASDatabase, Invoke-ASCmd, Invoke-ProcessCube...}   
+Manifest   1.0        SQLPS                               {Backup-SqlDatabase, Add-SqlAvailabilityDatabase, Disable-SqlAlwaysOn, E...
+
+
+    Directory: C:\Program Files (x86)\Microsoft SQL Server\130\Tools\PowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   2.0        SQLASCMDLETS                        {Add-RoleMember, Backup-ASDatabase, Invoke-ASCmd, Invoke-ProcessCube...}   
+Manifest   1.0        SQLPS                               {Add-SqlColumnEncryptionKeyValue, Complete-SqlColumnMasterKeyRotation, G...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> get-module -ListAvailable PLXS*
+
+
+    Directory: C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+
+
+    Directory: C:\Program Files\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.2        PLXS_Citrix                         Get-PLXSDiskStatus                                                         
+Manifest   1.4.1      PLXS_Default                        {Add-PLXSLocalAdmins, ConvertTo-KMG, Get-LocalAdmins, Get-PLXSEmptyField...
+Manifest   0.6.2      PLXS_VMWare                         {Compare-PLXSVMHostDSVAName, Export-PLXSHostLists, Initialize-PLXSVMHost...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Find-Module -name PLXS_DEFAULT
+
+Version    Name                                Type       Repository           Description                                           
+-------    ----                                ----       ----------           -----------                                           
+1.5.7      PLXS_Default                        Module     ProGetDev            General Use commands to assist in system admin acti...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Find-Module -name PLXS_DEFAULT | Install-Module
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Find-Module -name PLXS_DEFAULT
+
+Version    Name                                Type       Repository           Description                                           
+-------    ----                                ----       ----------           -----------                                           
+1.5.7      PLXS_Default                        Module     ProGetDev            General Use commands to assist in system admin acti...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> get-module -ListAvailable PLXS*
+
+
+    Directory: C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+
+
+    Directory: C:\Program Files\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Manifest   1.2        PLXS_Citrix                         Get-PLXSDiskStatus                                                         
+Manifest   1.5.7      PLXS_Default                        {Add-PLXSLocalAdmins, ConvertTo-KMG, Get-PLXSEmptyFields, Get-PLXSLocalA...
+Manifest   1.4.1      PLXS_Default                        {Add-PLXSLocalAdmins, ConvertTo-KMG, Get-LocalAdmins, Get-PLXSEmptyField...
+Manifest   0.6.2      PLXS_VMWare                         {Compare-PLXSVMHostDSVAName, Export-PLXSHostLists, Initialize-PLXSVMHost...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-Module
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     1.0        GroupSet                            {BuildResourceCommonParameters, BuildResourceString, GroupSet}             
+Script     1.0.0.0    ISE                                 {Get-IseSnippet, Import-IseSnippet, New-IseSnippet}                        
+Manifest   3.1.0.0    Microsoft.PowerShell.Management     {Add-Computer, Add-Content, Checkpoint-Computer, Clear-Content...}         
+Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Add-Member, Add-Type, Clear-Variable, Compare-Object...}                  
+Manifest   3.0.0.0    Microsoft.WSMan.Management          {Connect-WSMan, Disable-WSManCredSSP, Disconnect-WSMan, Enable-WSManCred...
+Binary     1.0.0.1    PackageManagement                   {Find-Package, Find-PackageProvider, Get-Package, Get-PackageProvider...}  
+Manifest   1.2        PLXS_Citrix                         Get-PLXSDiskStatus                                                         
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+Script     1.0.0.1    PowerShellGet                       {Find-DscResource, Find-Module, Find-Script, Get-InstalledModule...}       
+Script     1.0        ProcessSet                          {BuildResourceCommonParameters, BuildResourceString, ProcessSet}           
+Manifest   1.1        PSDesiredStateConfiguration         {Invoke-DscResource, Publish-DscConfiguration, Set-DscLocalConfiguration...
+Script     1.0        ServiceSet                          {BuildResourceCommonParameters, BuildResourceString, ServiceSet}           
+Script     1.0        WindowsFeatureSet                   {BuildResourceCommonParameters, BuildResourceString, WindowsFeatureSet}    
+Script     1.0        WindowsOptionalFeatureSet           {BuildResourceCommonParameters, BuildResourceString, WindowsOptionalFeat...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-PLXSEmptyFields -computername "co-db-042"
+
+
+Server            : co-db-042
+Owned by          : Corp.DBA
+Solutions Manager : Kraig.Hughes
+Solution          : SQL Database Management
+Application Owner : Corp.DBA
+Short Description : 
+Last Updated      : 
+
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-Module
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     1.0        GroupSet                            {BuildResourceCommonParameters, BuildResourceString, GroupSet}             
+Script     1.0.0.0    ISE                                 {Get-IseSnippet, Import-IseSnippet, New-IseSnippet}                        
+Manifest   3.1.0.0    Microsoft.PowerShell.Management     {Add-Computer, Add-Content, Checkpoint-Computer, Clear-Content...}         
+Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Add-Member, Add-Type, Clear-Variable, Compare-Object...}                  
+Manifest   3.0.0.0    Microsoft.WSMan.Management          {Connect-WSMan, Disable-WSManCredSSP, Disconnect-WSMan, Enable-WSManCred...
+Binary     1.0.0.1    PackageManagement                   {Find-Package, Find-PackageProvider, Get-Package, Get-PackageProvider...}  
+Manifest   1.2        PLXS_Citrix                         Get-PLXSDiskStatus                                                         
+Manifest   1.5.7      PLXS_Default                        {Add-PLXSLocalAdmins, ConvertTo-KMG, Get-PLXSEmptyFields, Get-PLXSLocalA...
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+Script     1.0.0.1    PowerShellGet                       {Find-DscResource, Find-Module, Find-Script, Get-InstalledModule...}       
+Script     1.0        ProcessSet                          {BuildResourceCommonParameters, BuildResourceString, ProcessSet}           
+Manifest   1.1        PSDesiredStateConfiguration         {Invoke-DscResource, Publish-DscConfiguration, Set-DscLocalConfiguration...
+Script     1.0        ServiceSet                          {BuildResourceCommonParameters, BuildResourceString, ServiceSet}           
+Script     1.0        WindowsFeatureSet                   {BuildResourceCommonParameters, BuildResourceString, WindowsFeatureSet}    
+Script     1.0        WindowsOptionalFeatureSet           {BuildResourceCommonParameters, BuildResourceString, WindowsOptionalFeat...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Remove-Module PLXS_Default
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-Module
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     1.0        GroupSet                            {BuildResourceCommonParameters, BuildResourceString, GroupSet}             
+Script     1.0.0.0    ISE                                 {Get-IseSnippet, Import-IseSnippet, New-IseSnippet}                        
+Manifest   3.1.0.0    Microsoft.PowerShell.Management     {Add-Computer, Add-Content, Checkpoint-Computer, Clear-Content...}         
+Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Add-Member, Add-Type, Clear-Variable, Compare-Object...}                  
+Manifest   3.0.0.0    Microsoft.WSMan.Management          {Connect-WSMan, Disable-WSManCredSSP, Disconnect-WSMan, Enable-WSManCred...
+Binary     1.0.0.1    PackageManagement                   {Find-Package, Find-PackageProvider, Get-Package, Get-PackageProvider...}  
+Manifest   1.2        PLXS_Citrix                         Get-PLXSDiskStatus                                                         
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+Script     1.0.0.1    PowerShellGet                       {Find-DscResource, Find-Module, Find-Script, Get-InstalledModule...}       
+Script     1.0        ProcessSet                          {BuildResourceCommonParameters, BuildResourceString, ProcessSet}           
+Manifest   1.1        PSDesiredStateConfiguration         {Invoke-DscResource, Publish-DscConfiguration, Set-DscLocalConfiguration...
+Script     1.0        ServiceSet                          {BuildResourceCommonParameters, BuildResourceString, ServiceSet}           
+Script     1.0        WindowsFeatureSet                   {BuildResourceCommonParameters, BuildResourceString, WindowsFeatureSet}    
+Script     1.0        WindowsOptionalFeatureSet           {BuildResourceCommonParameters, BuildResourceString, WindowsOptionalFeat...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> import-module plxs_default
+Get-EventLog : The network path was not found.
+At C:\Program Files\WindowsPowerShell\Modules\plxs_default\1.5.7\Functions\Get-PLXSUserActivity.psm1:51 char:13
++             Get-EventLog System -Source Microsoft-Windows-Winlogon -C ...
++             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-EventLog], IOException
+    + FullyQualifiedErrorId : System.IO.IOException,Microsoft.PowerShell.Commands.GetEventLogCommand
+ 
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Import-Module plxs_default -RequiredVersion 1.4.1
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-Module
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     1.0        GroupSet                            {BuildResourceCommonParameters, BuildResourceString, GroupSet}             
+Script     1.0.0.0    ISE                                 {Get-IseSnippet, Import-IseSnippet, New-IseSnippet}                        
+Manifest   3.1.0.0    Microsoft.PowerShell.Management     {Add-Computer, Add-Content, Checkpoint-Computer, Clear-Content...}         
+Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Add-Member, Add-Type, Clear-Variable, Compare-Object...}                  
+Manifest   3.0.0.0    Microsoft.WSMan.Management          {Connect-WSMan, Disable-WSManCredSSP, Disconnect-WSMan, Enable-WSManCred...
+Binary     1.0.0.1    PackageManagement                   {Find-Package, Find-PackageProvider, Get-Package, Get-PackageProvider...}  
+Manifest   1.2        PLXS_Citrix                         Get-PLXSDiskStatus                                                         
+Manifest   1.5.7      plxs_default                        {Add-PLXSLocalAdmins, ConvertTo-KMG, Get-PLXSEmptyFields, Get-PLXSLocalA...
+Manifest   1.4.1      plxs_default                        {Add-PLXSLocalAdmins, ConvertTo-KMG, Get-LocalAdmins, Get-PLXSEmptyField...
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+Script     1.0.0.1    PowerShellGet                       {Find-DscResource, Find-Module, Find-Script, Get-InstalledModule...}       
+Script     1.0        ProcessSet                          {BuildResourceCommonParameters, BuildResourceString, ProcessSet}           
+Manifest   1.1        PSDesiredStateConfiguration         {Invoke-DscResource, Publish-DscConfiguration, Set-DscLocalConfiguration...
+Script     1.0        ServiceSet                          {BuildResourceCommonParameters, BuildResourceString, ServiceSet}           
+Script     1.0        WindowsFeatureSet                   {BuildResourceCommonParameters, BuildResourceString, WindowsFeatureSet}    
+Script     1.0        WindowsOptionalFeatureSet           {BuildResourceCommonParameters, BuildResourceString, WindowsOptionalFeat...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Remove-Module PLXS_Default
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> Get-Module
+
+ModuleType Version    Name                                ExportedCommands                                                           
+---------- -------    ----                                ----------------                                                           
+Script     1.0        GroupSet                            {BuildResourceCommonParameters, BuildResourceString, GroupSet}             
+Script     1.0.0.0    ISE                                 {Get-IseSnippet, Import-IseSnippet, New-IseSnippet}                        
+Manifest   3.1.0.0    Microsoft.PowerShell.Management     {Add-Computer, Add-Content, Checkpoint-Computer, Clear-Content...}         
+Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Add-Member, Add-Type, Clear-Variable, Compare-Object...}                  
+Manifest   3.0.0.0    Microsoft.WSMan.Management          {Connect-WSMan, Disable-WSManCredSSP, Disconnect-WSMan, Enable-WSManCred...
+Binary     1.0.0.1    PackageManagement                   {Find-Package, Find-PackageProvider, Get-Package, Get-PackageProvider...}  
+Manifest   1.2        PLXS_Citrix                         Get-PLXSDiskStatus                                                         
+Manifest   1.0        PLXS_SQL                            Get-PLXSRdpSessions                                                        
+Script     1.0.0.1    PowerShellGet                       {Find-DscResource, Find-Module, Find-Script, Get-InstalledModule...}       
+Script     1.0        ProcessSet                          {BuildResourceCommonParameters, BuildResourceString, ProcessSet}           
+Manifest   1.1        PSDesiredStateConfiguration         {Invoke-DscResource, Publish-DscConfiguration, Set-DscLocalConfiguration...
+Script     1.0        ServiceSet                          {BuildResourceCommonParameters, BuildResourceString, ServiceSet}           
+Script     1.0        WindowsFeatureSet                   {BuildResourceCommonParameters, BuildResourceString, WindowsFeatureSet}    
+Script     1.0        WindowsOptionalFeatureSet           {BuildResourceCommonParameters, BuildResourceString, WindowsOptionalFeat...
+
+
+
+PS C:\Users\james.lutsey.admin\Documents\WindowsPowerShell\Modules\PLXS_SQL\1.0> 

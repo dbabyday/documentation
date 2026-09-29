@@ -1,0 +1,68 @@
+# symlink
+
+ln -s <target file name/path> <link name/path>
+
+
+# example
+ln -s myfile.txt mylink.txt
+
+ls -l
+total 0
+-rw-r--r--   1 oracle   dba            0 May 10 08:47 my_file.txt
+lrwxrwxrwx   1 oracle   dba           10 May 10 08:47 mylink.txt -> myfile.txt
+
+ls -s arcdv01 /oradb/ebsupkpd/data/arcdv01
+
+
+
+
+
+
+
+
+select owner, sum(bytes) from dba_segments where owner in ('DATAWAIRE110', 'ARCTOOLS300', 'ARCDTA') group by owner;
+
+run {
+allocate channel ch1 type 'sbt_tape';
+RESTORE ARCHIVELOG FROM TIME 'SYSDATE-6' UNTIL TIME 'SYSDATE-5';
+}
+
+Donny - The databases are down and data volumes unmounted...ready for the volume switch. You can take a new snap of jdrf02-data:/jdrf02_data and use it for the new jdepy01-data:/jdepy01_data
+
+
+
+run {
+allocate channel ch1 type 'sbt_tape'
+PARMS="SBT_LIBRARY=/opt/commvault/Base64/libobk.so, BLKSIZE=1048576 ENV=(CV_mmsApiVsn=2,ThreadCommandLine= -cn dcc-ora-py-001 -vm Instance001)"
+TRACE 0;
+RESTORE ARCHIVELOG FROM TIME 'SYSDATE-6' UNTIL TIME 'SYSDATE-5';
+}
+
+
+
+persist: DATAWAIRE110, ARCTOOLS300 and ARCTMP 
+
+
+select a.owner||'.'||a.table_name||','
+from dba_tables a
+left join ca.pdtbls b on b.owner=a.owner and b.table_name=a.table_name
+where b.table_name is null
+	and a.owner in ('ARCCTL','ARCDTA','ARCENG')
+order by 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

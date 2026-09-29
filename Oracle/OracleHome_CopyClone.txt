@@ -1,0 +1,75 @@
+
+As the software owner (gfoster, gloria, oracle) create a new directory for the new Oracle home:
+
+mkdir 11.2.0.4.171017
+cd 11.2.0.4.171017
+
+-- You need to copy as root, so make Doug do it!
+sudo su -
+
+
+--test
+gtar -cf- -C /oracle_home/servers/co-db-998/11.2.0.4.171017 . | gtar -tvf-
+gtar -cf- -C /oracle_home/servers/co-db-924/12.1.0.2.171017 . | gtar -tvf-
+
+-- copy
+gtar -cf- -C /oracle_home/servers/co-db-998/11.2.0.4.171017 . | gtar -xf-
+gtar -cf- -C /oracle_home/servers/co-db-924/12.1.0.2.171017 . | gtar -xf-
+
+
+exit root, back to DB owner
+
+
+Add the new home to the oratab file
+	vi /var/opt/oracle/oratab
+
+
+rerun the sid script and choose the sid for your new version
+
+
+Cloning an oracle home...run one of the following commands that matches your version:
+    - Oracle 10G (use :/oracle/oraInventory/ContentsXML/inventory.xml to figure out what value to use for ORACLE_HOME_NAME 
+        (pick a new name that makes sense based on what is already there)
+
+     /oracle/10.2.0.5/oui/bin/runInstaller -silent -clone ORACLE_BASE="/oracle" ORACLE_HOME="/oracle/10.2.0.5" ORACLE_HOME_NAME="OraHome3"
+     $ORACLE_HOME/perl/bin/perl $ORACLE_HOME/clone/bin/clone.pl ORACLE_BASE="/oracle/" ORACLE_HOME="/oracle/11.2.0.4.171017" OSDBA_GROUP=dba -defaultHomeName
+     $ORACLE_HOME/perl/bin/perl $ORACLE_HOME/clone/bin/clone.pl ORACLE_BASE="/orahome/" ORACLE_HOME="/orahome/11.2.0.4.171017" OSDBA_GROUP=dba -defaultHomeName
+     $ORACLE_HOME/perl/bin/perl $ORACLE_HOME/clone/bin/clone.pl ORACLE_BASE="/orahome/" ORACLE_HOME="/orahome/12.1.0.2.171017" OSDBA_GROUP=dba -defaultHomeName
+     $ORACLE_HOME/perl/bin/perl $ORACLE_HOME/clone/bin/clone.pl ORACLE_BASE="/orahome/" ORACLE_HOME="/orahome/12.2.0.1.171017" OSDBA_GROUP=dba -defaultHomeName
+     $ORACLE_HOME/perl/bin/perl $ORACLE_HOME/clone/bin/clone.pl ORACLE_BASE="/orahome/" ORACLE_HOME="/orahome/12.2.0.1.190416" OSDBA_GROUP=dba -defaultHomeName
+
+
+sudo back to root and run the root.sh command that you are told to do
+
+
+sudo back to DB owner
+
+
+Validate that the clone operation was successful:
+    echo $PATH | tr ':' '\n' | grep OPatch
+    export PATH=$PATH:/oracle/12.2.0.1.190416/OPatch
+    opatch lsinv 
+    
+    The new home should show up, if not something went wrong
+
+# copy spfiles, tnsnames, & listener files to new home
+
+
+-- grant privileges so you have have all environment variables when selecting sid
+$ chmod 666 $ORACLE_HOME/inventory/ContentsXML/oraclehomeproperties.xml
+
+
+
+oraclehomes=$(cat /var/opt/oracle/oratab | grep -v '#' | cut -d ':' -f 2)
+while IFS= read -r line
+do
+	ls -lh ${line}/inventory/ContentsXML/oraclehomeproperties.xml
+done < <(printf '%s\n' "${oraclehomes}")
+echo ""
+while IFS= read -r line
+do
+	chmod 660 ${line}/inventory/ContentsXML/oraclehomeproperties.xml
+	ls -lh ${line}/inventory/ContentsXML/oraclehomeproperties.xml
+done < <(printf '%s\n' "${oraclehomes}")
+
+

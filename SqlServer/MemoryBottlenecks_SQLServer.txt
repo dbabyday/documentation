@@ -1,0 +1,51 @@
+/********************************************************************************************************
+* 
+* How to Identify Microsoft SQL Server Memory Bottlenecks
+* 
+* https://www.mssqltips.com/sqlservertip/2304/how-to-identify-microsoft-sql-server-memory-bottlenecks/
+* 
+/********************************************************************************************************
+
+
+
+----------------------------------------------------------
+-- Perfmon
+----------------------------------------------------------
+Memory: Available Bytes           1,150,000,000
+Process: Working Set (Total)      6,920,000,000
+Memory: Cache Bytes                 203,000,000
+Memory: Pool Nonpaged Bytes          74,000,000
+Memory: Modified Page List Bytes      2,550,000
+Process: Private Bytes            7,365,000,000
+Memory: Commit Limit             21,474,000,000
+Paging File: % Usage                          2.673
+Paging File: % Usuage Peak                    7.125
+SQL Server: Buffer Manager: Checkpoint pages/sec       0
+SQL Server: Buffer Manager: Lazy writes/sec            0
+SQL Server: Buffer Manager: Page reads/sec             0
+SQL Server: Buffer Manager: Buffer cache hit ratio   100
+SQL Server: Buffer Manager: Page Life Expectancy   3,500
+
+
+----------------------------------------------------------
+-- SERVER PROPERTIES
+----------------------------------------------------------
+Minimum server memory       0 MB
+Maximum server memory   6,552 MB
+
+
+----------------------------------------------------------
+-- DBCC MEMORYSTATUS
+----------------------------------------------------------
+Buffer Pool Target         16,384,000
+Stolen Pages
+
+
+----------------------------------------------------------
+SELECT *
+FROM sys.dm_os_memory_clerks
+ORDER BY pages_kb DESC;
+----------------------------------------------------------
+
+
+

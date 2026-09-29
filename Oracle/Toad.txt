@@ -1,0 +1,99 @@
+download at this link
+https://support.quest.com/toad-for-oracle/13.0/download-new-releases
+
+Get the Toad for Oracle full release 64 bit. 
+You will either get prompted or emailed for a license key and 'site message', use these:
+	DBA Suite
+	License key: CKUCYFSD1RHCVDCLZ1FP41C0AVC4XBMPNRCJN-112-162-079-83 
+	Site Message: PLEXUS CORP
+	Number of Seats: 2 
+
+
+Sessions
+	Session > New Connection > Import > \\neen-dsk-011\it$\database\users\James\JamesTools\ToadExportConnections.XML
+
+Dark Mode
+	View > Toad Options... > Color Schemes > Enable Color Schemes > Thunderstorm
+
+
+
+---------------------
+Database Browser
+---------------------
+C:\Users\james.lutsey\AppData\Roaming\Quest Software\Toad for Oracle\16.1\User Files\DatabaseBrowser.tdb
+
+# Toad 12.5 Format.  Do not remove this line.
+5,dcc-ora-dv-008.na.plexus.com,ADIDV01,JLUTSEY,20221014000000,
+5,aglprd01-db.na.plexus.com,AGLAV01,JLUTSEY,20221014000000,
+5,agldev01-db.na.plexus.com,AGLDEV01,JLUTSEY,20221014000000,
+5,aglprd01-db.na.plexus.com,AGLPRD01,JLUTSEY,20221014000000,
+5,aglqa01-db.na.plexus.com,AGLQA01,JLUTSEY,20221014000000,
+5,aglro01-db.na.plexus.com,AGLRO01,JLUTSEY,20221014000000,
+5,agltrn01-db.na.plexus.com,AGLTRN01,JLUTSEY,20221014000000,
+5,ampd01-db.plexus.com,AMPD01,JLUTSEY,20221014000000,
+5,ampd02-db.plexus.com,AMPD02,JLUTSEY,20221014000000,
+5,amts01-db.plexus.com,AMTS01,JLUTSEY,20221014000000,
+5,amts02-db.plexus.com,AMTS02,JLUTSEY,20221014000000,
+5,arcdv01-db.plexus.com,ARCDV01,JLUTSEY,20221014000000,
+5,arcpd01-db.plexus.com,ARCPD01,JLUTSEY,20221014000000,
+5,bchpd01-db.plexus.com,BCHPD01,JLUTSEY,20221014000000,
+5,bir-db.plexus.com,BIR,JLUTSEY,20221014000000,
+5,bondv01-db.na.plexus.com,BONDV01,JLUTSEY,20221014000000,
+5,bonpd01-db.na.plexus.com,BONPD01,JLUTSEY,20221014000000,
+5,bonqa01-db.na.plexus.com,BONQA01,JLUTSEY,20221014000000,
+5,dcc-ora-dv-008.na.plexus.com,CDBDV01,C##JLUTSEY,20221014000000,
+5,dcc-ora-dv-008.na.plexus.com,DBADV01,C##JLUTSEY,20221014000000,
+5,ebsapdv1-db.na.plexus.com,EBSAPDV1,JLUTSEY,20221014000000,
+5,ebsappd1-db.na.plexus.com,EBSAPPD1,JLUTSEY,20221014000000,
+5,ebsaput1-db.na.plexus.com,EBSAPUT1,JLUTSEY,20221014000000,
+5,ebscf01-db.na.plexus.com,EBSCF01,JLUTSEY,20221014000000,
+5,ebsdv01-db.na.plexus.com,EBSDV01,JLUTSEY,20221014000000,
+5,ebspd01-db.na.plexus.com,EBSPD01,JLUTSEY,20221014000000,
+5,ebssb01-db.plexus.com,EBSSB01,JLUTSEY,20221014000000,
+5,ebsts01-db.na.plexus.com,EBSTS01,JLUTSEY,20221014000000,
+5,ebsupk01-db.na.plexus.com,EBSUPKPD,JLUTSEY,20221014000000,
+5,ebsut01-db.na.plexus.com,EBSUT01,JLUTSEY,20221014000000,
+5,ggpy01-db.plexus.com,GGPY01,JLUTSEY,20221014000000,
+5,ggpd01-db.plexus.com,GGPD01,JLUTSEY,20221014000000,
+5,grcdev01-db.na.plexus.com,GRCDEV01,JLUTSEY,20221014000000,
+5,grcprd01-db.na.plexus.com,GRCPRD01,JLUTSEY,20221014000000,
+5,hz1s-db.plexus.com,HZ1S,JLUTSEY,20221014000000,
+5,iccm-db.plexus.com,ICCM,JLUTSEY,20221014000000,
+5,iccn-db.plexus.com,ICCN,JLUTSEY,20221014000000,
+5,iccx-db.plexus.com,ICCX,JLUTSEY,20221014000000,
+5,jabprd01-db.na.plexus.com,JABPRD01,JLUTSEY,20221014000000,
+5,gcc-ora-prd-001,JABPD02,JLUTSEY,20221014000000,
+5,jdarc-db.plexus.com,JDARC,JLUTSEY,20221014000000,
+5,jdarp-db.plexus.com,JDARP,JLUTSEY,20221014000000,
+5,jdecv01-db.plexus.com,JDECV01,JLUTSEY,20221014000000,
+5,jdedv01-db.plexus.com,JDEDV01,JLUTSEY,20221014000000,
+5,jdepd01-db.plexus.com,JDEPD01,JLUTSEY,20221014000000,
+5,jdepd03-db.plexus.com,JDEPD03,JLUTSEY,20221014000000,
+5,jdepr01-db.plexus.com,JDEPR01,JLUTSEY,20221014000000,
+5,jdepy01-db.plexus.com,JDEPY01,JLUTSEY,20221014000000,
+5,jdetr01-db.plexus.com,JDETR01,JLUTSEY,20221014000000,
+5,jdewpy01-db.plexus.com,JDEWPY01,JLUTSEY,20221014000000,
+5,dcc-ora-xf-001.na.plexus.com,JDRF01,JLUTSEY,20221014000000,
+5,dcc-ora-xf-001.na.plexus.com,JDRF02,JLUTSEY,20221014000000,
+5,jsprpd-db.plexus.com,JSPRPD,JLUTSEY,20221014000000,
+5,jsprpy-db.plexus.com,JSPRPY,JLUTSEY,20221014000000,
+5,knxpd01-db.plexus.com,KNXPD01,JLUTSEY,20221014000000,
+5,mwsdv01-db.na.plexus.com,MWSDV01,JLUTSEY,20221014000000,
+5,oemdv01-db.na.plexus.com,OEMDV01,JLUTSEY,20221014000000,
+5,gcc-ora-prd-001.na.plexus.com,OEMPD01,JLUTSEY,20221014000000,
+5,oemprd01-db.na.plexus.com,OEMPRD01,JLUTSEY,20221014000000,
+5,olmdv01-db.na.plexus.com,OLMDV01,JLUTSEY,20221014000000,
+5,pg2s-db.plexus.com,PG2S,JLUTSEY,20221014000000,
+5,pg3s-db.plexus.com,PG3S,JLUTSEY,20221014000000,
+5,gcc-ora-pd-006.na.plexus.com,PLX,JLUTSEY,20221014000000,
+5,plxdv01-db.na.plexus.com,PLXDV01,JLUTSEY,20221014000000,
+5,psfpd01-db.na.plexus.com,PSFPD01,JLUTSEY,20221014000000,
+5,rmnpd01-db.na.plexus.com,RMNPD01,JLUTSEY,20221014000000,
+5,uc4np01-db.plexus.com,UC4NP01,JLUTSEY,20221014000000,
+5,dcc-ora-dv-006.na.plexus.com,WCQDV01,JLUTSEY,20221014000000,
+5,dcc-ora-dv-006.na.plexus.com,WINDV02,JLUTSEY,20221014000000,
+5,dcc-ora-dev-001,WINPC02,JLUTSEY,20221014000000,
+5,winpd02-db.plexus.com,WINPD02,JLUTSEY,20221014000000,
+5,winqa02-db.plexus.com,WINQA02,JLUTSEY,20221014000000,
+5,dcc-ora-dev-001,WINTMP02,JLUTSEY,20221014000000,
+

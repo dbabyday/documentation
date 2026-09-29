@@ -1,0 +1,78 @@
+UNIX Patching
+---------------------------------------------
+
+
+
+# -----------------------------------------
+# --// BEFORE                          //--
+# -----------------------------------------
+
+# Stop OEM
+# Disable CommVault Backups
+# Stop GG
+
+
+# -----------------------------------------
+# --// SHUTDOWN                        //--
+# -----------------------------------------
+
+# create the tmux session with all the pd hosts
+read -s _PW
+export _PW
+dcc-tmux-001:/erphome/james.lutsey.admin$ ./tmuxSession_unix_patching_pd.sh
+
+# shutdown databases and listeners
+cd /dba/scripts/shutdown_startup
+./shutdown_databases_and_listeners.sh | tee /dba/scripts/shutdown_startup/log/shutdown_databases_and_listeners_$(hostname).log
+
+tmux kill-session -t unix_patching_pd
+
+
+
+
+# -----------------------------------------
+# --// RELINK                          //--
+# -----------------------------------------
+
+# create the tmux session with all the pd hosts
+dcc-tmux-001:/erphome/james.lutsey.admin$ ./tmuxSession_unix_patching_pd.sh
+relink all
+# for hosts with multiple OHs, run "relink all" in each one
+
+
+
+
+
+# -----------------------------------------
+# --// STARTUP                         //--
+# -----------------------------------------
+
+cd /dba/scripts/shutdown_startup
+./startup_databases_and_listeners.sh | tee /dba/scripts/shutdown_startup/log/startup_databases_and_listeners_$(hostname).log
+
+
+
+# -----------------------------------------
+# --// END                             //--
+# -----------------------------------------
+
+# Start GG
+# Start OEM
+# Enable CommVault Backups
+
+
+ggmvi
+
+script gcc-ora-pd-007:/dba/scripts/monitor_statement_merge_f41021.sh
+It is executed as a cron job under user oracle
+
+
+
+
+
+comment out in oratab
+gcc-ora-pd-006: 
+
+
+
+amdp02

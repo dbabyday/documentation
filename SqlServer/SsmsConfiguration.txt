@@ -1,0 +1,108 @@
+SSMS Configuration
+
+
+
+Registered Servers
+	View > Registered Servers > Database Engine > Central Management Servers > Register Central Management Server
+		Server name: gcc-sql-pd-400
+		Encryption: Optional
+
+
+Tools > Code Snippets Manager
+	Add...
+	\\neen-dsk-011\it$\database\users\James\JamesScripts\SqlServer\Snippets\a
+	OK
+
+
+
+----------------------------------
+Tools > Options
+----------------------------------
+Environment
+	Visual Experience
+		Color theme: Dark
+	Documents
+		Reload modified files unless there are unsaved changes
+		Check for consistent line endings on load (uncheck)
+	Keyboard
+		Keyboard
+			File.CloseOtherTabs : Ctrl + Shift + F7
+			Query.ChangeConnection : Ctrl + K, Ctrl + J
+			Window.CloseAllDocuments : Ctrl + F7
+			Window.PinTab : Ctrl + Shift + P
+			File.SaveAll : Remove
+			File.SaveSelectedItemsAs : Ctrl + Shift + S
+		Query Shortcuts
+			Alt + F1 : sp_help
+			Ctrl + F1 : select object_schema_name(object_id)+N'.'+name as tables from sys.tables order by 1;
+			Ctrl + 1 : sp_who
+			Ctrl + 2 : sp_lock
+			Ctrl + 3 : select '/* my spid: ' + cast(@@spid as varchar(12)) + ' */' as my_spid
+			Ctrl + 4 : sp_cColumns
+			Ctrl + 5 : sp_cObject
+			---------------------------------------------------------------------------------------------------
+			-- Alt + F1 : sp_help
+			-- Ctrl + F1 : select object_schema_name(object_id)+N'.'+name as tables from sys.tables order by 1;
+			-- Ctrl + 1 : sp_who
+			-- Ctrl + 2 : sp_lock
+			-- Ctrl + 3 : sp_WhoIsActive
+			-- Ctrl + 4 : execute sp_BlitzFirst @ExpertMode=1, @Seconds=60;
+			-- Ctrl + 5 : select top(100) * from
+			-- Ctrl + 6 : select count(1) from
+			-- Ctrl + 7 : sp_cColumns
+			-- Ctrl + 8 : sp_cObject
+			-- Ctrl + 9 : select '/* my spid: ' + cast(@@spid as varchar(12)) + ' */' as my_spid
+			-- Ctrl + 0 : execute sp_whoisactive @filter = 'NA\james.lutsey.admin', @filter_type = 'login';
+	Startup
+		Open empty environment
+	Tabs
+		Tab layout: Left
+		Tab sorting: Alphabetical
+		Dirty indicator: Dot
+		~ Insert new tabs to the right of existing tabs
+		~ Show pinned tabs in a spearate row
+Text Editor
+	Editor Tab and Status Bar
+		Status Bar Layout and Colors
+			Single server connecitons: DarkGray
+		Tab Text
+			Include database name: False
+			Include login name: False
+			Include server name: False
+Languages
+	Defaults
+		General
+			Line numbers
+		Scroll Bars
+			Vertical scroll bar mode: map mode
+			Source overview width: wide
+		Tabs
+			Tab size: 8
+			Indent size: 8
+			Keep Tabs
+Query Execution
+	SQL Server
+		General
+			Pompt to save unsaved T-SQL query windows on close (uncheck)
+			Check for open transactions before closing T-SQL query windows (uncheck)
+
+Query Results
+	SQL Server
+		Results to Grid
+			Retain CR/LF on copy or save
+		Results to Text
+			Right align numeric values
+SQL Server Object Explorer
+	Commands
+		Drag/Drop
+			Surround object names with brackets when dragged : False
+	Scripting
+		Table and view options
+			Script full-text indexes: True
+			Script indexes: True
+			Script Triggers: True
+
+
+
+New/Classic Connection Dialog experience
+	Tools > Options > Environment > Connection Dialog

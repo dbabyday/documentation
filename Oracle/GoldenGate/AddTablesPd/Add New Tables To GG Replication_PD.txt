@@ -1,0 +1,140 @@
+=====Prod Additions=========
+
+Source is co-db-001 with DB jdpd
+
+Destination is co-db-045 with DB ggpd
+
+GoldenGate Home: /oracle/goldengate
+
+Tables to add:
+PRODDTA.F3412
+PRODDTA.F3460
+PRODDTA.F4013
+PRODDTA.F41171
+PRODDTA.F4140
+PRODDTA.F4141
+PRODDTA.F5541040
+PRODDTA.F5541043
+PRODDTA.F5542087
+PRODDTA.F5542650
+PRODDTA.F5543006
+PRODDTA.F5543122
+PRODDTA.F5547073
+PRODDTA.F5548004
+
+======================================
+
+-- Stop extract and datapump
+	cd /oracle/goldengate
+	./ggsci
+	STOP EXTRACT *
+
+-- Wait 5 minutes for replicat to catch up and apply all changes
+
+-- Stop replicat
+	cd /oracle/goldengate
+	./ggsci
+	STOP REPLICAT *
+
+-- Copy replicat param file to rproddta.prm.orig (or whatever name you want)
+    /oracle/goldengate/dirprm/
+    cp rproddta.prm rproddta.prm.orig
+
+-- Add trandata to new tables
+	dblogin useridalias GG_ADM_SOURCE
+	ADD TRANDATA PRODDTA.F3412
+	ADD TRANDATA PRODDTA.F3460
+	ADD TRANDATA PRODDTA.F4013
+	ADD TRANDATA PRODDTA.F41171
+	ADD TRANDATA PRODDTA.F4140
+	ADD TRANDATA PRODDTA.F4141
+	ADD TRANDATA PRODDTA.F5541040
+	ADD TRANDATA PRODDTA.F5541043
+	ADD TRANDATA PRODDTA.F5542087
+	ADD TRANDATA PRODDTA.F5542650
+	ADD TRANDATA PRODDTA.F5543006
+	ADD TRANDATA PRODDTA.F5543122
+	ADD TRANDATA PRODDTA.F5547073
+	ADD TRANDATA PRODDTA.F5548004
+	
+
+-- Modify extract param file to add new tables
+    /oracle/goldengate/dirprm
+    mv eproddta.prm eproddta.prm.old
+    mv eproddta.prm.new eproddta.prm
+
+-- Start extract processes
+	START EXTRACT *
+
+-- Instantiate for datapump export
+	(sys)jdpy SQL> select current_scn from v$database;
+
+	CURRENT_SCN
+	---------------
+	  2360933480417
+
+-- Start datapump export using FLASHBACK_SCN (script in /oradb/ggexport/data/files/parfiles)
+	userid='/ as sysdba'
+	dumpfile=expdp_gg_addition_%u.dmp
+	directory=GGEXPORT
+	logfile=expdp_gg_addition.log
+	parallel=4
+	COMPRESSION=ALL
+	FLASHBACK_SCN=<SCN>
+	TABLES=(PRODDTA.F3412,
+	PRODDTA.F3460,
+	PRODDTA.F4013,
+	PRODDTA.F41171,
+	PRODDTA.F4140,
+	PRODDTA.F4141,
+	PRODDTA.F5541040,
+	PRODDTA.F5541043,
+	PRODDTA.F5542087,
+	PRODDTA.F5542650,
+	PRODDTA.F5543006,
+	PRODDTA.F5543122,
+	PRODDTA.F5547073,
+	PRODDTA.F5548004)
+
+	nohup expdp parfile=expdp_gg_addition.par &
+
+-- Modify replicat param files (use contents of rtestdta_temp_new_tables_01142019.prm and replace <SCN> with scn of export)
+    replace <SCN>
+    /oracle/goldengate/dirprm
+    vi rproddta.prm --> paste in new table mappings
+
+-- Import into ggpd using below par (script in /oradb/ggexport/data/files/parfiles):
+	userid='/ as sysdba'
+	dumpfile=expdp_gg_addition_%u.dmp
+	directory=GGEXPORT
+	logfile=impdp_gg_addition.log
+	parallel=4
+	REMAP_TABLESPACE=(PRODDTAI_160K:PRODDTAI,
+	PRODDTAI_4M:PRODDTAI,
+	PRODDTAI_8M:PRODDTAI,
+	PRODDTAI_32M:PRODDTAI,
+	PRODDTAI_64M:PRODDTAI,
+	PRODDTAT2:PRODDTAT)
+	EXCLUDE=INDEX:"NOT LIKE '%_PK'"
+	EXCLUDE=INDEX:"NOT LIKE '%_0'"
+	
+	nohup impdp parfile=impdp_gg_addition.par &
+
+-- Fix any errors from the import
+
+-- Drop all triggers on destination side (might not need to worry about this one...will need to check when actually going through process)
+	select 'drop trigger "'||owner||'"."'||object_name||'";' from dba_objects where object_type='TRIGGER' and owner in ('PRODDTA','PRODCTL','SYS7333');
+
+-- Start replicat 
+	START REPLICAT * 
+
+-- Wait about 10 minutes for everything get caught up
+
+-- Stop replicat
+	STOP REPLICAT *
+
+-- Delete replicat param file and replace with copy/original (rtestdta.prm.orig)
+
+-- Start replicat back up
+	START REPLICAT *
+
